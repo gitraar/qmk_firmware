@@ -28,15 +28,18 @@ bool achordion_eager_mod(uint8_t mod) {
 // Tap Dance declarations
 enum {
     TD_CW_CAPS,
+    TD_COMMA,
 };
 
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Caps Word, twice for Caps Lock
     [TD_CW_CAPS] = ACTION_TAP_DANCE_DOUBLE(CW_TOGG, KC_CAPS),
+    [TD_COMMA] = ACTION_TAP_DANCE_DOUBLE(KC_COMM, KC_MINS)
 };
 
 #define MACPRT G(S(KC_4))
+#define CLIP_HIST G(A(KC_BSLS))
 
 #define _BASE 0
 #define _NAV 1
@@ -76,7 +79,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————————|——————————————|——————————————|——————————————|——————————————|      |——————————————|——————————————|——————————————|——————————————|——————————————|
       LGUI_T(KC_A),  LALT_T(KC_R),  LCTL_T(KC_S),  LSFT_T(KC_T),  KC_G,                 KC_M,          RSFT_T(KC_N),  RCTL_T(KC_E),  LALT_T(KC_I),  RGUI_T(KC_O),
    //|——————————————|——————————————|——————————————|——————————————|——————————————|      |——————————————|——————————————|——————————————|——————————————|——————————————|
-      KC_Z,          RALT_T(KC_X),  KC_C,          KC_D,          KC_V,                 KC_K,          KC_H,          KC_COMM,       RALT_T(KC_DOT),KC_SLSH,
+      KC_Z,          RALT_T(KC_X),  KC_C,          KC_D,          KC_V,                 KC_K,          KC_H,          TD(TD_COMMA),  RALT_T(KC_DOT),KC_SLSH,
    //|——————————————|——————————————|——————————————|——————————————|——————————————|      |——————————————|——————————————|——————————————|——————————————|——————————————|
                                     LT(3,KC_ESC),  LT(1,KC_SPC),  LT(2,KC_TAB),         LT(5,KC_ENT),  LT(4,KC_BSPC), LT(6,KC_DEL)
    //|                             |——————————————|——————————————|——————————————|      |——————————————|——————————————|——————————————|
@@ -84,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Navigation
  * ,----------------------------------.    ,----------------------------------.
- * |      |      |      |      |      |    | Again| Undo |  Cut | Copy | Paste|
+ * |      |      |      |      |      |    | Undo |  Cut | Copy | Paste| PstHi|
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |  GUI |  Alt | Ctrl | Shift|      |    | Caps | Left | Down |  Up  | Right|
  * |------+------+------+------+------|    |------+------+------+------+------|
@@ -96,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_NAV] = LAYOUT_split_3x5_3(
    //|——————————————|——————————————|——————————————|——————————————|——————————————|      |——————————————|——————————————|——————————————|——————————————|——————————————|
-      KC_NO,         KC_NO,         KC_NO,         KC_NO,         KC_NO,                KC_AGIN,       KC_UNDO,       KC_CUT,        KC_COPY,       KC_PSTE,
+      KC_NO,         KC_NO,         KC_NO,         KC_NO,         KC_NO,                KC_UNDO,       KC_CUT,        KC_COPY,       KC_PSTE,       CLIP_HIST,
    //|——————————————|——————————————|——————————————|——————————————|——————————————|      |——————————————|——————————————|——————————————|——————————————|——————————————|
       KC_LGUI,       KC_LALT,       KC_LCTL,       KC_LSFT,       KC_NO,                TD(TD_CW_CAPS),KC_LEFT,       KC_DOWN,       KC_UP,         KC_RGHT,
    //|——————————————|——————————————|——————————————|——————————————|——————————————|      |——————————————|——————————————|——————————————|——————————————|——————————————|
@@ -204,7 +207,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Function
  * ,----------------------------------.    ,----------------------------------.
- * |  F12 |  F7  |  F8  |  F9  | PrSr |    |      |      |      |      |      |
+ * |  F12 |  F7  |  F8  |  F9  | PrSc |    |      |      |      |      |      |
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |  F11 |  F4  |  F5  |  F6  |      |    |      | Shift| Ctrl |  Alt |  GUI |
  * |------+------+------+------+------|    |------+------+------+------+------|
