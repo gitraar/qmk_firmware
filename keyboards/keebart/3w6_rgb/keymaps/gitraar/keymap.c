@@ -92,6 +92,24 @@ bool achordion_eager_mod(uint8_t mod) {
     }
 }
 
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    if (get_highest_layer(layer_state) > 0) {
+        uint8_t layer = get_highest_layer(layer_state);
+
+        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                uint8_t index = g_led_config.matrix_co[row][col];
+
+                if (index >= led_min && index < led_max && index != NO_LED &&
+                keymap_key_to_keycode(layer, (keypos_t){col,row}) > KC_TRNS) {
+                    rgb_matrix_set_color(index, RGB_ORANGE);
+                }
+            }
+        }
+    }
+    return false;
+}
+
 // Tap Dance declarations
 enum tap_dances {
     TD_CW_CAPS,
@@ -220,7 +238,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Media
  * ,----------------------------------.    ,----------------------------------.
- * |      |      |      |      |      |    | RGBT | RGBM | RGBH | RGBS | RGBV |
+ * |      |      |      |      |      |    | RMTog| RMSD | RMSU | RMVD | RMVU |
  * |------+------+------+------+------|    |------+------+------+------+------|
  * | Ctrl |  Alt |  GUI | Shift|      |    | Sleep| VolU | VolD | Prev | Next |
  * |------+------+------+------+------|    |------+------+------+------+------|
@@ -232,7 +250,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_MEDIA] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            RGB_TOG,   RGB_MOD,   RGB_HUI,   RGB_SAI,   RGB_VAI,
+      KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            RM_TOGG,   RM_SATD,   RM_SATU,   RM_VALD,   RM_VALU,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            KC_SLEP,   KC_VOLU,   KC_VOLD,   KC_MPRV,   KC_MNXT,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
