@@ -15,111 +15,16 @@ enum custom_keycodes {
     CIRC_O,
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-    if (!process_achordion(keycode, record)) { return false; }
-    // Your macros ...
-    switch (keycode) {
-        case GRV_A:
-        if (record->event.pressed) {
-            if (MOD_MASK_SHIFT) { // Detect the activation of either shift keys
-            del_mods(MOD_MASK_SHIFT);  // Disable Shift to prevent issues
-            register_code(KC_GRV);
-            add_mods(MOD_MASK_SHIFT);  // Enable Shift because it is needed for the Alpha and leave it because it was enabled at the start
-            register_code(KC_A);
-            } else {
-            register_code(KC_GRV);
-            register_code(KC_A);
-            }
-            break;
-        }
-        case CIRC_A:
-        if (record->event.pressed) {
-            if (MOD_MASK_SHIFT) {
-            del_mods(MOD_MASK_SHIFT);
-            tap_code16(KC_CIRC);
-            add_mods(MOD_MASK_SHIFT);
-            register_code(KC_A);
-            } else {
-            tap_code16(KC_CIRC); // tap_code16() used instead of register_code() because KC_CIRC uses a modifier, which requires 16 bits instead of 8
-            register_code(KC_A);
-            }
-            break;
-        }
-        case CIRC_E:
-        if (record->event.pressed) {
-            if (MOD_MASK_SHIFT) {
-            del_mods(MOD_MASK_SHIFT);
-            tap_code16(KC_CIRC);
-            add_mods(MOD_MASK_SHIFT);
-            register_code(KC_E);
-            } else {
-            tap_code16(KC_CIRC);
-            register_code(KC_E);
-            }
-            break;
-        }
-        case CIRC_O:
-        if (record->event.pressed) {
-            if (MOD_MASK_SHIFT) {
-            del_mods(MOD_MASK_SHIFT);
-            tap_code16(KC_CIRC);
-            add_mods(MOD_MASK_SHIFT);
-            register_code(KC_O);
-            } else {
-            tap_code16(KC_CIRC);
-            register_code(KC_O);
-            }
-            break;
-        }
-        }
-    return true;
-}
-
-void matrix_scan_user(void) {
-  achordion_task();
-}
-
-bool achordion_eager_mod(uint8_t mod) {
-    switch (mod) {
-        case MOD_LSFT:
-        case MOD_RSFT:
-        case MOD_LCTL:
-        case MOD_RCTL:
-        return true;  // Eagerly apply Shift and Ctrl mods.
-
-        default:
-        return false;
-    }
-}
-
-bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (get_highest_layer(layer_state) > 0) {
-        uint8_t layer = get_highest_layer(layer_state);
-
-        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
-            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
-                uint8_t index = g_led_config.matrix_co[row][col];
-
-                if (index >= led_min && index < led_max && index != NO_LED &&
-                keymap_key_to_keycode(layer, (keypos_t){col,row}) > KC_TRNS) {
-                    rgb_matrix_set_color(index, RGB_ORANGE);
-                }
-            }
-        }
-    }
-    return false;
-}
-
 // Tap Dance declarations
 enum tap_dances {
-    TD_CW_CAPS,
+    // TD_CW_CAPS,
     TD_COMMA_HYPHEN,
 };
 
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Caps Word and twice for Caps Lock
-    [TD_CW_CAPS] = ACTION_TAP_DANCE_DOUBLE(CW_TOGG, KC_CAPS),
+    // [TD_CW_CAPS] = ACTION_TAP_DANCE_DOUBLE(CW_TOGG, KC_CAPS),
     // Tap once for Comma and twice for Hyphen
     [TD_COMMA_HYPHEN] = ACTION_TAP_DANCE_DOUBLE(KC_COMM, KC_MINS)
 };
@@ -132,6 +37,7 @@ tap_dance_action_t tap_dance_actions[] = {
 #define PASTE G(KC_V)
 #define CLIP_HIST G(A(KC_BSLS))
 #define CEDILLA A(KC_C)
+#define LOCK_SCR C(G(KC_Q))
 
 #define HRM_A LCTL_T(KC_A)
 #define HRM_R LALT_T(KC_R)
@@ -144,15 +50,15 @@ tap_dance_action_t tap_dance_actions[] = {
 #define BRM_X RALT_T(KC_X)
 #define BRM_DOT RALT_T(KC_DOT)
 
-#define LT_1 LT(_NAV,KC_SPC)
-#define LT_2 LT(_ACCENTS,KC_SPC)
-#define LT_3 LT(_MEDIA,KC_SPC)
+#define LT_1 LT(_NAV,KC_BSPC)
+#define LT_2 LT(_ACCENTS,KC_TAB)
+#define LT_3 LT(_MEDIA,KC_ESC)
 #define LT_4 LT(_NUM,KC_SPC)
-#define LT_5 LT(_SYM,KC_SPC)
-#define LT_6 LT(_FUN,KC_SPC)
+#define LT_5 LT(_SYM,KC_ENT)
+#define LT_6 LT(_FUN,KC_DEL)
 
 #define COMMA TD(TD_COMMA_HYPHEN)
-#define CW TD(TD_CW_CAPS)
+// #define CW TD(TD_CW_CAPS)
 
 #define _BASE 0
 #define _NAV 1
@@ -172,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |   Z  |   X  |   C  |   D  |   V  |    |   K  |   H  |   ,  |   .  |   /  |
  * `------+------+------+------+------|    |------+------+------+------+------'
- *               |  Esc |  Spc |  Tab |    |  Ent | Bspc |  Del |
+ *               |  Esc | Bspc |  Tab |    |  Ent |  Spc |  Del |
  *               `--------------------'    `--------------------'
  */
 
@@ -196,7 +102,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |      | Ralt |      |      |      |    |      |  Cut | Copy | Paste| CbHst|
  * `------+------+------+------+------|    |------+------+------+------+------'
- *               |      |      |      |    |  Ent | Bspc |  Del |
+ *               |      |      |      |    |  Ent |  Spc |  Del |
  *               `--------------------'    `--------------------'
  */
 
@@ -204,11 +110,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       CLIP_HIST, PASTE,     COPY,      CUT,       KC_NO,            KC_INS,    KC_HOME,   KC_UP,     KC_END,    KC_PGUP,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            CW,        KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_PGDN,
+      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            CW_TOGG,   KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_PGDN,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_NO,     KC_RALT,   KC_NO,     KC_NO,     KC_NO,            KC_NO,     CUT,       COPY,      PASTE,     CLIP_HIST,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-                            KC_NO,     KC_NO,     KC_NO,            KC_ENT,    KC_BSPC,   KC_DEL
+                            KC_NO,     KC_NO,     KC_NO,            KC_ENT,    KC_SPC,    KC_DEL
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
 ),
 
@@ -240,7 +146,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,----------------------------------.    ,----------------------------------.
  * |      |      |      |      |      |    | RMTog| RMSD | RMSU | RMVD | RMVU |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * | Ctrl |  Alt |  GUI | Shift|      |    | Sleep| VolU | VolD | Prev | Next |
+ * | Ctrl |  Alt |  GUI | Shift|      |    | Sleep| VolD | VolU | Prev | Next |
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |      | Ralt |      |      |      |    |      |      |      |      |      |
  * `------+------+------+------+------|    |------+------+------+------+------'
@@ -252,7 +158,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            RM_TOGG,   RM_SATD,   RM_SATU,   RM_VALD,   RM_VALU,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            KC_SLEP,   KC_VOLU,   KC_VOLD,   KC_MPRV,   KC_MNXT,
+      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            LOCK_SCR,  KC_VOLD,   KC_VOLU,   KC_MPRV,   KC_MNXT,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_NO,     KC_RALT,   KC_NO,     KC_NO,     KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -332,3 +238,81 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
    )
 };
+
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+    if (!process_achordion(keycode, record)) { return false; }
+    // Your macros ...
+    switch (keycode) {
+        case GRV_A:
+        if (record->event.pressed) {
+            if (MOD_MASK_SHIFT) { // Detect the activation of either shift keys
+                del_mods(MOD_MASK_SHIFT);  // Disable Shift to prevent issues
+                register_code(KC_GRV);
+                add_mods(MOD_MASK_SHIFT);  // Enable Shift because it is needed for the Alpha and leave it because it was enabled at the start
+                register_code(KC_A);
+            } else {
+                register_code(KC_GRV);
+                register_code(KC_A);
+            }
+            break;
+        }
+        case CIRC_A:
+        if (record->event.pressed) {
+            if (MOD_MASK_SHIFT) {
+                del_mods(MOD_MASK_SHIFT);
+                tap_code16(KC_CIRC);
+                add_mods(MOD_MASK_SHIFT);
+                register_code(KC_A);
+            } else {
+                tap_code16(KC_CIRC); // tap_code16() used instead of register_code() because KC_CIRC uses a modifier, which requires 16 bits instead of 8
+                register_code(KC_A);
+            }
+            break;
+        }
+        case CIRC_E:
+        if (record->event.pressed) {
+            if (MOD_MASK_SHIFT) {
+                del_mods(MOD_MASK_SHIFT);
+                tap_code16(KC_CIRC);
+                add_mods(MOD_MASK_SHIFT);
+                register_code(KC_E);
+            } else {
+                tap_code16(KC_CIRC);
+                register_code(KC_E);
+            }
+            break;
+        }
+        case CIRC_O:
+        if (record->event.pressed) {
+            if (MOD_MASK_SHIFT) {
+                del_mods(MOD_MASK_SHIFT);
+                tap_code16(KC_CIRC);
+                add_mods(MOD_MASK_SHIFT);
+                register_code(KC_O);
+            } else {
+                tap_code16(KC_CIRC);
+                register_code(KC_O);
+            }
+            break;
+        }
+    }
+    return true;
+}
+
+void matrix_scan_user(void) {
+    achordion_task();
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, uint16_t other_keycode, keyrecord_t* other_record) {
+    // Get matrix positions of tap-hold key and other key.
+    uint8_t tap_hold_row = tap_hold_record->event.key.row;
+    // uint8_t tap_hold_col = tap_hold_record->event.key.col;
+    uint8_t other_row = other_record->event.key.row;
+    // uint8_t other_col = other_record->event.key.col;
+
+    bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
+
+    bool second_key_left = (other_row >= 0 && other_row <= 3);
+
+    return first_key_left != second_key_left;
+}
