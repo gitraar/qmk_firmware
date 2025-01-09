@@ -43,7 +43,7 @@ tap_dance_action_t tap_dance_actions[] = {
 #define HRM_R LALT_T(KC_R)
 #define HRM_S LGUI_T(KC_S)
 #define HRM_T LSFT_T(KC_T)
-#define HRM_N RSFT_T(KC_N)
+#define HRM_N LSFT_T(KC_N)
 #define HRM_E RGUI_T(KC_E)
 #define HRM_I LALT_T(KC_I)
 #define HRM_O RCTL_T(KC_O)
@@ -144,7 +144,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Media
  * ,----------------------------------.    ,----------------------------------.
- * |      |      |      |      |      |    | RMTog| RMSD | RMSU | RMVD | RMVU |
+ * |      |      |      |      |      |    | RMTog| RMNxt| RMHue| RMDo | RMUp |
  * |------+------+------+------+------|    |------+------+------+------+------|
  * | Ctrl |  Alt |  GUI | Shift|      |    | Sleep| VolD | VolU | Prev | Next |
  * |------+------+------+------+------|    |------+------+------+------+------|
@@ -156,7 +156,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_MEDIA] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            RM_TOGG,   RM_SATD,   RM_SATU,   RM_VALD,   RM_VALU,
+      KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            RM_TOGG,   RM_NEXT,   RM_HUEU,   RM_VALD,   RM_VALU,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            LOCK_SCR,  KC_VOLD,   KC_VOLU,   KC_MPRV,   KC_MNXT,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -182,7 +182,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_LBRC,   KC_7,      KC_8,      KC_9,      KC_RBRC,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_SCLN,   KC_4,      KC_5,      KC_6,      KC_EQL,           KC_NO,     KC_RSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+      KC_SCLN,   KC_4,      KC_5,      KC_6,      KC_EQL,           KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_GRV,    KC_1,      KC_2,      KC_3,      KC_BSLS,          KC_NO,     KC_NO,     KC_NO,     KC_RALT,   KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -206,7 +206,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_LCBR,   KC_AMPR,   KC_ASTR,   KC_LPRN,   KC_RCBR,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_COLN,   KC_DLR,    KC_PERC,   KC_CIRC,   KC_PLUS,          KC_NO,     KC_RSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+      KC_COLN,   KC_DLR,    KC_PERC,   KC_CIRC,   KC_PLUS,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_TILD,   KC_EXLM,   KC_AT,     KC_HASH,   KC_PIPE,          KC_NO,     KC_NO,     KC_NO,     KC_RALT,   KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -230,7 +230,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_F12,    KC_F7,     KC_F8,     KC_F9,     PRT_SCR,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_F11,    KC_F4,     KC_F5,     KC_F6,     KC_NO,            KC_NO,     KC_RSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+      KC_F11,    KC_F4,     KC_F5,     KC_F6,     KC_NO,            KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_F10,    KC_F1,     KC_F2,     KC_F3,     KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_RALT,   KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -309,10 +309,58 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, ui
     // uint8_t tap_hold_col = tap_hold_record->event.key.col;
     uint8_t other_row = other_record->event.key.row;
     // uint8_t other_col = other_record->event.key.col;
-
     bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
-
     bool second_key_left = (other_row >= 0 && other_row <= 3);
-
     return first_key_left != second_key_left;
 }
+
+bool achordion_eager_mod(uint8_t mod) {
+    switch (mod) {
+        case MOD_LSFT:
+        case MOD_RSFT:
+        return true;  // Eagerly apply Shift mods.
+
+        default:
+            return false;
+    }
+}
+
+uint16_t achordion_streak_chord_timeout(
+    uint16_t tap_hold_keycode, uint16_t next_keycode) {
+        if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
+        return 0;  // Disable streak detection on layer-tap keys.
+    }
+
+    // Otherwise, tap_hold_keycode is a mod-tap key.
+    uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
+    if ((mod & MOD_LSFT) != 0) {
+        return 100;  // A shorter streak timeout for Shift mod-tap keys.
+    } else {
+        return 240;  // A longer timeout otherwise.
+    }
+}
+
+// RGB LED indicators for active keys in each layer
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    if (get_highest_layer(layer_state) > 0) {
+        uint8_t layer = get_highest_layer(layer_state);
+
+        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                uint8_t index = g_led_config.matrix_co[row][col];
+
+                if (index >= led_min && index < led_max && index != NO_LED &&
+                keymap_key_to_keycode(layer, (keypos_t){col,row}) > KC_TRNS) {
+                    rgb_matrix_set_color(index, RGB_ORANGE);
+                }
+            }
+        }
+    }
+    return false;
+}
+
+// This disables matrix effects, leaving only the indicators
+// void keyboard_post_init_user(void) {
+//     rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+//     rgb_matrix_sethsv_noeeprom(HSV_OFF);
+// }
