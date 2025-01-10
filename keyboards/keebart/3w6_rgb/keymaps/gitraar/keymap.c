@@ -38,6 +38,8 @@ tap_dance_action_t tap_dance_actions[] = {
 #define CLIP_HIST G(A(KC_BSLS))
 #define CEDILLA A(KC_C)
 #define LOCK_SCR C(G(KC_Q))
+#define SPC_LEFT C(KC_LEFT)
+#define SPC_RIGHT C(KC_RIGHT)
 
 #define HRM_A LCTL_T(KC_A)
 #define HRM_R LALT_T(KC_R)
@@ -134,7 +136,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      GRV_A,     KC_LALT,   KC_LGUI,   KC_LSFT,   CIRC_A,           KC_NO,     KC_NO,     KC_NO,     CIRC_E,    CIRC_O,
+      GRV_A,     KC_LALT,   KC_LGUI,   KC_LSFT,   CIRC_A,           KC_NO,     SPC_LEFT,  SPC_RIGHT, CIRC_E,    CIRC_O,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_NO,     KC_RALT,   CEDILLA,   KC_NO,     KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -318,7 +320,7 @@ bool achordion_eager_mod(uint8_t mod) {
     switch (mod) {
         case MOD_LSFT:
         case MOD_RSFT:
-        return true;  // Eagerly apply Shift mods.
+            return true;  // Eagerly apply Shift mods.
 
         default:
             return false;
@@ -358,6 +360,32 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     }
     return false;
 }
+
+// bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+//     uint8_t layer = get_highest_layer(layer_state);
+//     for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+//         for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+//             uint8_t index = g_led_config.matrix_co[row][col];
+//             if (index >= led_min && index < led_max && index != NO_LED &&
+//             keymap_key_to_keycode(layer, (keypos_t){col,row}) > KC_TRNS) {
+//                 switch (layer) {
+//                     case 0:
+//                         rgb_matrix_set_color(index, HSV_ORANGE);
+//                         break;
+//                     case 1:
+//                         rgb_matrix_set_color(index, HSV_BLUE);
+//                         break;
+//                     case 2:
+//                         rgb_matrix_set_color(index, HSV_GREEN);
+//                         break;
+//                     default:
+//                         rgb_matrix_set_color(index, HSV_BLACK);
+//                 }
+//             }
+//         }
+//     }
+//     return false;
+// }
 
 // This disables matrix effects, leaving only the indicators
 // void keyboard_post_init_user(void) {
