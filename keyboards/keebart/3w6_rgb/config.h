@@ -39,6 +39,13 @@
 #define RGB_MATRIX_VAL_STEP 8
 #define RGB_MATRIX_SPD_STEP 10
 
+// Mouse stuff
+#define MOUSEKEY_DELAY          0
+#define MOUSEKEY_INTERVAL       16
+#define MOUSEKEY_WHEEL_DELAY    0
+#define MOUSEKEY_MAX_SPEED      6
+#define MOUSEKEY_TIME_TO_MAX    64
+
 // Disable or enable the RGB effects I do not want since they are enabled by default
 // https://docs.qmk.fm/squeezing_avr#squeezing-the-most-out-of-avr
 #undef ENABLE_RGB_MATRIX_ALPHAS_MODS
