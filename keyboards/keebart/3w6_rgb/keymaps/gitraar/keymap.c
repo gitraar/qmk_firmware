@@ -9,7 +9,6 @@ enum custom_keycodes {
     NUM,
     SYM,
     FUN,
-    GRV_A,
 };
 
 // Tap Dance declarations
@@ -128,51 +127,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
 ),
 
-/* Dead Keys
- * ,----------------------------------.    ,----------------------------------.
- * |      |      |      |      |      |    |      |      |      |      |      |
- * |------+------+------+------+------|    |------+------+------+------+------|
- * |   à  |  Alt |  GUI | Shift|      |    |      |WSLeft|      |WSRght|      |
- * |------+------+------+------+------|    |------+------+------+------+------|
- * |      | Ralt |      |      |      |    |      |      |      |      |      |
- * `------+------+------+------+------|    |------+------+------+------+------'
- *               |      |      |OOOOOO|    |   `  |   ~  |   ^  |
- *               `--------------------'    `--------------------'
- */
-
-// [_ACCENTS] = LAYOUT_split_3x5_3(
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       GRV_A,     KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            KC_NO,     SPC_LEFT,  KC_NO,     SPC_RIGHT, KC_NO,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       KC_NO,     KC_RALT,   KC_NO,     KC_NO,     KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//                             KC_NO,     KC_NO,     KC_NO,            KC_GRV,    KC_TILD,   KC_CIRC
-//    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
-// ),
-
 /* Mouse Keys
  * ,----------------------------------.    ,----------------------------------.
- * |      |      |      |      |      |    | MWUp |      |  MUp |      |      |
+ * | PstHi|  Cut | Copy | Paste|      |    | MWUp |      |  MUp |      |      |
  * |------+------+------+------+------|    |------+------+------+------+------|
  * | Ctrl |  Alt |  GUI | Shift|      |    | MWDn | MLeft| MDown|MRight|      |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |      | Ralt | ____ | ____ | ____ |    |      |      |      |      |      |
+ * |      | Ralt |      |      |      |    |      |   ˜  |   ´  |   ˆ  |   `  |
  * `------+------+------+------+------|    |------+------+------+------+------'
- *               |  Cut | Copy | Paste|    |  M2  |  M1  |  M3  |
+ *               |      |OOOOOO|      |    |  M1  |  M3  |  M2  |
  *               `--------------------'    `--------------------'
  */
 
 [_MOUSE] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            MS_WHLU,   KC_NO,     MS_UP,     KC_NO,     KC_NO,
+      CLIP_HIST, CUT,       COPY,      PASTE,     KC_NO,            MS_WHLU,   KC_NO,     MS_UP,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            MS_WHLD,   MS_LEFT,   MS_DOWN,   MS_RGHT,   KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_NO,     KC_RALT,   KC_TRNS,   KC_TRNS,   KC_TRNS,          KC_NO,     KC_TILDE,  KC_QUOTE,  KC_CIRC,   KC_GRV,
+      KC_NO,     KC_RALT,   KC_NO,     KC_NO,     KC_NO,            KC_NO,     KC_TILDE,  KC_QUOTE,  KC_CIRC,   KC_GRV,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-                            CUT,       COPY,      PASTE,            MS_BTN1,   MS_BTN3,   MS_BTN2
+                            KC_NO,     KC_NO,     KC_NO,            MS_BTN1,   MS_BTN3,   MS_BTN2
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
 ),
 
@@ -276,60 +251,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     if (!process_achordion(keycode, record)) { return false; }
     // Your macros ...
-    switch (keycode) {
-        case GRV_A:
-            if (record->event.pressed) {
-                if (MOD_MASK_SHIFT) { // Detect the activation of either shift keys
-                    del_mods(MOD_MASK_SHIFT);  // Disable Shift to prevent issues
-                    register_code(KC_GRV);
-                    add_mods(MOD_MASK_SHIFT);  // Enable Shift because it is needed for the Alpha and leave it because it was enabled at the start
-                    register_code(KC_A);
-                } else {
-                    register_code(KC_GRV);
-                    register_code(KC_A);
-                }
-            }
-            break;
-        // case CIRC_A:
-        //     if (record->event.pressed) {
-        //         if (MOD_MASK_SHIFT) {
-        //             del_mods(MOD_MASK_SHIFT);
-        //             tap_code16(KC_CIRC);
-        //             add_mods(MOD_MASK_SHIFT);
-        //             register_code(KC_A);
-        //         } else {
-        //             tap_code16(KC_CIRC); // tap_code16() used instead of register_code() because KC_CIRC uses a modifier, which requires 16 bits instead of 8
-        //             register_code(KC_A);
-        //         }
-        //     }
-        //     break;
-        // case CIRC_E:
-        //     if (record->event.pressed) {
-        //         if (MOD_MASK_SHIFT) {
-        //             del_mods(MOD_MASK_SHIFT);
-        //             tap_code16(KC_CIRC);
-        //             add_mods(MOD_MASK_SHIFT);
-        //             register_code(KC_E);
-        //         } else {
-        //             tap_code16(KC_CIRC);
-        //             register_code(KC_E);
-        //         }
-        //     }
-        //     break;
-        // case CIRC_O:
-        //     if (record->event.pressed) {
-        //         if (MOD_MASK_SHIFT) {
-        //             del_mods(MOD_MASK_SHIFT);
-        //             tap_code16(KC_CIRC);
-        //             add_mods(MOD_MASK_SHIFT);
-        //             register_code(KC_O);
-        //         } else {
-        //             tap_code16(KC_CIRC);
-        //             register_code(KC_O);
-        //         }
-        //     }
-        //     break;
-    }
     return true;
 }
 
