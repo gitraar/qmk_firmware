@@ -16,7 +16,6 @@ enum tap_dances {
     // TD_CW_CAPS,
     TD_DOT_ELLIPSIS,
 };
-
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Dot and twice for Ellipsis
@@ -25,6 +24,10 @@ tap_dance_action_t tap_dance_actions[] = {
     // [TD_CW_CAPS] = ACTION_TAP_DANCE_DOUBLE(CW_TOGG, KC_CAPS),
 };
 
+const uint16_t PROGMEM caps_word_combo[] = {KC_H, KC_COMMA, COMBO_END};
+combo_t key_combos[] = {
+    COMBO(caps_word_combo, CW_TOGG), // keycodes with modifiers are possible too!
+};
 
 // Definitions to include in layouts
 #define PRT_SCR G(S(KC_4))
@@ -65,13 +68,17 @@ tap_dance_action_t tap_dance_actions[] = {
 #define _SYM 5
 #define _FUN 6
 
-// Key overrides ko_make_with_layers_and_negmods
+// Key overrides ko_make_with_layers_and_negmods >>><<>>
 const key_override_t grave = ko_make_with_layers_and_negmods(MOD_MASK_ALT, HRM_O, KC_GRV, ~0, MOD_MASK_CSG);
 const key_override_t colon = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_DOT, KC_COLN, ~0, MOD_MASK_CSG);
 const key_override_t semicolon = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_COMM, KC_SCLN, ~0, MOD_MASK_CSG);
 const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, TD_DOT, KC_EXLM, ~0, MOD_MASK_CAG);
+const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SA, TD_DOT, A(KC_1), ~0, MOD_MASK_CG);
 const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMM, KC_QUES, ~0, MOD_MASK_CAG);
+const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_SA, KC_COMM, A(S(KC_SLSH)), ~0, MOD_MASK_CG);
 const key_override_t double_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_SLSH, KC_DQT, ~0, MOD_MASK_CAG);
+const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
+const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
 
 // This globally defines all key overrides to be used
 const key_override_t *key_overrides[] = {
@@ -79,8 +86,12 @@ const key_override_t *key_overrides[] = {
     &colon,
     &semicolon,
     &exclamation,
+    &inv_exclamation,
     &question,
-    &double_quote
+    &inv_question,
+    &double_quote,
+    &gte,
+    &lte
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -135,9 +146,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Mouse Keys
  * ,----------------------------------.    ,----------------------------------.
- * | PstHi|  Cut | Copy | Paste|      |    | MWUp |      |  MUp |      |      |
+ * | PstHi|  Cut | Copy | Paste|      |    | MWDn |      |  MUp |      |      |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * | Ctrl |  Alt |  GUI | Shift|      |    | MWDn | MLeft| MDown|MRight|      |
+ * | Ctrl |  Alt |  GUI | Shift|      |    | MWUp | MLeft| MDown|MRight|      |
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |      |      |      |      |      |    |      |   ˜  |   ´  |   ˆ  |   `  |
  * `------+------+------+------+------|    |------+------+------+------+------'
@@ -147,9 +158,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_MOUSE] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      CLIP_HIST, CUT,       COPY,      PASTE,     KC_NO,            MS_WHLU,   KC_NO,     MS_UP,     KC_NO,     KC_NO,
+      CLIP_HIST, CUT,       COPY,      PASTE,     KC_NO,            MS_WHLD,   KC_NO,     MS_UP,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            MS_WHLD,   MS_LEFT,   MS_DOWN,   MS_RGHT,   KC_NO,
+      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            MS_WHLU,   MS_LEFT,   MS_DOWN,   MS_RGHT,   KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            KC_NO,     KC_TILDE,  KC_QUOTE,  KC_CIRC,   KC_GRV,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -183,27 +194,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Numbers
  * ,----------------------------------.    ,----------------------------------.
- * |   [  |   7  |   8  |   9  |   ]  |    |      |      |      |      |      |
+ * |   =  |   7  |   8  |   9  |   -  |    |      |      |      |      |      |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |   ;  |   4  |   5  |   6  |   =  |    |      | Shift|  GUI |  Alt | Ctrl |
+ * |   €  |   4  |   5  |   6  |   +  |    |      | Shift|  GUI |  Alt | Ctrl |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |   `  |   1  |   2  |   3  |   \  |    |      |      |      |      |      |
+ * |   $  |   1  |   2  |   3  |   /  |    |      |      |      |      |      |
  * `------+------+------+------+------|    |------+------+------+------+------'
- *               |   .  |   0  |   -  |    |      |OOOOOO|      |
+ *               |   .  |   0  |   *  |    |      |OOOOOO|      |
  *               `--------------------'    `--------------------'
  */
-
-// [_NUM] = LAYOUT_split_3x5_3(
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       KC_LBRC,   KC_7,      KC_8,      KC_9,      KC_RBRC,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       KC_SCLN,   KC_4,      KC_5,      KC_6,      KC_EQL,           KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       KC_GRV,    KC_1,      KC_2,      KC_3,      KC_BSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//                             KC_DOT,    KC_0,      KC_MINS,          KC_NO,     KC_NO,     KC_NO
-//    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
-// ),
 
 [_NUM] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -219,35 +218,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Symbols
  * ,----------------------------------.    ,----------------------------------.
- * |   {  |   &  |   *  |   €  |   }  |    |      |      |      |      |      |
+ * |      |   '  |   {  |   }  |      |    |      |      |      |      |      |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |   :  |   $  |   %  |   ^  |   +  |    |      | Shift|  GUI |  Alt | Ctrl |
+ * |   #  |   @  |   [  |   ]  |   |  |    |      | Shift|  GUI |  Alt | Ctrl |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |   ~  |   !  |   @  |   #  |   |  |    |      |      |      |      |      |
+ * |   \  |   &  |   <  |   >  |   %  |    |      |      |      |      |      |
  * `------+------+------+------+------|    |------+------+------+------+------'
  *               |   (  |   )  |   _  |    |OOOOOO|      |      |
  *               `--------------------'    `--------------------'
  */
 
-// [_SYM] = LAYOUT_split_3x5_3(
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       KC_NO,     KC_NO,     KC_LCBR,   KC_RCBR,   KC_QUOT,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       KC_COLN,   KC_DLR,    KC_PERC,   KC_CIRC,   KC_PLUS,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//       KC_TILD,   KC_EXLM,   KC_AT,     KC_HASH,   KC_PIPE,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
-//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-//                             KC_LPRN,   KC_RPRN,   KC_UNDS,          KC_NO,     KC_NO,     KC_NO
-//    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
-// ),
-
 [_SYM] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_NO,     KC_NO,     KC_LCBR,   KC_RCBR,   KC_QUOT,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_NO,     KC_QUOT,   KC_LCBR,   KC_RCBR,   KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_HASH,   KC_AT,     KC_LBRC,   KC_RBRC,   KC_PIPE,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_NO,     KC_NO,     KC_PERC,   KC_AMPR,   KC_BSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_BSLS,   KC_AMPR,   KC_LT,     KC_GT,     KC_PERC,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
                             KC_LPRN,   KC_RPRN,   KC_UNDS,          KC_NO,     KC_NO,     KC_NO
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
