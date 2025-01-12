@@ -11,19 +11,16 @@ enum custom_keycodes {
     FUN,
 };
 
-// Tap Dance declarations
+// Tap Dance definitions
 enum tap_dances {
-    // TD_CW_CAPS,
     TD_DOT_ELLIPSIS,
 };
-// Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Dot and twice for Ellipsis
     [TD_DOT_ELLIPSIS] = ACTION_TAP_DANCE_DOUBLE(KC_DOT, A(KC_SCLN)),
-    // Tap once for Caps Word and twice for Caps Lock
-    // [TD_CW_CAPS] = ACTION_TAP_DANCE_DOUBLE(CW_TOGG, KC_CAPS),
 };
 
+// Combo definitions
 const uint16_t PROGMEM caps_word_combo[] = {KC_H, KC_COMMA, COMBO_END};
 combo_t key_combos[] = {
     COMBO(caps_word_combo, CW_TOGG), // keycodes with modifiers are possible too!
@@ -58,7 +55,6 @@ combo_t key_combos[] = {
 #define LT_6 LT(_FUN,KC_DEL)
 
 #define TD_DOT TD(TD_DOT_ELLIPSIS)
-// #define CW TD(TD_CW_CAPS)
 
 #define _BASE 0
 #define _NAV 1
@@ -136,7 +132,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       CLIP_HIST, CUT,       COPY,      PASTE,     KC_NO,            KC_NO,     KC_HOME,   KC_UP,     KC_END,    KC_PGUP,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            CW_TOGG,   KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_PGDN,
+      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            KC_CAPS,   KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_PGDN,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            KC_NO,     SPC_LEFT,  KC_NO,     SPC_RIGHT, KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -262,7 +258,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
                             KC_MCTL,   KC_SPC,    KC_TAB,           KC_NO,     KC_NO,     KC_NO
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
-   )
+)
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
