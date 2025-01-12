@@ -67,11 +67,11 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // Key overrides ko_make_with_layers_and_negmods
 const key_override_t grave = ko_make_with_layers_and_negmods(MOD_MASK_ALT, HRM_O, KC_GRV, ~0, MOD_MASK_CSG);
-const key_override_t colon = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_DOT, S(KC_SCLN), ~0, MOD_MASK_CSG);
+const key_override_t colon = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_DOT, KC_COLN, ~0, MOD_MASK_CSG);
 const key_override_t semicolon = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_COMM, KC_SCLN, ~0, MOD_MASK_CSG);
 const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, TD_DOT, KC_EXLM, ~0, MOD_MASK_CAG);
-const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMM, S(KC_SLSH), ~0, MOD_MASK_CAG);
-const key_override_t quotes = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_SLSH, S(KC_QUOTE), ~0, MOD_MASK_CAG);
+const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMM, KC_QUES, ~0, MOD_MASK_CAG);
+const key_override_t double_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_SLSH, KC_DQT, ~0, MOD_MASK_CAG);
 
 // This globally defines all key overrides to be used
 const key_override_t *key_overrides[] = {
@@ -80,7 +80,7 @@ const key_override_t *key_overrides[] = {
     &semicolon,
     &exclamation,
     &question,
-    &quotes
+    &double_quote
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -193,15 +193,27 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *               `--------------------'    `--------------------'
  */
 
+// [_NUM] = LAYOUT_split_3x5_3(
+//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
+//       KC_LBRC,   KC_7,      KC_8,      KC_9,      KC_RBRC,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
+//       KC_SCLN,   KC_4,      KC_5,      KC_6,      KC_EQL,           KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
+//       KC_GRV,    KC_1,      KC_2,      KC_3,      KC_BSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
+//                             KC_DOT,    KC_0,      KC_MINS,          KC_NO,     KC_NO,     KC_NO
+//    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
+// ),
+
 [_NUM] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_LBRC,   KC_7,      KC_8,      KC_9,      KC_RBRC,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_PEQL,   KC_7,      KC_8,      KC_9,      KC_PMNS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_SCLN,   KC_4,      KC_5,      KC_6,      KC_EQL,           KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+      A(KC_AT),  KC_4,      KC_5,      KC_6,      KC_PPLS,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_GRV,    KC_1,      KC_2,      KC_3,      KC_BSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_DLR,    KC_1,      KC_2,      KC_3,      KC_PSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-                            KC_DOT,    KC_0,      KC_MINS,          KC_NO,     KC_NO,     KC_NO
+                            KC_DOT,    KC_0,      KC_PAST,          KC_NO,     KC_NO,     KC_NO
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
 ),
 
@@ -217,13 +229,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *               `--------------------'    `--------------------'
  */
 
+// [_SYM] = LAYOUT_split_3x5_3(
+//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
+//       KC_NO,     KC_NO,     KC_LCBR,   KC_RCBR,   KC_QUOT,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
+//       KC_COLN,   KC_DLR,    KC_PERC,   KC_CIRC,   KC_PLUS,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
+//       KC_TILD,   KC_EXLM,   KC_AT,     KC_HASH,   KC_PIPE,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+//    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
+//                             KC_LPRN,   KC_RPRN,   KC_UNDS,          KC_NO,     KC_NO,     KC_NO
+//    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
+// ),
+
 [_SYM] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_LCBR,   KC_AMPR,   KC_ASTR,   A(KC_AT),  KC_RCBR,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_NO,     KC_NO,     KC_LCBR,   KC_RCBR,   KC_QUOT,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_COLN,   KC_DLR,    KC_PERC,   KC_CIRC,   KC_PLUS,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+      KC_HASH,   KC_AT,     KC_LBRC,   KC_RBRC,   KC_PIPE,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_TILD,   KC_EXLM,   KC_AT,     KC_HASH,   KC_PIPE,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_NO,     KC_NO,     KC_PERC,   KC_AMPR,   KC_BSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
                             KC_LPRN,   KC_RPRN,   KC_UNDS,          KC_NO,     KC_NO,     KC_NO
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
@@ -273,8 +297,8 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, ui
     if (tap_hold_row == 3) {
         return true;
     }
-    bool first_key_left = (tap_hold_row >= 0 && tap_hold_row < 3);
-    bool second_key_left = (other_row >= 0 && other_row < 3);
+    bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
+    bool second_key_left = (other_row >= 0 && other_row <= 3);
     return first_key_left != second_key_left;
 }
 
