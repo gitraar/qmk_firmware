@@ -72,7 +72,6 @@ const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIF
 const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SA, TD_DOT, A(KC_1), ~0, MOD_MASK_CG);
 const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMM, KC_QUES, ~0, MOD_MASK_CAG);
 const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_SA, KC_COMM, A(S(KC_SLSH)), ~0, MOD_MASK_CG);
-const key_override_t double_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_SLSH, KC_DQT, ~0, MOD_MASK_CAG);
 const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
 const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
 
@@ -85,7 +84,6 @@ const key_override_t *key_overrides[] = {
     &inv_exclamation,
     &question,
     &inv_question,
-    &double_quote,
     &gte,
     &lte
 };
@@ -94,11 +92,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
  * ,----------------------------------.    ,----------------------------------.
- * |   Q  |   W  |   F  |   P  |   B  |    |   J  |   L  |   U  |   Y  |   -  |
+ * |   Q  |   W  |   F  |   P  |   B  |    |   J  |   L  |   U  |   Y  |   '  |
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |   A  |   R  |   S  |   T  |   G  |    |   M  |   N  |   E  |   I  |   O  |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |   Z  |   X  |   C  |   D  |   V  |    |   K  |   H  |   ,  |   .  |   /  |
+ * |   Z  |   X  |   C  |   D  |   V  |    |   K  |   H  |   ,  |   .  |   -  |
  * `------+------+------+------+------|    |------+------+------+------+------'
  *               |  Esc | Bspc |  Tab |    |  Ent |  Spc |  Del |
  *               `--------------------'    `--------------------'
@@ -106,11 +104,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_BASE] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_Q,      KC_W,      KC_F,      KC_P,      KC_B,             KC_J,      KC_L,      KC_U,      KC_Y,      KC_MINS,
+      KC_Q,      KC_W,      KC_F,      KC_P,      KC_B,             KC_J,      KC_L,      KC_U,      KC_Y,      KC_QUOTE,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       HRM_A,     HRM_R,     HRM_S,     HRM_T,     KC_G,             KC_M,      HRM_N,     HRM_E,     HRM_I,     HRM_O,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_Z,      KC_X,      KC_C,      KC_D,      KC_V,             KC_K,      KC_H,      KC_COMMA,  TD_DOT,    KC_SLSH,
+      KC_Z,      KC_X,      KC_C,      KC_D,      KC_V,             KC_K,      KC_H,      KC_COMMA,  TD_DOT,    KC_MINS,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
                             LT_3,      LT_1,      LT_2,             LT_5,      LT_4,      LT_6
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
@@ -120,9 +118,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,----------------------------------.    ,----------------------------------.
  * | PstHi|  Cut | Copy | Paste|      |    |      | Home |  Up  |  End | PgUp |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * | Ctrl |  Alt |  GUI | Shift|      |    | Caps | Left | Down | Right| PgDo |
+ * | Ctrl |  Alt |  GUI | Shift|      |    |      | Left | Down | Right| PgDo |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |      | Ralt |      |      |      |    |      |SpLeft|      |SpRght|      |
+ * |      |      |      |      |      |    |      |SpLeft|      |SpRght|      |
  * `------+------+------+------+------|    |------+------+------+------+------'
  *               |      |OOOOOO|      |    | Copy | Paste| CbHst|
  *               `--------------------'    `--------------------'
@@ -132,7 +130,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       CLIP_HIST, CUT,       COPY,      PASTE,     KC_NO,            KC_NO,     KC_HOME,   KC_UP,     KC_END,    KC_PGUP,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            KC_CAPS,   KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_PGDN,
+      KC_LCTL,   KC_LALT,   KC_LGUI,   KC_LSFT,   KC_NO,            KC_NO,     KC_LEFT,   KC_DOWN,   KC_RIGHT,  KC_PGDN,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,            KC_NO,     SPC_LEFT,  KC_NO,     SPC_RIGHT, KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
@@ -148,7 +146,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |      |      |      |      |      |    |      |   ˜  |   ´  |   ˆ  |   `  |
  * `------+------+------+------+------|    |------+------+------+------+------'
- *               |      |OOOOOO|      |    |  M1  |  M3  |  M2  |
+ *               |      |      |OOOOOO|    |  M1  |  M3  |  M2  |
  *               `--------------------'    `--------------------'
  */
 
@@ -202,39 +200,41 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_NUM] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_PEQL,   KC_7,      KC_8,      KC_9,      KC_PMNS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_PEQL,   KC_P7,     KC_P8,     KC_P9,     KC_PMNS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      A(KC_AT),  KC_4,      KC_5,      KC_6,      KC_PPLS,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+      A(KC_AT),  KC_P4,     KC_P5,     KC_P6,     KC_PPLS,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_DLR,    KC_1,      KC_2,      KC_3,      KC_PSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_DLR,    KC_P1,     KC_P2,     KC_P3,     KC_PSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-                            KC_DOT,    KC_0,      KC_PAST,          KC_NO,     KC_NO,     KC_NO
+                            KC_PDOT,   KC_P0,     KC_PAST,          KC_NO,     KC_NO,     KC_NO
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
 ),
 
 /* Symbols
  * ,----------------------------------.    ,----------------------------------.
- * |      |   '  |   {  |   }  |      |    |      |      |      |      |      |
+ * |      |   &  |   <  |   >  |      |    |      |      |      |      |      |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |   #  |   @  |   [  |   ]  |   |  |    |      | Shift|  GUI |  Alt | Ctrl |
+ * |   %  |   @  |   [  |   ]  |   |  |    |      | Shift|  GUI |  Alt | Ctrl |
  * |------+------+------+------+------|    |------+------+------+------+------|
- * |   \  |   &  |   <  |   >  |   %  |    |      |      |      |      |      |
+ * |      |   #  |   {  |   }  |   \  |    |      |      |      |      |      |
  * `------+------+------+------+------|    |------+------+------+------+------'
- *               |   (  |   )  |   _  |    |OOOOOO|      |      |
+ *               |   (  |   )  |   /  |    |OOOOOO|      |      |
  *               `--------------------'    `--------------------'
  */
 
 [_SYM] = LAYOUT_split_3x5_3(
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_NO,     KC_QUOT,   KC_LCBR,   KC_RCBR,   KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_NO,     KC_AMPR,   KC_LT,     KC_GT,     KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_HASH,   KC_AT,     KC_LBRC,   KC_RBRC,   KC_PIPE,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
+      KC_PERC,   KC_AT,     KC_LBRC,   KC_RBRC,   KC_PIPE,          KC_NO,     KC_LSFT,   KC_RGUI,   KC_LALT,   KC_RCTL,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-      KC_BSLS,   KC_AMPR,   KC_LT,     KC_GT,     KC_PERC,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
+      KC_NO,     KC_HASH,   KC_LCBR,   KC_RCBR,   KC_BSLS,          KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-                            KC_LPRN,   KC_RPRN,   KC_UNDS,          KC_NO,     KC_NO,     KC_NO
+                            KC_LPRN,   KC_RPRN,   KC_PSLS,          KC_NO,     KC_NO,     KC_NO
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
 ),
+
+
 
 /* Function
  * ,----------------------------------.    ,----------------------------------.
@@ -244,7 +244,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |  F10 |  F1  |  F2  |  F3  |      |    |      |      |      |      |      |
  * `------+------+------+------+------|    |------+------+------+------+------'
- *               |  MC  |  Spc |  Tab |    |      |      |OOOOOO|
+ *               |  MC  | Caps |  Tab |    |      |      |OOOOOO|
  *               `--------------------'    `--------------------'
  */
 
@@ -256,7 +256,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
       KC_F10,    KC_F1,     KC_F2,     KC_F3,     KC_NO,            KC_NO,     KC_NO,     KC_NO,     KC_NO,     KC_NO,
    //|——————————|——————————|——————————|——————————|——————————|      |——————————|——————————|——————————|——————————|——————————|
-                            KC_MCTL,   KC_SPC,    KC_TAB,           KC_NO,     KC_NO,     KC_NO
+                            KC_MCTL,   KC_CAPS,   KC_TAB,           KC_NO,     KC_NO,     KC_NO
    //|                     |——————————|——————————|——————————|      |——————————|——————————|——————————|
 )
 };
