@@ -1,0 +1,528 @@
+#include "action.h"
+#include "modifiers.h"
+#include QMK_KEYBOARD_H
+#include "features/achordion.h"
+#include "features/sentence_case.h"
+#include "features/select_word.h"
+
+// Definitions to abbreviate stuff
+// macOS commands
+#define PRT_SCR G(S(KC_4))
+#define COPY G(KC_C)
+#define CUT G(KC_X)
+#define PASTE G(KC_V)
+#define CLIP_HIST G(A(KC_BSLS))
+#define LOCK_SCR C(G(KC_Q))
+#define SPC_LEFT C(KC_LEFT)
+#define SPC_RIGHT C(KC_RIGHT)
+#define UNDO G(KC_Z)
+#define REDO G(S(KC_Z))
+// Home row and top row mods
+#define HRM_A LCTL_T(KC_A)
+#define HRM_R LALT_T(KC_R)
+#define HRM_S LGUI_T(KC_S)
+#define HRM_T LSFT_T(KC_T)
+#define HRM_N LSFT_T(KC_N)
+#define HRM_E RGUI_T(KC_E)
+#define HRM_I LALT_T(KC_I)
+#define HRM_O RCTL_T(KC_O)
+#define TRM_L HYPR_T(KC_L)
+#define TRM_P HYPR_T(KC_P)
+// Layer taps
+#define LT_1 LT(1,KC_BSPC)
+#define LT_2 LT(2,KC_TAB)
+#define LT_3 LT(3,KC_ESC)
+#define LT_4 LT(4,KC_SPC)
+#define LT_5 LT(5,KC_ENT)
+#define LT_6 LT(6,KC_DEL)
+// Tap dances
+#define TD_DOT TD(DOT)
+#define TD_COMMA TD(COMMA)
+#define TD_PGUP TD(PGUP)
+#define TD_PGDN TD(PGDOWN)
+#define TD_HOME TD(HOME)
+#define TD_END TD(END)
+// Layers
+#define _BASE 0
+#define _NAV 1
+#define _MOUSE 2
+#define _MEDIA 3
+#define _NUM 4
+#define _SYM 5
+#define _FUN 6
+
+#define IDLE_TIMEOUT_MS 1800000 // Idle timeout in milliseconds.
+
+// Layer names – I don't know why these are here.
+enum custom_keycodes {
+    BASE = SAFE_RANGE,
+    NAV,
+    MOUSE,
+    MEDIA,
+    NUM,
+    SYM,
+    FUN,
+    SELWORD,
+};
+
+// Select word fuction.
+uint16_t SELECT_WORD_KEYCODE = SELWORD;
+
+// Tap Dance stuff.
+enum tap_dances {
+    DOT,
+    COMMA,
+    PGUP,
+    PGDOWN,
+    HOME,
+    END,
+};
+
+// Function to provide three taps on the Dot key.
+void dot_taps(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        tap_code16(KC_DOT);
+    } else if (state->count == 2) {
+        tap_code16(KC_COLN);
+    } else if (state->count == 3) {
+        register_mods(MOD_BIT(KC_LALT));
+        tap_code16(KC_SCLN); // This produces an ellipsis.
+        unregister_mods(MOD_BIT(KC_LALT));
+    } else {
+        reset_tap_dance(state);
+    }
+}
+
+// Code to enable tap-and-hold tap dances
+typedef struct {
+    uint16_t tap;
+    uint16_t hold;
+    uint16_t held;
+} tap_dance_tap_hold_t;
+
+void tap_dance_tap_hold_finished(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+    if (state->pressed) {
+        if (state->count == 1
+        #ifndef PERMISSIVE_HOLD
+        && !state->interrupted
+        #endif
+        ) {
+            register_code16(tap_hold->hold);
+            tap_hold->held = tap_hold->hold;
+        } else {
+            register_code16(tap_hold->tap);
+            tap_hold->held = tap_hold->tap;
+        }
+    }
+}
+
+void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
+    tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
+    if (tap_hold->held) {
+        unregister_code16(tap_hold->held);
+        tap_hold->held = 0;
+    }
+}
+
+#define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
+
+// Definition for each tap dance using the functions above.
+tap_dance_action_t tap_dance_actions[] = {
+    [DOT] = ACTION_TAP_DANCE_FN(dot_taps),
+    [COMMA] = ACTION_TAP_DANCE_DOUBLE(KC_COMMA, KC_SCLN),
+    [PGUP] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
+    [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
+    [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
+    [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
+};
+
+// Combo definitions.
+// Left-side vertical combos.
+const uint16_t PROGMEM cut_combo[] = {HRM_R, KC_W, COMBO_END};
+const uint16_t PROGMEM copy_combo[] = {HRM_S, KC_F, COMBO_END};
+const uint16_t PROGMEM paste_combo[] = {HRM_T, TRM_P, COMBO_END};
+const uint16_t PROGMEM clip_hist_combo[] = {KC_G, KC_B, COMBO_END};
+
+const uint16_t PROGMEM percentage_combo[] = {HRM_S, KC_C, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {HRM_T, KC_D, COMBO_END};
+const uint16_t PROGMEM astr_combo[] = {KC_G, KC_V, COMBO_END};
+
+// Right-side vertical combos.
+const uint16_t PROGMEM lprn_combo[] = {HRM_N, TRM_L, COMBO_END};
+const uint16_t PROGMEM rprn_combo[] = {HRM_E, KC_U, COMBO_END};
+const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
+
+const uint16_t PROGMEM slash_combo[] = {HRM_N, KC_H, COMBO_END};
+
+// Left-side horizontal combos.
+const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
+
+// Right-side horizontal combos.
+const uint16_t PROGMEM minus_combo[] = {HRM_N, KC_M, COMBO_END};
+
+// Used combos.
+combo_t key_combos[] = {
+    COMBO(cut_combo, CUT),
+    COMBO(copy_combo, COPY),
+    COMBO(paste_combo, PASTE),
+    COMBO(clip_hist_combo, CLIP_HIST),
+    COMBO(percentage_combo, KC_PERCENT),
+    COMBO(at_combo, KC_AT),
+    COMBO(astr_combo, KC_PAST),
+    COMBO(lprn_combo, KC_LPRN),
+    COMBO(rprn_combo, KC_RPRN),
+    COMBO(super_o_combo, A(KC_0)),
+    COMBO(slash_combo, KC_PSLS),
+    COMBO(caps_word_combo, CW_TOGG),
+    COMBO(minus_combo, KC_MINS),
+};
+
+// Key overrides.
+const key_override_t grave = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_QUOTE, KC_GRV, ~0, MOD_MASK_CAG);
+const key_override_t double_quote = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_QUOTE, KC_DQUO, ~0, MOD_MASK_CSG);
+const key_override_t super_a = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, A(KC_0), A(KC_9), ~0, MOD_MASK_CAG);
+const key_override_t apple = ko_make_with_layers_and_negmods(MOD_MASK_ALT, HRM_A, A(S(KC_K)), ~0, MOD_MASK_CSG);
+const key_override_t euro = ko_make_with_layers_and_negmods(MOD_MASK_ALT, HRM_E, A(KC_AT), ~0, MOD_MASK_CSG);
+const key_override_t dollar = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_D, KC_DOLLAR, ~0, MOD_MASK_CSG);
+const key_override_t libra = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TRM_L, A(KC_3), ~0, MOD_MASK_CSG);
+const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, TD_DOT, KC_EXLM, ~0, MOD_MASK_CAG);
+const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_DOT, A(KC_1), ~0, MOD_MASK_CSG);
+const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, TD_COMMA, KC_QUES, ~0, MOD_MASK_CAG);
+const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_COMMA, A(S(KC_SLSH)), ~0, MOD_MASK_CSG);
+const key_override_t circ = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_TILD, S(KC_6), ~0, MOD_MASK_CAG);
+const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
+const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
+const key_override_t open_fancy_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LPRN, A(KC_RBRC), ~0, MOD_MASK_CAG);
+const key_override_t close_fancy_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_RPRN, A(S(KC_RBRC)), ~0, MOD_MASK_CAG);
+const key_override_t open_fancy_double_quote = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_LPRN, A(KC_LBRC), ~0, MOD_MASK_CSG);
+const key_override_t close_fancy_double_quote = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_RPRN, A(S(KC_LBRC)), ~0, MOD_MASK_CSG);
+
+// This globally defines all key overrides to be used.
+const key_override_t *key_overrides[] = {
+    &grave,
+    &double_quote,
+    &super_a,
+    &apple,
+    &euro,
+    &dollar,
+    &libra,
+    &exclamation,
+    &inv_exclamation,
+    &question,
+    &inv_question,
+    &circ,
+    &gte,
+    &lte,
+    &open_fancy_quote,
+    &close_fancy_quote,
+    &open_fancy_double_quote,
+    &close_fancy_double_quote
+};
+
+// Keymaps
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+
+/* Base
+ * ,----------------------------------.    ,----------------------------------.
+ * |   Q  |   W  |   F  |   P  |   B  |    |   J  |   L  |   U  |   Y  |   '  |
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |   A  |   R  |   S  |   T  |   G  |    |   M  |   N  |   E  |   I  |   O  |
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |   Z  |   X  |   C  |   D  |   V  |    |   K  |   H  |   ,  |   .  |   ~  |
+ * `------+------+------+------+------|    |------+------+------+------+------'
+ *               |  Esc | Bspc |  Tab |    |  Ent |  Spc |  Del |
+ *               `--------------------'    `--------------------'
+ */
+
+    [_BASE] = LAYOUT_split_3x5_3(
+        KC_Q,  KC_W,  KC_F,  TRM_P, KC_B,    KC_J,   TRM_L, KC_U,     KC_Y,   KC_QUOTE,
+        HRM_A, HRM_R, HRM_S, HRM_T, KC_G,    KC_M,   HRM_N, HRM_E,    HRM_I,  HRM_O,
+        KC_Z,  KC_X,  KC_C,  KC_D,  KC_V,    KC_K,   KC_H,  TD_COMMA, TD_DOT, KC_TILD,
+                              LT_3,  LT_1,  LT_2,    LT_5,   LT_4,  LT_6
+    ),
+
+/* Navigation
+ * ,----------------------------------.    ,----------------------------------.
+ * |------|------|------|------|------|    |      | Home |  Up  |  End | PgUp |
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |------|------|------|------|------|    |      | Left | Down | Right| PgDo |
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |------|------|------|------|------|    |      |SpLeft|SelWrd|SpRght|      |
+ * `------+------+------+------+------|    |------+------+------+------+------'
+ *               |      |OOOOOO|      |    | Undo | Redo |      |
+ *               `--------------------'    `--------------------'
+ */
+
+    [_NAV] = LAYOUT_split_3x5_3(
+        _______, _______, _______, _______, _______,    XXXXXXX, TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
+        _______, _______, _______, _______, _______,    XXXXXXX, KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
+        _______, _______, _______, _______, _______,    XXXXXXX, SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    UNDO,    REDO,     XXXXXXX
+    ),
+
+/* Mouse Keys
+ * ,----------------------------------.    ,----------------------------------.
+ * |------|------|------|------|------|    | MWDn |      |  MUp |      |      |
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |------|------|------|------|------|    | MWUp | MLeft| MDown|MRight|      |
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |------|------|------|------|------|    |      |      |      |      |      |
+ * `------+------+------+------+------|    |------+------+------+------+------'
+ *               |      |      |OOOOOO|    |  M1  |  M3  |  M2  |
+ *               `--------------------'    `--------------------'
+ */
+
+    [_MOUSE] = LAYOUT_split_3x5_3(
+        _______, _______, _______, _______, _______,    MS_WHLD, XXXXXXX, MS_UP,   XXXXXXX, XXXXXXX,
+        _______, _______, _______, _______, _______,    MS_WHLU, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+        _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    MS_BTN1, MS_BTN3, MS_BTN2
+    ),
+
+/* Media
+ * ,----------------------------------.    ,----------------------------------.
+ * |------|------|------|------|------|    | RMTog| RMNxt| RMHue| RMDo | RMUp |
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |------|------|------|------|------|    |      | VolD | VolU | Prev | Next |
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |------|------|------|------|------|    |      |      |      |      |      |
+ * `------+------+------+------+------|    |------+------+------+------+------'
+ *               |OOOOOO|      |      |    | Next | Play | Mute |
+ *               `--------------------'    `--------------------'
+ */
+
+    [_MEDIA] = LAYOUT_split_3x5_3(
+        _______, _______, _______, _______, _______,    RM_TOGG, RM_NEXT, RM_HUEU, RM_VALD, RM_VALU,
+        _______, _______, _______, _______, _______,    XXXXXXX, KC_VOLD, KC_VOLU, KC_MPRV, KC_MNXT,
+        _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    KC_MNXT, KC_MPLY, KC_MUTE
+    ),
+
+/* Numbers
+ * ,----------------------------------.    ,----------------------------------.
+ * |   /  |   7  |   8  |   9  |   *  |    |------|------|------|------|------|
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |   -  |   4  |   5  |   6  |   +  |    |------|------|------|------|------|
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |      |   1  |   2  |   3  |   =  |    |------|------|------|------|------|
+ * `------+------+------+------+------|    |------+------+------+------+------'
+ *               | Bspc |   0  |  Ent |    |      |OOOOOO|      |
+ *               `--------------------'    `--------------------'
+ */
+
+    [_NUM] = LAYOUT_split_3x5_3(
+        KC_PSLS, KC_7, KC_8,    KC_9,  KC_PAST,    _______, _______, _______, _______, _______,
+        KC_PMNS, KC_4, KC_5,    KC_6,  KC_PPLS,    _______, _______, _______, _______, _______,
+        XXXXXXX, KC_1, KC_2,    KC_3,  KC_PEQL,    _______, _______, _______, _______, _______,
+                               KC_BSPC, KC_P0, KC_ENT,     XXXXXXX, XXXXXXX, XXXXXXX
+    ),
+
+/* Symbols
+ * ,----------------------------------.    ,----------------------------------.
+ * |      |   \  |   <  |   >  |      |    |------|------|------|------|------|
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |      |   |  |   [  |   ]  |      |    |------|------|------|------|------|
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |      |      |   {  |   }  |      |    |------|------|------|------|------|
+ * `------+------+------+------+------|    |------+------+------+------+------'
+ *               |   &  |   #  |      |    |OOOOOO|      |      |
+ *               `--------------------'    `--------------------'
+ */
+
+    [_SYM] = LAYOUT_split_3x5_3(
+        XXXXXXX, KC_BSLS, KC_LT,   KC_GT,   XXXXXXX,    _______, _______, _______, _______, _______,
+        XXXXXXX, KC_PIPE, KC_LBRC, KC_RBRC, XXXXXXX,    _______, _______, _______, _______, _______,
+        XXXXXXX, XXXXXXX, KC_LCBR, KC_RCBR, XXXXXXX,    _______, _______, _______, _______, _______,
+                                  KC_AMPR, KC_HASH, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+    ),
+
+/* Function
+ * ,----------------------------------.    ,----------------------------------.
+ * |  F12 |  F7  |  F8  |  F9  | PrSc |    |------|------|------|------|------|
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |  F11 |  F4  |  F5  |  F6  | Sleep|    |------|------|------|------|------|
+ * |------+------+------+------+------|    |------+------+------+------+------|
+ * |  F10 |  F1  |  F2  |  F3  | RMTog|    |------|------|------|------|------|
+ * `------+------+------+------+------|    |------+------+------+------+------'
+ *               |  MC  | Caps |  Tab |    |      |      |OOOOOO|
+ *               `--------------------'    `--------------------'
+ */
+
+    [_FUN] = LAYOUT_split_3x5_3(
+        KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     _______, _______, _______, _______, _______,
+        KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    _______, _______, _______, _______, _______,
+        KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     _______, _______, _______, _______, _______,
+                               KC_MCTL, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
+    )
+};
+
+// Function to do things when the keyboard is idle.
+static uint32_t idle_callback(uint32_t trigger_time, void* cb_arg) {
+    // If execution reaches here, the keyboard has gone idle.
+    rgb_matrix_disable(); // Disables the RGB Matrix.
+    return 0;
+}
+
+// Set tapping term per key.
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case HRM_A:
+        case HRM_O:
+            return 250;
+        case TD_COMMA:
+        case TD_DOT:
+            return 250;
+        default:
+            return TAPPING_TERM;
+    }
+}
+
+uint8_t mod_state;
+uint8_t oneshot_mods;
+
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+    if (!process_achordion(keycode, record)) { return false; }
+    if (!process_sentence_case(keycode, record)) { return false; }
+    if (!process_select_word(keycode, record)) { return false; }
+    // On every key event, start or extend the deferred execution to call `idle_callback()` after IDLE_TIMEOUT_MS.
+    static deferred_token idle_token = INVALID_DEFERRED_TOKEN;
+    if (!extend_deferred_exec(idle_token, IDLE_TIMEOUT_MS)) {
+        idle_token = defer_exec(IDLE_TIMEOUT_MS, idle_callback, NULL);
+    }
+    // Your macros ...
+    mod_state = get_mods();
+    oneshot_mods = get_oneshot_mods();
+    tap_dance_action_t *action;
+    switch (keycode) {
+        case TD(PGUP):
+            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+        case TD(PGDOWN):
+            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+        case TD(HOME):
+            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+        case TD(END):
+            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+    }
+    return true;
+}
+
+// Achordion options.
+void matrix_scan_user(void) {
+    achordion_task();
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, uint16_t other_keycode, keyrecord_t* other_record) {
+    // Get matrix positions of tap-hold key and other key.
+    uint8_t tap_hold_row = tap_hold_record->event.key.row;
+    // uint8_t tap_hold_col = tap_hold_record->event.key.col;
+    uint8_t other_row = other_record->event.key.row;
+    // uint8_t other_col = other_record->event.key.col;
+    if (tap_hold_row == 3) return true;
+    bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
+    bool second_key_left = (other_row >= 0 && other_row <= 3);
+    return first_key_left != second_key_left;
+}
+
+bool achordion_eager_mod(uint8_t mod) {
+    switch (mod) {
+        case MOD_LSFT:
+        case MOD_RSFT:
+        case MOD_LALT:
+        case MOD_LGUI:
+            return true; // Eagerly apply mods.
+        default:
+            return false;
+    }
+}
+
+uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next_keycode) {
+    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
+        return 0; // Disable streak detection on layer-tap keys.
+    }
+    // Otherwise, tap_hold_keycode is a mod-tap key.
+    uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
+    if ((mod & MOD_LSFT) != 0) {
+        return 100; // A shorter streak timeout for Shift mod-tap keys.
+    } else {
+        return 240; // A longer timeout otherwise.
+    }
+}
+
+// Sentence case stuff.
+void housekeeping_task_user(void) {
+    sentence_case_task();
+    // Other tasks…
+}
+
+char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mods) {
+    if ((mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
+        const bool shifted = mods & MOD_MASK_SHIFT;
+        switch (keycode) {
+            case KC_A ... KC_Z:
+                return 'a'; // Letter key.
+            case KC_DOT: // . is punctuation, Shift . is a symbol (>)
+                return !shifted ? '.' : '#';
+            case KC_1:
+            case KC_SLSH:
+                return shifted ? '.' : '#';
+            case KC_EXLM:
+            case KC_QUES:
+                return '.';
+            case KC_2 ... KC_0: // 2 3 4 5 6 7 8 9 0
+            case KC_AT ... KC_RPRN: // @ # $ % ^ & * ( )
+            case KC_MINS ... KC_SCLN: // - = [ ] backslash ;
+            case KC_UNDS ... KC_COLN: // _ + { } | :
+            case KC_GRV:
+                return '#'; // Symbol key.
+            case KC_COMMA:
+            case TD_COMMA:
+                return shifted ? '.' : '#'; // Shift-, is punctuation (?), but , is just a symbol.
+            case TD_DOT:
+                return shifted ? '.' : '.'; // Both . and ! are punctuation.
+            case KC_SPC:
+                return ' '; // Space key.
+            case KC_QUOT:
+                return '\''; // Quote key.
+        }
+    }
+    // Otherwise clear Sentence Case to initial state.
+    sentence_case_clear();
+    return '\0';
+}
+
+// Remove light from inactive keys in current layer.
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    if (get_highest_layer(layer_state) > 0) {
+        uint8_t layer = get_highest_layer(layer_state);
+        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                uint8_t index = g_led_config.matrix_co[row][col];
+                if (index >= led_min && index < led_max && index != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col,row}) <= KC_TRANSPARENT) {
+                    rgb_matrix_set_color(index, RGB_BLACK);
+                }
+            }
+        }
+    }
+    return false;
+}

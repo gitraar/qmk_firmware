@@ -1,0 +1,12 @@
+SRC += matrix.c
+SRC += features/achordion.c
+SRC += features/sentence_case.c
+SRC += features/select_word.c
+
+I2C_DRIVER_REQUIRED = yes
+
+TAP_DANCE_ENABLE = yes
+CAPS_WORD_ENABLE = yes
+KEY_OVERRIDE_ENABLE = yes
+COMBO_ENABLE = yes
+DEFERRED_EXEC_ENABLE = yes
