@@ -4,6 +4,7 @@
 #include "features/achordion.h"
 #include "features/sentence_case.h"
 #include "features/select_word.h"
+#include "config.h"
 
 // Definitions to abbreviate stuff
 // macOS commands
@@ -357,10 +358,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
+bool rgb_auto_disabled = false;
 // Function to do things when the keyboard is idle.
 static uint32_t idle_callback(uint32_t trigger_time, void* cb_arg) {
     // If execution reaches here, the keyboard has gone idle.
-    rgb_matrix_disable(); // Disables the RGB Matrix.
+    if (rgb_matrix_is_enabled()) {
+        rgb_matrix_disable(); // Disables the RGB Matrix.
+        rgb_auto_disabled = true; // Used to inform decision about automatically turning RGB back on.
+    }
     return 0;
 }
 
@@ -389,6 +394,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     static deferred_token idle_token = INVALID_DEFERRED_TOKEN;
     if (!extend_deferred_exec(idle_token, IDLE_TIMEOUT_MS)) {
         idle_token = defer_exec(IDLE_TIMEOUT_MS, idle_callback, NULL);
+    }
+    // I added this to restore the RGB matrix when returning from idle.
+    if (!rgb_matrix_is_enabled() && rgb_auto_disabled) {
+        rgb_matrix_enable();
+        rgb_auto_disabled = false;
     }
     // Your macros ...
     mod_state = get_mods();
@@ -435,10 +445,10 @@ void matrix_scan_user(void) {
 bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, uint16_t other_keycode, keyrecord_t* other_record) {
     // Get matrix positions of tap-hold key and other key.
     uint8_t tap_hold_row = tap_hold_record->event.key.row;
-    // uint8_t tap_hold_col = tap_hold_record->event.key.col;
+    // uint8_t tap_hold_col = tap_hold_record->event.key.col; // Not needed given the way this keyboard maps sides.
     uint8_t other_row = other_record->event.key.row;
-    // uint8_t other_col = other_record->event.key.col;
-    if (tap_hold_row == 3) return true;
+    // uint8_t other_col = other_record->event.key.col; // Not needed given the way this keyboard maps sides.
+    if (tap_hold_row == 3) return true; // I want the left thumbs to activate a hold even when used with keys on the same side for mouse usage.
     bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
     bool second_key_left = (other_row >= 0 && other_row <= 3);
     return first_key_left != second_key_left;
@@ -518,8 +528,8 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
                 uint8_t index = g_led_config.matrix_co[row][col];
-                if (index >= led_min && index < led_max && index != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col,row}) <= KC_TRANSPARENT) {
-                    rgb_matrix_set_color(index, RGB_BLACK);
+                if (index >= led_min && index < led_max && index != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col,row}) <= KC_TRANSPARENT) { // Keys from lower layers are ignored.
+                    rgb_matrix_set_color(index, RGB_BLACK); // Setting RGB to black is the same as disabling it.
                 }
             }
         }
