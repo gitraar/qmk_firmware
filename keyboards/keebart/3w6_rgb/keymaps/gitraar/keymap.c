@@ -29,8 +29,6 @@
 #define HRM_O RCTL_T(KC_O)
 #define TRM_L HYPR_T(KC_L)
 #define TRM_P HYPR_T(KC_P)
-// One-shot shift
-#define OSS OSM(MOD_LSFT)
 // Layer taps
 #define LT_1 LT(1,KC_BSPC)
 #define LT_2 LT(2,KC_TAB)
@@ -40,7 +38,8 @@
 #define LT_6 LT(6,KC_DEL)
 // Tap dances
 #define TD_DOT TD(DOT)
-#define TD_COMMA TD(COMMA)
+#define TD_QUOTE TD(QUOTE)
+#define TD_TILDE TD(TILDE)
 #define TD_PGUP TD(PGUP)
 #define TD_PGDN TD(PGDOWN)
 #define TD_HOME TD(HOME)
@@ -74,7 +73,8 @@ uint16_t SELECT_WORD_KEYCODE = SELWORD;
 // Tap Dance stuff.
 enum tap_dances {
     DOT,
-    COMMA,
+    QUOTE,
+    TILDE,
     PGUP,
     PGDOWN,
     HOME,
@@ -133,7 +133,8 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
     [DOT] = ACTION_TAP_DANCE_FN(dot_taps),
-    [COMMA] = ACTION_TAP_DANCE_DOUBLE(KC_COMMA, KC_SCLN),
+    [QUOTE] = ACTION_TAP_DANCE_DOUBLE(KC_QUOTE, KC_GRAVE),
+    [TILDE] = ACTION_TAP_DANCE_DOUBLE(KC_TILD, KC_CIRC),
     [PGUP] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
@@ -183,8 +184,8 @@ combo_t key_combos[] = {
 };
 
 // Key overrides.
-const key_override_t grave = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_QUOTE, KC_GRV, ~0, MOD_MASK_CAG);
-const key_override_t double_quote = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_QUOTE, KC_DQUO, ~0, MOD_MASK_CSG);
+// const key_override_t grave = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_QUOTE, KC_GRV, ~0, MOD_MASK_CAG);
+// const key_override_t double_quote = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_QUOTE, KC_DQUO, ~0, MOD_MASK_CSG);
 const key_override_t super_a = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, A(KC_0), A(KC_9), ~0, MOD_MASK_CAG);
 const key_override_t apple = ko_make_with_layers_and_negmods(MOD_MASK_ALT, HRM_A, A(S(KC_K)), ~0, MOD_MASK_CSG);
 const key_override_t euro = ko_make_with_layers_and_negmods(MOD_MASK_ALT, HRM_E, A(KC_AT), ~0, MOD_MASK_CSG);
@@ -194,7 +195,7 @@ const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIF
 const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_DOT, A(KC_1), ~0, MOD_MASK_CSG);
 const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMMA, KC_QUES, ~0, MOD_MASK_CAG);
 const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_COMMA, A(S(KC_SLSH)), ~0, MOD_MASK_CSG);
-const key_override_t circ = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_TILD, S(KC_6), ~0, MOD_MASK_CAG);
+// const key_override_t circ = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_TILD, S(KC_6), ~0, MOD_MASK_CAG);
 const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
 const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
 const key_override_t open_fancy_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LPRN, A(KC_RBRC), ~0, MOD_MASK_CAG);
@@ -204,8 +205,8 @@ const key_override_t close_fancy_double_quote = ko_make_with_layers_and_negmods(
 
 // This globally defines all key overrides to be used.
 const key_override_t *key_overrides[] = {
-    &grave,
-    &double_quote,
+    // &grave,
+    // &double_quote,
     &super_a,
     &apple,
     &euro,
@@ -215,7 +216,7 @@ const key_override_t *key_overrides[] = {
     &inv_exclamation,
     &question,
     &inv_question,
-    &circ,
+    // &circ,
     &gte,
     &lte,
     &open_fancy_quote,
@@ -240,9 +241,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
     [_BASE] = LAYOUT_split_3x5_3(
-        KC_Q,  KC_W,  KC_F,  TRM_P, KC_B,    KC_J,   TRM_L, KC_U,    KC_Y,   KC_QUOTE,
+        KC_Q,  KC_W,  KC_F,  TRM_P, KC_B,    KC_J,   TRM_L, KC_U,    KC_Y,   TD_QUOTE,
         HRM_A, HRM_R, HRM_S, HRM_T, KC_G,    KC_M,   HRM_N, HRM_E,   HRM_I,  HRM_O,
-        KC_Z,  KC_X,  KC_C,  KC_D,  KC_V,    KC_K,   KC_H,  KC_COMM, TD_DOT, KC_TILD,
+        KC_Z,  KC_X,  KC_C,  KC_D,  KC_V,    KC_K,   KC_H,  KC_COMM, TD_DOT, TD_TILDE,
                               LT_3,  LT_1,  LT_2,    LT_5,   LT_4,  LT_6
     ),
 
@@ -378,7 +379,8 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case HRM_A:
         case HRM_O:
             return 250;
-        case TD_COMMA:
+        case TD_QUOTE:
+        case TD_TILDE:
         case TD_DOT:
             return 250;
         default:
@@ -509,7 +511,6 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_GRV:
                 return '#'; // Symbol key.
             case KC_COMMA:
-            case TD_COMMA:
                 return shifted ? '.' : '#'; // Shift-, is punctuation (?), but , is just a symbol.
             case TD_DOT:
                 return shifted ? '.' : '.'; // Both . and ! are punctuation.
