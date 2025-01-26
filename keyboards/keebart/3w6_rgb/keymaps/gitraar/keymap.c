@@ -29,6 +29,8 @@
 #define HRM_O RCTL_T(KC_O)
 #define TRM_L HYPR_T(KC_L)
 #define TRM_P HYPR_T(KC_P)
+// One-shot shift
+#define OSS OSM(MOD_LSFT)
 // Layer taps
 #define LT_1 LT(1,KC_BSPC)
 #define LT_2 LT(2,KC_TAB)
@@ -52,7 +54,7 @@
 #define _SYM 5
 #define _FUN 6
 
-#define IDLE_TIMEOUT_MS 1800000 // Idle timeout in milliseconds.
+#define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
 
 // Layer names – I don't know why these are here.
 enum custom_keycodes {
@@ -154,13 +156,13 @@ const uint16_t PROGMEM lprn_combo[] = {HRM_N, TRM_L, COMBO_END};
 const uint16_t PROGMEM rprn_combo[] = {HRM_E, KC_U, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
 
-const uint16_t PROGMEM slash_combo[] = {HRM_N, KC_H, COMBO_END};
-
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM minus_combo[] = {HRM_N, KC_M, COMBO_END};
+const uint16_t PROGMEM slash_combo[] = {KC_H, KC_COMMA, COMBO_END};
+const uint16_t PROGMEM semicolon_combo[] = {KC_COMMA, TD_DOT, COMBO_END};
 
 // Used combos.
 combo_t key_combos[] = {
@@ -174,9 +176,10 @@ combo_t key_combos[] = {
     COMBO(lprn_combo, KC_LPRN),
     COMBO(rprn_combo, KC_RPRN),
     COMBO(super_o_combo, A(KC_0)),
-    COMBO(slash_combo, KC_PSLS),
     COMBO(caps_word_combo, CW_TOGG),
     COMBO(minus_combo, KC_MINS),
+    COMBO(slash_combo, KC_PSLS),
+    COMBO(semicolon_combo, KC_SCLN),
 };
 
 // Key overrides.
@@ -189,8 +192,8 @@ const key_override_t dollar = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_D
 const key_override_t libra = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TRM_L, A(KC_3), ~0, MOD_MASK_CSG);
 const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, TD_DOT, KC_EXLM, ~0, MOD_MASK_CAG);
 const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_DOT, A(KC_1), ~0, MOD_MASK_CSG);
-const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, TD_COMMA, KC_QUES, ~0, MOD_MASK_CAG);
-const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_COMMA, A(S(KC_SLSH)), ~0, MOD_MASK_CSG);
+const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMMA, KC_QUES, ~0, MOD_MASK_CAG);
+const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_COMMA, A(S(KC_SLSH)), ~0, MOD_MASK_CSG);
 const key_override_t circ = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_TILD, S(KC_6), ~0, MOD_MASK_CAG);
 const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
 const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
@@ -237,9 +240,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
     [_BASE] = LAYOUT_split_3x5_3(
-        KC_Q,  KC_W,  KC_F,  TRM_P, KC_B,    KC_J,   TRM_L, KC_U,     KC_Y,   KC_QUOTE,
-        HRM_A, HRM_R, HRM_S, HRM_T, KC_G,    KC_M,   HRM_N, HRM_E,    HRM_I,  HRM_O,
-        KC_Z,  KC_X,  KC_C,  KC_D,  KC_V,    KC_K,   KC_H,  TD_COMMA, TD_DOT, KC_TILD,
+        KC_Q,  KC_W,  KC_F,  TRM_P, KC_B,    KC_J,   TRM_L, KC_U,    KC_Y,   KC_QUOTE,
+        HRM_A, HRM_R, HRM_S, HRM_T, KC_G,    KC_M,   HRM_N, HRM_E,   HRM_I,  HRM_O,
+        KC_Z,  KC_X,  KC_C,  KC_D,  KC_V,    KC_K,   KC_H,  KC_COMM, TD_DOT, KC_TILD,
                               LT_3,  LT_1,  LT_2,    LT_5,   LT_4,  LT_6
     ),
 
@@ -251,15 +254,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------|    |------+------+------+------+------|
  * |------|------|------|------|------|    |      |SpLeft|SelWrd|SpRght|      |
  * `------+------+------+------+------|    |------+------+------+------+------'
- *               |      |OOOOOO|      |    | Undo | Redo |      |
+ *               |      |OOOOOO|      |    | Enter| RayC | Undo |
  *               `--------------------'    `--------------------'
  */
 
     [_NAV] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    XXXXXXX, TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
-        _______, _______, _______, _______, _______,    XXXXXXX, KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
-        _______, _______, _______, _______, _______,    XXXXXXX, SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    UNDO,    REDO,     XXXXXXX
+        _______, _______, _______, _______, _______,    XXXXXXX,   TD_HOME,   KC_UP,   TD_END,    TD_PGUP,
+        _______, _______, _______, _______, _______,    XXXXXXX,   KC_LEFT,   KC_DOWN, KC_RIGHT,  TD_PGDN,
+        _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT,  SELWORD, SPC_RIGHT, XXXXXXX,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), G(KC_SPC), UNDO
     ),
 
 /* Mouse Keys
@@ -363,8 +366,8 @@ bool rgb_auto_disabled = false;
 static uint32_t idle_callback(uint32_t trigger_time, void* cb_arg) {
     // If execution reaches here, the keyboard has gone idle.
     if (rgb_matrix_is_enabled()) {
-        rgb_matrix_disable(); // Disables the RGB Matrix.
         rgb_auto_disabled = true; // Used to inform decision about automatically turning RGB back on.
+        rgb_matrix_disable(); // Disables the RGB Matrix.
     }
     return 0;
 }
