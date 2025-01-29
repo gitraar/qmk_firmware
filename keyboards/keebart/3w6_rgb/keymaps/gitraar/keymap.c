@@ -5,6 +5,10 @@
 #include "features/sentence_case.h"
 #include "features/select_word.h"
 
+// ###################
+// ### Definitions ###
+// ###################
+
 // macOS commands
 #define PRT_SCR G(S(KC_4))
 #define COPY G(KC_C)
@@ -84,9 +88,9 @@ enum tap_dances {
 // Select Word keycode.
 uint16_t SELECT_WORD_KEYCODE = SELWORD;
 
-// #######################
-// ### Tap Dance Stuff ###
-// #######################
+// ##################
+// ### Tap Dances ###
+// ##################
 
 // Function to provide three taps on the Dot key.
 void dot_taps(tap_dance_state_t *state, void *user_data) {
@@ -148,9 +152,9 @@ tap_dance_action_t tap_dance_actions[] = {
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
 };
 
-// ###################
-// ### Combo Stuff ###
-// ###################
+// ##############
+// ### Combos ###
+// ##############
 
 // Combo definitions.
 // Left-side vertical combos.
@@ -194,9 +198,9 @@ combo_t key_combos[] = {
     COMBO(semicolon_combo, KC_SCLN),
 };
 
-// ##########################
-// ### Key Override Stuff ###
-// ##########################
+// #####################
+// ### Key Overrides ###
+// #####################
 
 // Key overrides.
 const key_override_t super_a = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, A(KC_0), A(KC_9), ~0, MOD_MASK_CAG);
@@ -234,10 +238,9 @@ const key_override_t *key_overrides[] = {
     &close_fancy_double_quote
 };
 
-// #################
-// ### RGB Stuff ###
-// #################
-
+// ##################
+// ### RGB Matrix ###
+// ##################
 
 bool rgb_auto_disabled = false;
 // Function to do things when the keyboard is idle.
@@ -266,9 +269,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     return false;
 }
 
-// #######################
-// ### Achordion Stuff ###
-// #######################
+// #################
+// ### Achordion ###
+// #################
 
 void matrix_scan_user(void) {
     achordion_task();
@@ -311,9 +314,9 @@ uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next
     }
 }
 
-// ###########################
-// ### Sentence Case Stuff ###
-// ###########################
+// #####################
+// ### Sentence Case ###
+// #####################
 
 void housekeeping_task_user(void) {
     sentence_case_task();
