@@ -4,9 +4,7 @@
 #include "features/achordion.h"
 #include "features/sentence_case.h"
 #include "features/select_word.h"
-#include "config.h"
 
-// Definitions to abbreviate stuff
 // macOS commands
 #define PRT_SCR G(S(KC_4))
 #define COPY G(KC_C)
@@ -18,6 +16,7 @@
 #define SPC_RIGHT C(KC_RIGHT)
 #define UNDO G(KC_Z)
 #define REDO G(S(KC_Z))
+
 // Home row and top row mods
 #define HRM_A LCTL_T(KC_A)
 #define HRM_R LALT_T(KC_R)
@@ -29,21 +28,7 @@
 #define HRM_O RCTL_T(KC_O)
 #define TRM_L HYPR_T(KC_L)
 #define TRM_P HYPR_T(KC_P)
-// Layer taps
-#define LT_1 LT(1,KC_BSPC)
-#define LT_2 LT(2,KC_TAB)
-#define LT_3 LT(3,KC_ESC)
-#define LT_4 LT(4,KC_SPC)
-#define LT_5 LT(5,KC_ENT)
-#define LT_6 LT(6,KC_DEL)
-// Tap dances
-#define TD_DOT TD(DOT)
-#define TD_QUOTE TD(QUOTE)
-#define TD_TILDE TD(TILDE)
-#define TD_PGUP TD(PGUP)
-#define TD_PGDN TD(PGDOWN)
-#define TD_HOME TD(HOME)
-#define TD_END TD(END)
+
 // Layers
 #define _BASE 0
 #define _NAV 1
@@ -53,9 +38,27 @@
 #define _SYM 5
 #define _FUN 6
 
+// Layer taps
+#define LT_1 LT(_NAV,KC_BSPC)
+#define LT_2 LT(_MOUSE,KC_TAB)
+#define LT_3 LT(_MEDIA,KC_ESC)
+#define LT_4 LT(_NUM,KC_SPC)
+#define LT_5 LT(_SYM,KC_ENT)
+#define LT_6 LT(_FUN,KC_DEL)
+
+// Tap dances
+#define TD_DOT TD(DOT)
+#define TD_QUOTE TD(QUOTE)
+#define TD_TILDE TD(TILDE)
+#define TD_PGUP TD(PGUP)
+#define TD_PGDN TD(PGDOWN)
+#define TD_HOME TD(HOME)
+#define TD_END TD(END)
+
+// Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
 
-// Layer names – I don't know why these are here.
+// Custom keycodes
 enum custom_keycodes {
     BASE = SAFE_RANGE,
     NAV,
@@ -67,9 +70,6 @@ enum custom_keycodes {
     SELWORD,
 };
 
-// Select word fuction.
-uint16_t SELECT_WORD_KEYCODE = SELWORD;
-
 // Tap Dance stuff.
 enum tap_dances {
     DOT,
@@ -80,6 +80,13 @@ enum tap_dances {
     HOME,
     END,
 };
+
+// Select Word keycode.
+uint16_t SELECT_WORD_KEYCODE = SELWORD;
+
+// #######################
+// ### Tap Dance Stuff ###
+// #######################
 
 // Function to provide three taps on the Dot key.
 void dot_taps(tap_dance_state_t *state, void *user_data) {
@@ -96,7 +103,7 @@ void dot_taps(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-// Code to enable tap-and-hold tap dances
+// Code to enable tap-and-hold tap dances.
 typedef struct {
     uint16_t tap;
     uint16_t hold;
@@ -141,6 +148,10 @@ tap_dance_action_t tap_dance_actions[] = {
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
 };
 
+// ###################
+// ### Combo Stuff ###
+// ###################
+
 // Combo definitions.
 // Left-side vertical combos.
 const uint16_t PROGMEM cut_combo[] = {HRM_R, KC_W, COMBO_END};
@@ -183,9 +194,11 @@ combo_t key_combos[] = {
     COMBO(semicolon_combo, KC_SCLN),
 };
 
+// ##########################
+// ### Key Override Stuff ###
+// ##########################
+
 // Key overrides.
-// const key_override_t grave = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_QUOTE, KC_GRV, ~0, MOD_MASK_CAG);
-// const key_override_t double_quote = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_QUOTE, KC_DQUO, ~0, MOD_MASK_CSG);
 const key_override_t super_a = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, A(KC_0), A(KC_9), ~0, MOD_MASK_CAG);
 const key_override_t apple = ko_make_with_layers_and_negmods(MOD_MASK_ALT, HRM_A, A(S(KC_K)), ~0, MOD_MASK_CSG);
 const key_override_t euro = ko_make_with_layers_and_negmods(MOD_MASK_ALT, HRM_E, A(KC_AT), ~0, MOD_MASK_CSG);
@@ -195,7 +208,6 @@ const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIF
 const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_DOT, A(KC_1), ~0, MOD_MASK_CSG);
 const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMMA, KC_QUES, ~0, MOD_MASK_CAG);
 const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_COMMA, A(S(KC_SLSH)), ~0, MOD_MASK_CSG);
-// const key_override_t circ = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_TILD, S(KC_6), ~0, MOD_MASK_CAG);
 const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
 const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
 const key_override_t open_fancy_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LPRN, A(KC_RBRC), ~0, MOD_MASK_CAG);
@@ -205,8 +217,6 @@ const key_override_t close_fancy_double_quote = ko_make_with_layers_and_negmods(
 
 // This globally defines all key overrides to be used.
 const key_override_t *key_overrides[] = {
-    // &grave,
-    // &double_quote,
     &super_a,
     &apple,
     &euro,
@@ -216,7 +226,6 @@ const key_override_t *key_overrides[] = {
     &inv_exclamation,
     &question,
     &inv_question,
-    // &circ,
     &gte,
     &lte,
     &open_fancy_quote,
@@ -225,7 +234,202 @@ const key_override_t *key_overrides[] = {
     &close_fancy_double_quote
 };
 
-// Keymaps
+// #################
+// ### RGB Stuff ###
+// #################
+
+
+bool rgb_auto_disabled = false;
+// Function to do things when the keyboard is idle.
+static uint32_t idle_callback(uint32_t trigger_time, void* cb_arg) {
+    // If execution reaches here, the keyboard has gone idle.
+    if (rgb_matrix_is_enabled()) {
+        rgb_auto_disabled = true; // Used to inform decision about automatically turning RGB back on.
+        rgb_matrix_disable(); // Disables the RGB Matrix.
+    }
+    return 0;
+}
+
+// Remove light from inactive keys in current layer.
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    if (get_highest_layer(layer_state) > 0) {
+        uint8_t layer = get_highest_layer(layer_state);
+        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
+            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
+                uint8_t index = g_led_config.matrix_co[row][col];
+                if (index >= led_min && index < led_max && index != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col,row}) <= KC_TRANSPARENT) { // Keys from lower layers are ignored.
+                    rgb_matrix_set_color(index, RGB_BLACK); // Setting RGB to black is the same as disabling it.
+                }
+            }
+        }
+    }
+    return false;
+}
+
+// #######################
+// ### Achordion Stuff ###
+// #######################
+
+void matrix_scan_user(void) {
+    achordion_task();
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, uint16_t other_keycode, keyrecord_t* other_record) {
+    // Get matrix positions of tap-hold key and other key.
+    uint8_t tap_hold_row = tap_hold_record->event.key.row;
+    // uint8_t tap_hold_col = tap_hold_record->event.key.col; // Not needed given the way this keyboard maps sides.
+    uint8_t other_row = other_record->event.key.row;
+    // uint8_t other_col = other_record->event.key.col; // Not needed given the way this keyboard maps sides.
+    if (tap_hold_row == 3) return true; // I want the left thumbs to activate a hold even when used with keys on the same side for mouse usage.
+    bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
+    bool second_key_left = (other_row >= 0 && other_row <= 3);
+    return first_key_left != second_key_left;
+}
+
+bool achordion_eager_mod(uint8_t mod) {
+    switch (mod) {
+        case MOD_LSFT:
+        case MOD_RSFT:
+        case MOD_LALT:
+        case MOD_LGUI:
+            return true; // Eagerly apply mods.
+        default:
+            return false;
+    }
+}
+
+uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next_keycode) {
+    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
+        return 0; // Disable streak detection on layer-tap keys.
+    }
+    // Otherwise, tap_hold_keycode is a mod-tap key.
+    uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
+    if ((mod & MOD_LSFT) != 0) {
+        return 100; // A shorter streak timeout for Shift mod-tap keys.
+    } else {
+        return 240; // A longer timeout otherwise.
+    }
+}
+
+// ###########################
+// ### Sentence Case Stuff ###
+// ###########################
+
+void housekeeping_task_user(void) {
+    sentence_case_task();
+    // Other tasks…
+}
+
+char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mods) {
+    if ((mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
+        const bool shifted = mods & MOD_MASK_SHIFT;
+        switch (keycode) {
+            case KC_A ... KC_Z:
+                return 'a'; // Letter key.
+            case KC_DOT: // . is punctuation, Shift . is a symbol (>)
+                return !shifted ? '.' : '#';
+            case KC_1:
+            case KC_SLSH:
+                return shifted ? '.' : '#';
+            case KC_EXLM:
+            case KC_QUES:
+                return '.';
+            case KC_2 ... KC_0: // 2 3 4 5 6 7 8 9 0
+            case KC_AT ... KC_RPRN: // @ # $ % ^ & * ( )
+            case KC_MINS ... KC_SCLN: // - = [ ] backslash ;
+            case KC_UNDS ... KC_COLN: // _ + { } | :
+            case KC_GRV:
+                return '#'; // Symbol key.
+            case KC_COMMA:
+                return shifted ? '.' : '#'; // Shift-, is punctuation (?), but , is just a symbol.
+            case TD_DOT:
+                return shifted ? '.' : '.'; // Both . and ! are punctuation.
+            case KC_SPC:
+                return ' '; // Space key.
+            case KC_QUOT:
+                return '\''; // Quote key.
+        }
+    }
+    // Otherwise clear Sentence Case to initial state.
+    sentence_case_clear();
+    return '\0';
+}
+
+// #####################
+// ### Assorted Code ###
+// #####################
+
+// Set tapping term per key.
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case HRM_A:
+        case HRM_O:
+            return 250;
+        case TD_QUOTE:
+        case TD_TILDE:
+        case TD_DOT:
+            return 250;
+        default:
+            return TAPPING_TERM;
+    }
+}
+
+uint8_t mod_state;
+uint8_t oneshot_mods;
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+    if (!process_achordion(keycode, record)) { return false; }
+    if (!process_sentence_case(keycode, record)) { return false; }
+    if (!process_select_word(keycode, record)) { return false; }
+    // On every key event, start or extend the deferred execution to call `idle_callback()` after IDLE_TIMEOUT_MS.
+    static deferred_token idle_token = INVALID_DEFERRED_TOKEN;
+    if (!extend_deferred_exec(idle_token, IDLE_TIMEOUT_MS)) {
+        idle_token = defer_exec(IDLE_TIMEOUT_MS, idle_callback, NULL);
+    }
+    // Restore the RGB matrix when returning from idle.
+    if (!rgb_matrix_is_enabled() && rgb_auto_disabled) {
+        rgb_matrix_enable();
+        rgb_auto_disabled = false;
+    }
+    mod_state = get_mods();
+    oneshot_mods = get_oneshot_mods();
+    tap_dance_action_t *action;
+    switch (keycode) {
+        case TD(PGUP):
+            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+        case TD(PGDOWN):
+            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+        case TD(HOME):
+            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+        case TD(END):
+            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
+            if (!record->event.pressed && action->state.count && !action->state.finished) {
+                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
+                tap_code16(tap_hold->tap);
+            }
+            break;
+    }
+    return true;
+}
+
+// ###############
+// ### Keymaps ###
+// ###############
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
@@ -361,182 +565,3 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                KC_MCTL, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
     )
 };
-
-bool rgb_auto_disabled = false;
-// Function to do things when the keyboard is idle.
-static uint32_t idle_callback(uint32_t trigger_time, void* cb_arg) {
-    // If execution reaches here, the keyboard has gone idle.
-    if (rgb_matrix_is_enabled()) {
-        rgb_auto_disabled = true; // Used to inform decision about automatically turning RGB back on.
-        rgb_matrix_disable(); // Disables the RGB Matrix.
-    }
-    return 0;
-}
-
-// Set tapping term per key.
-uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case HRM_A:
-        case HRM_O:
-            return 250;
-        case TD_QUOTE:
-        case TD_TILDE:
-        case TD_DOT:
-            return 250;
-        default:
-            return TAPPING_TERM;
-    }
-}
-
-uint8_t mod_state;
-uint8_t oneshot_mods;
-
-bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-    if (!process_achordion(keycode, record)) { return false; }
-    if (!process_sentence_case(keycode, record)) { return false; }
-    if (!process_select_word(keycode, record)) { return false; }
-    // On every key event, start or extend the deferred execution to call `idle_callback()` after IDLE_TIMEOUT_MS.
-    static deferred_token idle_token = INVALID_DEFERRED_TOKEN;
-    if (!extend_deferred_exec(idle_token, IDLE_TIMEOUT_MS)) {
-        idle_token = defer_exec(IDLE_TIMEOUT_MS, idle_callback, NULL);
-    }
-    // I added this to restore the RGB matrix when returning from idle.
-    if (!rgb_matrix_is_enabled() && rgb_auto_disabled) {
-        rgb_matrix_enable();
-        rgb_auto_disabled = false;
-    }
-    // Your macros ...
-    mod_state = get_mods();
-    oneshot_mods = get_oneshot_mods();
-    tap_dance_action_t *action;
-    switch (keycode) {
-        case TD(PGUP):
-            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
-            if (!record->event.pressed && action->state.count && !action->state.finished) {
-                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
-                tap_code16(tap_hold->tap);
-            }
-            break;
-        case TD(PGDOWN):
-            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
-            if (!record->event.pressed && action->state.count && !action->state.finished) {
-                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
-                tap_code16(tap_hold->tap);
-            }
-            break;
-        case TD(HOME):
-            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
-            if (!record->event.pressed && action->state.count && !action->state.finished) {
-                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
-                tap_code16(tap_hold->tap);
-            }
-            break;
-        case TD(END):
-            action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
-            if (!record->event.pressed && action->state.count && !action->state.finished) {
-                tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)action->user_data;
-                tap_code16(tap_hold->tap);
-            }
-            break;
-    }
-    return true;
-}
-
-// Achordion options.
-void matrix_scan_user(void) {
-    achordion_task();
-}
-
-bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, uint16_t other_keycode, keyrecord_t* other_record) {
-    // Get matrix positions of tap-hold key and other key.
-    uint8_t tap_hold_row = tap_hold_record->event.key.row;
-    // uint8_t tap_hold_col = tap_hold_record->event.key.col; // Not needed given the way this keyboard maps sides.
-    uint8_t other_row = other_record->event.key.row;
-    // uint8_t other_col = other_record->event.key.col; // Not needed given the way this keyboard maps sides.
-    if (tap_hold_row == 3) return true; // I want the left thumbs to activate a hold even when used with keys on the same side for mouse usage.
-    bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
-    bool second_key_left = (other_row >= 0 && other_row <= 3);
-    return first_key_left != second_key_left;
-}
-
-bool achordion_eager_mod(uint8_t mod) {
-    switch (mod) {
-        case MOD_LSFT:
-        case MOD_RSFT:
-        case MOD_LALT:
-        case MOD_LGUI:
-            return true; // Eagerly apply mods.
-        default:
-            return false;
-    }
-}
-
-uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next_keycode) {
-    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-        return 0; // Disable streak detection on layer-tap keys.
-    }
-    // Otherwise, tap_hold_keycode is a mod-tap key.
-    uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
-    if ((mod & MOD_LSFT) != 0) {
-        return 100; // A shorter streak timeout for Shift mod-tap keys.
-    } else {
-        return 240; // A longer timeout otherwise.
-    }
-}
-
-// Sentence case stuff.
-void housekeeping_task_user(void) {
-    sentence_case_task();
-    // Other tasks…
-}
-
-char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mods) {
-    if ((mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
-        const bool shifted = mods & MOD_MASK_SHIFT;
-        switch (keycode) {
-            case KC_A ... KC_Z:
-                return 'a'; // Letter key.
-            case KC_DOT: // . is punctuation, Shift . is a symbol (>)
-                return !shifted ? '.' : '#';
-            case KC_1:
-            case KC_SLSH:
-                return shifted ? '.' : '#';
-            case KC_EXLM:
-            case KC_QUES:
-                return '.';
-            case KC_2 ... KC_0: // 2 3 4 5 6 7 8 9 0
-            case KC_AT ... KC_RPRN: // @ # $ % ^ & * ( )
-            case KC_MINS ... KC_SCLN: // - = [ ] backslash ;
-            case KC_UNDS ... KC_COLN: // _ + { } | :
-            case KC_GRV:
-                return '#'; // Symbol key.
-            case KC_COMMA:
-                return shifted ? '.' : '#'; // Shift-, is punctuation (?), but , is just a symbol.
-            case TD_DOT:
-                return shifted ? '.' : '.'; // Both . and ! are punctuation.
-            case KC_SPC:
-                return ' '; // Space key.
-            case KC_QUOT:
-                return '\''; // Quote key.
-        }
-    }
-    // Otherwise clear Sentence Case to initial state.
-    sentence_case_clear();
-    return '\0';
-}
-
-// Remove light from inactive keys in current layer.
-bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (get_highest_layer(layer_state) > 0) {
-        uint8_t layer = get_highest_layer(layer_state);
-        for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
-            for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
-                uint8_t index = g_led_config.matrix_co[row][col];
-                if (index >= led_min && index < led_max && index != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col,row}) <= KC_TRANSPARENT) { // Keys from lower layers are ignored.
-                    rgb_matrix_set_color(index, RGB_BLACK); // Setting RGB to black is the same as disabling it.
-                }
-            }
-        }
-    }
-    return false;
-}
