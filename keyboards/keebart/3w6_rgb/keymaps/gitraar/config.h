@@ -102,3 +102,8 @@
 
 // Sentence case stuff
 #define SENTENCE_CASE_TIMEOUT 2000
+
+// Leader key stuff
+#define LEADER_PER_KEY_TIMING
+#define LEADER_TIMEOUT 250
+#define LEADER_NO_TIMEOUT

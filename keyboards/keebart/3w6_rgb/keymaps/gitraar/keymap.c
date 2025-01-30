@@ -23,6 +23,11 @@
 #define UNDO G(KC_Z)
 #define REDO G(S(KC_Z))
 
+// Web Browser commands
+#define BACK G(KC_LBRC)
+#define TAB_UP G(S(KC_LBRC))
+#define TAB_DOWN G(S(KC_LBRC))
+
 // Home row and top row mods
 #define HRM_A LCTL_T(KC_A)
 #define HRM_R LALT_T(KC_R)
@@ -237,6 +242,52 @@ const key_override_t *key_overrides[] = {
     &open_fancy_double_quote,
     &close_fancy_double_quote
 };
+
+/*
+##################
+### Leader Key ###
+##################
+*/
+
+void leader_start_user(void) {
+    // Do something when the leader key is pressed
+}
+
+void leader_end_user(void) {
+    if (leader_sequence_one_key(KC_T)) {
+        // Leader, t => Process one segment
+        tap_code16(G(KC_A)); // Press Command + a
+        wait_ms(1000); // Delay for 1 second
+        tap_code16(G(S(KC_C))); // Press Command + Shift + c
+        tap_code16(G(S(KC_C)));
+        wait_ms(1000);
+        tap_code(KC_ENTER);
+    } else if (leader_sequence_two_keys(KC_T, KC_T)) {
+        // Leader, t, t => Process ten segments
+        for (int i = 0; i < 10; i++) {
+            tap_code16(G(KC_A)); // Press Command + a
+            wait_ms(1000); // Delay for 1 second
+            tap_code16(G(S(KC_C))); // Press Command + Shift + c
+            tap_code16(G(S(KC_C)));
+            wait_ms(1000);
+            tap_code(KC_ENTER);
+            wait_ms(5000);
+            tap_code(KC_DOWN);
+        }
+    } else if (leader_sequence_three_keys(KC_T, KC_T, KC_T)) {
+        // Leader, t, t, t => Process fifty segments
+        for (int i = 0; i < 50; i++) {
+            tap_code16(G(KC_A)); // Press Command + a
+            wait_ms(1000); // Delay for 1 second
+            tap_code16(G(S(KC_C))); // Press Command + Shift + c
+            tap_code16(G(S(KC_C)));
+            wait_ms(1000);
+            tap_code(KC_ENTER);
+            wait_ms(5000);
+            tap_code(KC_DOWN);
+        }
+    }
+}
 
 /*
 ##################
@@ -466,20 +517,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Navigation
     ,----------------------------------.    ,----------------------------------.
-    |------|------|------|------|------|    |      | Home |  Up  |  End | PgUp |
+    |------|------|------|------|------|    | TabUp| Home |  Up  |  End | PgUp |
     |------+------+------+------+------|    |------+------+------+------+------|
-    |------|------|------|------|------|    |      | Left | Down | Right| PgDo |
+    |------|------|------|------|------|    | TabDo| Left | Down | Right| PgDo |
     |------+------+------+------+------|    |------+------+------+------+------|
-    |------|------|------|------|------|    |      |SpLeft|SelWrd|SpRght|      |
+    |------|------|------|------|------|    | Back |SpLeft|SelWrd|SpRght|      |
     `------+------+------+------+------|    |------+------+------+------+------'
                   |      |OOOOOO|      |    | Enter| RayC | Undo |
                   `--------------------'    `--------------------'
 */
 
     [_NAV] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    XXXXXXX,   TD_HOME,   KC_UP,   TD_END,    TD_PGUP,
-        _______, _______, _______, _______, _______,    XXXXXXX,   KC_LEFT,   KC_DOWN, KC_RIGHT,  TD_PGDN,
-        _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT,  SELWORD, SPC_RIGHT, XXXXXXX,
+        _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,   KC_UP,   TD_END,    TD_PGUP,
+        _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,   KC_DOWN, KC_RIGHT,  TD_PGDN,
+        _______, _______, _______, _______, _______,    BACK,      SPC_LEFT,  SELWORD, SPC_RIGHT, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), G(KC_SPC), UNDO
     ),
 
@@ -567,7 +618,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |------+------+------+------+------|    |------+------+------+------+------|
     |  F10 |  F1  |  F2  |  F3  | RMTog|    |------|------|------|------|------|
     `------+------+------+------+------|    |------+------+------+------+------'
-                  |  MC  | Caps |  Tab |    |      |      |OOOOOO|
+                  |Leader| Caps |  Tab |    |      |      |OOOOOO|
                   `--------------------'    `--------------------'
 */
 
@@ -575,6 +626,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     _______, _______, _______, _______, _______,
         KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    _______, _______, _______, _______, _______,
         KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     _______, _______, _______, _______, _______,
-                               KC_MCTL, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
+                               QK_LEAD, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
     )
 };
