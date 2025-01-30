@@ -257,20 +257,20 @@ void leader_start_user(void) {
 void leader_end_user(void) {
     if (leader_sequence_one_key(KC_T)) {
         // Leader, t => Process one segment
-        tap_code16(G(KC_A)); // Press Command + a
-        wait_ms(1000); // Delay for 1 second
-        tap_code16(G(S(KC_C))); // Press Command + Shift + c
+        tap_code16(G(KC_A));
+        wait_ms(500);
         tap_code16(G(S(KC_C)));
-        wait_ms(1000);
+        tap_code16(G(S(KC_C)));
+        wait_ms(500);
         tap_code(KC_ENTER);
     } else if (leader_sequence_two_keys(KC_T, KC_T)) {
         // Leader, t, t => Process ten segments
         for (int i = 0; i < 10; i++) {
-            tap_code16(G(KC_A)); // Press Command + a
-            wait_ms(1000); // Delay for 1 second
-            tap_code16(G(S(KC_C))); // Press Command + Shift + c
+            tap_code16(G(KC_A));
+            wait_ms(500);
             tap_code16(G(S(KC_C)));
-            wait_ms(1000);
+            tap_code16(G(S(KC_C)));
+            wait_ms(500);
             tap_code(KC_ENTER);
             wait_ms(5000);
             tap_code(KC_DOWN);
@@ -278,11 +278,11 @@ void leader_end_user(void) {
     } else if (leader_sequence_three_keys(KC_T, KC_T, KC_T)) {
         // Leader, t, t, t => Process fifty segments
         for (int i = 0; i < 50; i++) {
-            tap_code16(G(KC_A)); // Press Command + a
-            wait_ms(1000); // Delay for 1 second
-            tap_code16(G(S(KC_C))); // Press Command + Shift + c
+            tap_code16(G(KC_A));
+            wait_ms(500);
             tap_code16(G(S(KC_C)));
-            wait_ms(1000);
+            tap_code16(G(S(KC_C)));
+            wait_ms(500);
             tap_code(KC_ENTER);
             wait_ms(5000);
             tap_code(KC_DOWN);
