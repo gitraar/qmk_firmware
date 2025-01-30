@@ -25,8 +25,9 @@
 
 // Web Browser commands
 #define BACK G(KC_LBRC)
+#define FORWARD G(KC_RBRC)
 #define TAB_UP G(S(KC_LBRC))
-#define TAB_DOWN G(S(KC_LBRC))
+#define TAB_DOWN G(S(KC_RBRC))
 
 // Home row and top row mods
 #define HRM_A LCTL_T(KC_A)
@@ -521,7 +522,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |------+------+------+------+------|    |------+------+------+------+------|
     |------|------|------|------|------|    | TabDo| Left | Down | Right| PgDo |
     |------+------+------+------+------|    |------+------+------+------+------|
-    |------|------|------|------|------|    | Back |SpLeft|SelWrd|SpRght|      |
+    |------|------|------|------|------|    | Back |SpLeft|SelWrd|SpRght|Forwar|
     `------+------+------+------+------|    |------+------+------+------+------'
                   |      |OOOOOO|      |    | Enter| RayC | Undo |
                   `--------------------'    `--------------------'
@@ -530,7 +531,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_NAV] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,   KC_UP,   TD_END,    TD_PGUP,
         _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,   KC_DOWN, KC_RIGHT,  TD_PGDN,
-        _______, _______, _______, _______, _______,    BACK,      SPC_LEFT,  SELWORD, SPC_RIGHT, XXXXXXX,
+        _______, _______, _______, _______, _______,    BACK,      SPC_LEFT,  SELWORD, SPC_RIGHT, FORWARD,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), G(KC_SPC), UNDO
     ),
 
