@@ -80,6 +80,7 @@ enum custom_keycodes {
     SYM,
     FUN,
     SELWORD,
+    CA,
 };
 
 // Tap Dance stuff.
@@ -186,6 +187,7 @@ const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
+const uint16_t PROGMEM cedilla_combo[] = {KC_X, KC_C, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM minus_combo[] = {HRM_N, KC_M, COMBO_END};
@@ -205,6 +207,7 @@ combo_t key_combos[] = {
     COMBO(rprn_combo, KC_RPRN),
     COMBO(super_o_combo, A(KC_0)),
     COMBO(caps_word_combo, CW_TOGG),
+    COMBO(cedilla_combo, A(KC_C)),
     COMBO(minus_combo, KC_MINS),
     COMBO(slash_combo, KC_PSLS),
     COMBO(semicolon_combo, KC_SCLN),
@@ -485,6 +488,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code16(tap_hold->tap);
             }
             break;
+        // case CA:
+        //     if (record->event.pressed) {
+        //         // Send "çã"
+        //         tap_code16(A(KC_C)); // Send "ç"
+        //         tap_code16(KC_TILDE); // Send "~"
+        //         tap_code16(KC_A); // Send "a"
+        //     }
+        //     return false; //
     }
     return true;
 }
