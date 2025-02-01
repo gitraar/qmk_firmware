@@ -49,6 +49,7 @@
 #define _NUM 4
 #define _SYM 5
 #define _FUN 6
+#define _CEXT 7
 
 // Layer taps
 #define LT_1 LT(_NAV,KC_BSPC)
@@ -79,8 +80,11 @@ enum custom_keycodes {
     NUM,
     SYM,
     FUN,
+    CEXT,
     SELWORD,
-    CA,
+    U_CEDILLA,
+    U_CAO,
+    U_COES,
 };
 
 // Tap Dance stuff.
@@ -207,7 +211,7 @@ combo_t key_combos[] = {
     COMBO(rprn_combo, KC_RPRN),
     COMBO(super_o_combo, A(KC_0)),
     COMBO(caps_word_combo, CW_TOGG),
-    COMBO(cedilla_combo, A(KC_C)),
+    COMBO(cedilla_combo, U_CEDILLA),
     COMBO(minus_combo, KC_MINS),
     COMBO(slash_combo, KC_PSLS),
     COMBO(semicolon_combo, KC_SCLN),
@@ -420,6 +424,22 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
 }
 
 /*
+######################
+### One-Shot Layer ###
+######################
+*/
+
+// Function to activate a layer temporarily
+void activate_layer_temporarily(uint8_t layer) {
+    layer_on(layer); // Activate the target layer
+}
+
+// Function to deactivate the temporary layer and return to the base layer
+void deactivate_temporary_layer(uint8_t layer) {
+    layer_off(layer); // Deactivate the target layer
+}
+
+/*
 #####################
 ### Assorted Code ###
 #####################
@@ -451,6 +471,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     if (!extend_deferred_exec(idle_token, IDLE_TIMEOUT_MS)) {
         idle_token = defer_exec(IDLE_TIMEOUT_MS, idle_callback, NULL);
     }
+    // One-shot layer tracking.
+    static uint8_t temp_layer = 0; // Track the temporary layer
+    static bool temp_layer_active = false; // Track if the temporary layer is active
     // Restore the RGB matrix when returning from idle.
     if (!rgb_matrix_is_enabled() && rgb_auto_disabled) {
         rgb_matrix_enable();
@@ -488,14 +511,35 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code16(tap_hold->tap);
             }
             break;
-        // case CA:
-        //     if (record->event.pressed) {
-        //         // Send "çã"
-        //         tap_code16(A(KC_C)); // Send "ç"
-        //         tap_code16(KC_TILDE); // Send "~"
-        //         tap_code16(KC_A); // Send "a"
-        //     }
-        //     return false; //
+        case U_CEDILLA:
+            if (record->event.pressed) {
+                temp_layer = _CEXT; // Set the target layer
+                tap_code16(A(KC_C));
+                activate_layer_temporarily(temp_layer); // Activate the layer
+                temp_layer_active = true; // Mark the layer as active
+                uprintf("Temporary layer activated. Layer state: %u\n", layer_state);
+            }
+            return false;
+        case U_CAO:
+            if (record->event.pressed) {
+                tap_code16(KC_TILDE);
+                tap_code(KC_A);
+                tap_code(KC_O);
+            }
+            break;
+        case U_COES:
+            if (record->event.pressed) {
+                tap_code16(KC_TILDE);
+                tap_code(KC_O);
+                tap_code(KC_E);
+                tap_code(KC_S);
+            }
+            break;
+    }
+    // Deactivate the temporary layer after any key is pressed
+    if (record->event.pressed && temp_layer_active) {
+        deactivate_temporary_layer(temp_layer); // Deactivate the layer
+        temp_layer_active = false; // Mark the layer as inactive
     }
     return true;
 }
@@ -639,5 +683,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    _______, _______, _______, _______, _______,
         KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     _______, _______, _______, _______, _______,
                                QK_LEAD, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
+    ),
+
+/* Ç Extension
+    ,----------------------------------.    ,----------------------------------.
+    |------|------|------|------|------|    | MWDn |      |  MUp |      |      |
+    |------+------+------+------+------|    |------+------+------+------+------|
+    |------|------|------|------|------|    | MWUp | MLeft| MDown|MRight|      |
+    |------+------+------+------+------|    |------+------+------+------+------|
+    |------|------|------|------|------|    |      |      |      |      |      |
+    `------+------+------+------+------|    |------+------+------+------+------'
+                  |      |      |OOOOOO|    |  M1  |  M3  |  M2  |
+                  `--------------------'    `--------------------'
+*/
+
+    [_CEXT] = LAYOUT_split_3x5_3(
+        _______, _______, _______, _______, _______,    _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______,    _______, U_CAO,   U_COES,  _______, _______,
+        _______, _______, _______, _______, _______,    _______, _______, _______, _______, _______,
+                                  _______, _______, _______,    _______, _______, _______
     )
 };
