@@ -49,7 +49,6 @@
 #define _NUM 4
 #define _SYM 5
 #define _FUN 6
-// #define _CEXT 7
 #define _ACCENTED 7
 
 // Layer taps
@@ -63,8 +62,6 @@
 
 // Tap dances
 #define TD_DOT TD(DOT)
-// #define TD_QUOTE TD(QUOTE)
-// #define TD_TILDE TD(TILDE)
 #define TD_PGUP TD(PGUP)
 #define TD_PGDN TD(PGDOWN)
 #define TD_HOME TD(HOME)
@@ -72,8 +69,6 @@
 #define TD_N TD(U_TD_N)
 #define TD_E TD(U_TD_E)
 #define TD_O TD(U_TD_O)
-#define TD_L TD(U_TD_L)
-// #define TD_COMMA TD(U_TD_COMMA)
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -87,19 +82,17 @@ enum custom_keycodes {
     NUM,
     SYM,
     FUN,
-    CEXT,
     ACCENTED,
     SELWORD,
     U_CC,
     U_AC_I, U_AC_U,
+    U_GR_A, U_TIL_A,
     U_CAO, U_COES,
 };
 
 // Tap Dance stuff.
 enum tap_dances {
     DOT,
-    // QUOTE,
-    // TILDE,
     PGUP,
     PGDOWN,
     HOME,
@@ -107,8 +100,7 @@ enum tap_dances {
     U_TD_N,
     U_TD_E,
     U_TD_O,
-    U_TD_L,
-    // U_TD_COMMA,
+    // U_TD_L,
 };
 
 // Select Word keycode.
@@ -233,47 +225,9 @@ void o_taps(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void l_taps(tap_dance_state_t *state, void *user_data) {
-    uint8_t mod_state = get_mods();
-    if (state->count == 1) {
-        clear_mods();
-        clear_weak_mods();
-        tap_code16(KC_TILDE);
-        set_mods(mod_state);
-        tap_code(KC_A);
-    } else if (state->count == 2) {
-        clear_mods();
-        clear_weak_mods();
-        tap_code(KC_GRAVE);
-        set_mods(mod_state);
-        tap_code(KC_A);
-    } else {
-        reset_tap_dance(state);
-    }
-}
-
-// void comma_taps(tap_dance_state_t *state, void *user_data) {
-//     if (state->count == 1) {
-//         tap_code16(A(KC_C));
-//         tap_code16(KC_TILDE);
-//         tap_code(KC_A);
-//         tap_code(KC_O);
-//     } else if (state->count == 2) {
-//         tap_code16(A(KC_C));
-//         tap_code16(KC_TILDE);
-//         tap_code(KC_O);
-//         tap_code(KC_E);
-//         tap_code(KC_S);
-//     } else {
-//         reset_tap_dance(state);
-//     }
-// }
-
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
     [DOT] = ACTION_TAP_DANCE_FN(dot_taps),
-    // [QUOTE] = ACTION_TAP_DANCE_DOUBLE(KC_QUOTE, KC_GRAVE),
-    // [TILDE] = ACTION_TAP_DANCE_DOUBLE(KC_TILD, KC_CIRC),
     [PGUP] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
@@ -281,8 +235,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [U_TD_N] = ACTION_TAP_DANCE_FN(n_taps),
     [U_TD_E] = ACTION_TAP_DANCE_FN(e_taps),
     [U_TD_O] = ACTION_TAP_DANCE_FN(o_taps),
-    [U_TD_L] = ACTION_TAP_DANCE_FN(l_taps),
-    // [U_TD_COMMA] = ACTION_TAP_DANCE_FN(comma_taps),
 };
 
 /*
@@ -309,15 +261,10 @@ const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
-// const uint16_t PROGMEM cedilla_combo[] = {KC_X, KC_C, COMBO_END};
-// const uint16_t PROGMEM cao_combo[] = {KC_X, KC_C, KC_D, COMBO_END};
-// const uint16_t PROGMEM coes_combo[] = {KC_Z, KC_X, KC_C, KC_D, COMBO_END};
 
 // Right-side horizontal combos.
-// const uint16_t PROGMEM minus_combo[] = {HRM_N, KC_M, COMBO_END};
 const uint16_t PROGMEM quote_combo[] = {HRM_N, KC_M, COMBO_END};
 const uint16_t PROGMEM tilde_combo[] = {KC_H, KC_COMMA, COMBO_END};
-// const uint16_t PROGMEM slash_combo[] = {KC_H, KC_COMMA, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {KC_COMMA, TD_DOT, COMBO_END};
 
 // Used combos.
@@ -333,13 +280,8 @@ combo_t key_combos[] = {
     COMBO(rprn_combo, KC_RPRN),
     COMBO(super_o_combo, A(KC_0)),
     COMBO(caps_word_combo, CW_TOGG),
-    // COMBO(cedilla_combo, C_CEDILLA),
-    // COMBO(cao_combo, C_CAO),
-    // COMBO(coes_combo, C_COES),
-    // COMBO(minus_combo, KC_MINS),
     COMBO(quote_combo, KC_QUOTE),
     COMBO(tilde_combo, KC_TILDE),
-    // COMBO(slash_combo, KC_PSLS),
     COMBO(semicolon_combo, KC_SCLN),
 };
 
@@ -550,22 +492,6 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
 }
 
 /*
-######################
-### One-Shot Layer ###
-######################
-*/
-
-// Function to activate a layer temporarily
-void activate_layer_temporarily(uint8_t layer) {
-    layer_on(layer); // Activate the target layer
-}
-
-// Function to deactivate the temporary layer and return to the base layer
-void deactivate_temporary_layer(uint8_t layer) {
-    layer_off(layer); // Deactivate the target layer
-}
-
-/*
 #####################
 ### Assorted Code ###
 #####################
@@ -576,9 +502,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case HRM_A:
         case HRM_O:
-            return 250;
-        // case TD_QUOTE:
-        // case TD_TILDE:
+        case TD_O:
         case TD_DOT:
             return 250;
         default:
@@ -595,9 +519,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     if (!extend_deferred_exec(idle_token, IDLE_TIMEOUT_MS)) {
         idle_token = defer_exec(IDLE_TIMEOUT_MS, idle_callback, NULL);
     }
-    // One-shot layer tracking.
-    // static uint8_t temp_layer = 0; // Track the temporary layer
-    // static bool temp_layer_active = false; // Track if the temporary layer is active
     // Restore the RGB matrix when returning from idle.
     if (!rgb_matrix_is_enabled() && rgb_auto_disabled) {
         rgb_matrix_enable();
@@ -636,32 +557,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code16(tap_hold->tap);
             }
             break;
-        // Code for cedilla, activating a custom one-shot layer
-        case U_CC:
+        case U_CC: // Cedilla
             if (record->event.pressed) {
-                // temp_layer = _CEXT; // Set the target layer
                 tap_code16(A(KC_C));
-                // activate_layer_temporarily(temp_layer); // Activate the layer
-                // temp_layer_active = true; // Mark the layer as active
-                // uprintf("Temporary layer activated. Layer state: %u\n", layer_state);
             }
             break;
-        // Codes for "ão" and "ões", used in the ç-extension layer
-        // case E_AO:
-        //     if (record->event.pressed) {
-        //         tap_code16(KC_TILDE);
-        //         tap_code(KC_A);
-        //         tap_code(KC_O);
-        //     }
-        //     break;
-        // case E_OES:
-        //     if (record->event.pressed) {
-        //         tap_code16(KC_TILDE);
-        //         tap_code(KC_O);
-        //         tap_code(KC_E);
-        //         tap_code(KC_S);
-        //     }
-        //     break;
         // Codes for combos that output multiple characters
         case U_CAO:
             if (record->event.pressed) {
@@ -680,23 +580,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code(KC_S);
             }
             break;
-        // // Codes for accented characters
-        // case U_AC_A:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code(KC_QUOTE);
-        //         set_mods(mod_state);
-        //         tap_code(KC_A);
-        //     }
-        //     break;
-        // case U_AE:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code(KC_QUOTE);
-        //         set_mods(mod_state);
-        //         tap_code(KC_E);
-        //     }
-        //     break;
+        // Code for accented characters
         case U_AC_I:
             if (record->event.pressed) {
                 clear_mods();
@@ -705,14 +589,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code(KC_I);
             }
             break;
-        // case U_AO:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code(KC_QUOTE);
-        //         set_mods(mod_state);
-        //         tap_code(KC_O);
-        //     }
-        //     break;
         case U_AC_U:
             if (record->event.pressed) {
                 clear_mods();
@@ -721,60 +597,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code(KC_U);
             }
             break;
-        // case U_GA:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code(KC_GRAVE);
-        //         set_mods(mod_state);
-        //         tap_code(KC_A);
-        //     }
-        //     break;
-        // case U_TA:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code16(KC_TILDE);
-        //         set_mods(mod_state);
-        //         tap_code(KC_A);
-        //     }
-        //     break;
-        // case U_TO:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code16(KC_TILDE);
-        //         set_mods(mod_state);
-        //         tap_code(KC_O);
-        //     }
-        //     break;
-        // case U_CA:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code16(KC_CIRC);
-        //         set_mods(mod_state);
-        //         tap_code(KC_A);
-        //     }
-        //     break;
-        // case U_CE:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code16(KC_CIRC);
-        //         set_mods(mod_state);
-        //         tap_code(KC_E);
-        //     }
-        //     break;
-        // case U_CO:
-        //     if (record->event.pressed) {
-        //         clear_mods();
-        //         tap_code16(KC_CIRC);
-        //         set_mods(mod_state);
-        //         tap_code(KC_O);
-        //     }
-        //     break;
+        case U_GR_A:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_GRAVE);
+                set_mods(mod_state);
+                tap_code(KC_A);
+            }
+            break;
+        case U_TIL_A:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_TILDE);
+                set_mods(mod_state);
+                tap_code(KC_A);
+            }
+            break;
     }
-    // Deactivate the temporary layer after any key is pressed
-    // if (record->event.pressed && temp_layer_active) {
-    //     deactivate_temporary_layer(temp_layer); // Deactivate the layer
-    //     temp_layer_active = false; // Mark the layer as inactive
-    // }
     return true;
 }
 
@@ -870,15 +709,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |------+------+------+------+------|    |------+------+------+------+------|
     |   ^  |   1  |   2  |   3  |   =  |    |------|------|------|------|------|
     `------+------+------+------+------|    |------+------+------+------+------'
-                  | Bspc |   0  |  Ent |    |      |OOOOOO|      |
+                  |   0  | Bspc |  Ent |    |      |OOOOOO|      |
                   `--------------------'    `--------------------'
 */
 
     [_NUM] = LAYOUT_split_3x5_3(
-        KC_PSLS, KC_7, KC_8,    KC_9,  KC_PAST,    _______, _______, _______, _______, _______,
-        KC_PMNS, KC_4, KC_5,    KC_6,  KC_PPLS,    _______, _______, _______, _______, _______,
-        KC_CIRC, KC_1, KC_2,    KC_3,  KC_PEQL,    _______, _______, _______, _______, _______,
-                               KC_BSPC, KC_P0, KC_ENT,     XXXXXXX, XXXXXXX, XXXXXXX
+        KC_PSLS, KC_7, KC_8,  KC_9,    KC_PAST,    _______, _______, _______, _______, _______,
+        KC_PMNS, KC_4, KC_5,  KC_6,    KC_PPLS,    _______, _______, _______, _______, _______,
+        KC_CIRC, KC_1, KC_2,  KC_3,    KC_PEQL,    _______, _______, _______, _______, _______,
+                               KC_P0, KC_BSPC, KC_ENT,     XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
 /* Symbols
@@ -919,22 +758,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                QK_LEAD, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
-/* Mouse Keys
+/* Accented Characters
     ,----------------------------------.    ,----------------------------------.
-    |------|------|------|------|------|    | MWDn |      |  MUp |      |      |
+    |------|------|------|------|------|    |      |   ã  |   ú  |      |      |
     |------+------+------+------+------|    |------+------+------+------+------|
-    |------|------|------|------|------|    | MWUp | MLeft| MDown|MRight|      |
+    |------|------|------|------|------|    |      |   á  |   é  |   í  |   ó  |
     |------+------+------+------+------|    |------+------+------+------+------|
-    |------|------|------|------|------|    |      |      |      |      |      |
+    |------|------|------|------|------|    |      |   ç  |  ção | ções |      |
     `------+------+------+------+------|    |------+------+------+------+------'
-                  |      |      |OOOOOO|    |  M1  |  M3  |  M2  |
+                  |      |      |OOOOOO|    |      |      |      |
                   `--------------------'    `--------------------'
 */
 
     [_ACCENTED] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    XXXXXXX, TD_L,    U_AC_U,   XXXXXXX, XXXXXXX,
-        _______, _______, _______, _______, _______,    XXXXXXX, TD_N,    TD_E,     U_AC_I,  TD_O,
-        _______, _______, _______, _______, _______,    XXXXXXX, U_CC,    U_CAO, U_COES, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+        _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_AC_U, _______, _______,
+        _______, _______, _______, _______, _______,    U_GR_A,  TD_N,    TD_E,   U_AC_I,  TD_O,
+        _______, _______, _______, _______, _______,    XXXXXXX, U_CC,    U_CAO,  U_COES,  _______,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    _______, _______, _______
     ),
 };
