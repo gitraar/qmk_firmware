@@ -52,13 +52,13 @@
 #define _ACCENTED 7
 
 // Layer taps
-#define LT_1 LT(_NAV,KC_BSPC)
+#define LT_1 LT(_ACCENTED,KC_BSPC)
 #define LT_2 LT(_MOUSE,KC_TAB)
 #define LT_3 LT(_MEDIA,KC_ESC)
 #define LT_4 LT(_NUM,KC_SPC)
 #define LT_5 LT(_SYM,KC_ENT)
 #define LT_6 LT(_FUN,KC_DEL)
-#define LT_7 LT(_ACCENTED,KC_TAB)
+#define LT_7 LT(_NAV,KC_TAB)
 
 // Tap dances
 #define TD_DOT TD(DOT)
@@ -84,10 +84,8 @@ enum custom_keycodes {
     FUN,
     ACCENTED,
     SELWORD,
-    U_CC,
-    U_AC_I, U_AC_U,
-    U_GR_A, U_TIL_A,
-    U_CAO, U_COES,
+    U_CC, U_CAO, U_COES, // "ç", "ção", and "ções"
+    U_AC_I, U_AC_U, U_GR_A, U_TIL_A, // accented characters
 };
 
 // Tap Dance stuff.
@@ -100,7 +98,6 @@ enum tap_dances {
     U_TD_N,
     U_TD_E,
     U_TD_O,
-    // U_TD_L,
 };
 
 // Select Word keycode.
@@ -166,7 +163,7 @@ void n_taps(tap_dance_state_t *state, void *user_data) {
     uint8_t mod_state = get_mods();
     if (state->count == 1) {
         clear_mods();
-        clear_weak_mods();
+        clear_weak_mods(); // Needed because otherwise Shift isn't cleared in tap dances
         tap_code(KC_QUOTE);
         set_mods(mod_state);
         tap_code(KC_A);
@@ -627,11 +624,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
     ,----------------------------------.    ,----------------------------------.
-    |   Q  |   W  |   F  |   P  |   B  |    |   J  |   L  |   U  |   Y  |   -  |
+    |   q  |   w  |   f  |   p  |   b  |    |   j  |   l  |   u  |   y  |   -  |
     |------+------+------+------+------|    |------+------+------+------+------|
-    |   A  |   R  |   S  |   T  |   G  |    |   M  |   N  |   E  |   I  |   O  |
+    |   a  |   r  |   s  |   t  |   g  |    |   m  |   n  |   e  |   i  |   o  |
     |------+------+------+------+------|    |------+------+------+------+------|
-    |   Z  |   X  |   C  |   D  |   V  |    |   K  |   H  |   ,  |   .  |   /  |
+    |   z  |   x  |   c  |   d  |   v  |    |   k  |   h  |   ,  |   .  |   /  |
     `------+------+------+------+------|    |------+------+------+------+------'
                   |  Esc | Bspc |  Tab |    |  Ent |  Spc |  Del |
                   `--------------------'    `--------------------'
@@ -762,7 +759,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,----------------------------------.    ,----------------------------------.
     |------|------|------|------|------|    |      |   ã  |   ú  |      |      |
     |------+------+------+------+------|    |------+------+------+------+------|
-    |------|------|------|------|------|    |      |   á  |   é  |   í  |   ó  |
+    |------|------|------|------|------|    |   à  |   á  |   é  |   í  |   ó  |
     |------+------+------+------+------|    |------+------+------+------+------|
     |------|------|------|------|------|    |      |   ç  |  ção | ções |      |
     `------+------+------+------+------|    |------+------+------+------+------'
