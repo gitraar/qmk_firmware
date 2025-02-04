@@ -52,13 +52,13 @@
 #define _ACCENTED 7
 
 // Layer taps
-#define LT_1 LT(_NAV,KC_BSPC)
-#define LT_2 LT(_MOUSE,KC_TAB)
-#define LT_3 LT(_MEDIA,KC_ESC)
-#define LT_4 LT(_NUM,KC_SPC)
-#define LT_5 LT(_SYM,KC_ENT)
-#define LT_6 LT(_FUN,KC_DEL)
-#define LT_7 LT(_ACCENTED,KC_TAB)
+#define LT_NAV LT(_NAV,KC_BSPC)
+#define LT_ACC LT(_ACCENTED,KC_TAB)
+#define LT_MED LT(_MEDIA,KC_ESC)
+#define LT_NUM LT(_NUM,KC_SPC)
+#define LT_SYM LT(_SYM,KC_ENT)
+#define LT_FUN LT(_FUN,KC_DEL)
+#define LT_MOU LT(_MOUSE,KC_G)
 
 // Tap dances
 #define TD_DOT TD(DOT)
@@ -66,7 +66,10 @@
 #define TD_PGDN TD(PGDOWN)
 #define TD_HOME TD(HOME)
 #define TD_END TD(END)
-#define TD_U TD(U_TD_U)
+#define TD_AN TD(U_TD_AN)
+#define TD_AE TD(U_TD_AE)
+#define TD_AO TD(U_TD_AO)
+#define TD_H TD(U_TD_H)
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -82,9 +85,9 @@ enum custom_keycodes {
     FUN,
     ACCENTED,
     SELWORD,
-    U_GR_A, U_TIL_A, U_TIL_O, U_CIRC_A, U_CIRC_E, U_CIRC_O, // accented characters
-    U_AC_A, U_AC_E, U_AC_I, U_AC_O, // accented characters
-    U_CC, U_CAO, U_COES, // "ç", "ção", and "ções"
+    U_GR_A, U_TIL_A, U_TIL_O, // accented characters
+    U_AC_I, U_AC_U, // accented characters
+    U_CAO, U_COES, // "ção" and "ções"
 };
 
 // Tap Dance stuff.
@@ -94,7 +97,10 @@ enum tap_dances {
     PGDOWN,
     HOME,
     END,
-    U_TD_U,
+    U_TD_AN,
+    U_TD_AE,
+    U_TD_AO,
+    U_TD_H,
 };
 
 // Select Word keycode.
@@ -156,24 +162,155 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
 // Code for tap dances with advanded keycodes
-void u_taps(tap_dance_state_t *state, void *user_data) {
+void n_taps(tap_dance_state_t *state, void *user_data) {
     uint8_t mod_state = get_mods();
     if (state->count == 1) {
-        tap_code(KC_U);
-    } else if (state->count == 2) {
         if (is_caps_word_on()) {
             clear_mods();
             clear_weak_mods();
             tap_code(KC_QUOTE);
             set_mods(mod_state);
-            tap_code16(S(KC_U));
+            tap_code16(S(KC_A));
             caps_word_on();
         } else {
             clear_mods();
             clear_weak_mods();
             tap_code(KC_QUOTE);
             set_mods(mod_state);
-            tap_code(KC_U);
+            tap_code(KC_A);
+        }
+    } else if (state->count == 2) {
+        if (is_caps_word_on()) {
+            clear_mods();
+            clear_weak_mods();
+            tap_code16(KC_CIRCUMFLEX);
+            set_mods(mod_state);
+            tap_code16(S(KC_A));
+            caps_word_on();
+        } else {
+            clear_mods();
+            clear_weak_mods();
+            tap_code16(KC_CIRCUMFLEX);
+            set_mods(mod_state);
+            tap_code(KC_A);
+        }
+    } else {
+        reset_tap_dance(state);
+    }
+}
+
+void e_taps(tap_dance_state_t *state, void *user_data) {
+    uint8_t mod_state = get_mods();
+    if (state->count == 1) {
+        if (is_caps_word_on()) {
+            clear_mods();
+            clear_weak_mods();
+            tap_code(KC_QUOTE);
+            set_mods(mod_state);
+            tap_code16(S(KC_E));
+            caps_word_on();
+        } else {
+            clear_mods();
+            clear_weak_mods();
+            tap_code(KC_QUOTE);
+            set_mods(mod_state);
+            tap_code(KC_E);
+        }
+    } else if (state->count == 2) {
+        if (is_caps_word_on()) {
+            clear_mods();
+            clear_weak_mods();
+            tap_code16(KC_CIRCUMFLEX);
+            set_mods(mod_state);
+            tap_code16(S(KC_E));
+            caps_word_on();
+        } else {
+            clear_mods();
+            clear_weak_mods();
+            tap_code16(KC_CIRCUMFLEX);
+            set_mods(mod_state);
+            tap_code(KC_E);
+        }
+    } else {
+        reset_tap_dance(state);
+    }
+}
+
+void o_taps(tap_dance_state_t *state, void *user_data) {
+    uint8_t mod_state = get_mods();
+    if (state->count == 1) {
+        if (is_caps_word_on()) {
+            clear_mods();
+            clear_weak_mods();
+            tap_code(KC_QUOTE);
+            set_mods(mod_state);
+            tap_code16(S(KC_O));
+            caps_word_on();
+        } else {
+            clear_mods();
+            clear_weak_mods();
+            tap_code(KC_QUOTE);
+            set_mods(mod_state);
+            tap_code(KC_O);
+        }
+    } else if (state->count == 2) {
+        if (is_caps_word_on()) {
+            clear_mods();
+            clear_weak_mods();
+            tap_code16(KC_CIRCUMFLEX);
+            set_mods(mod_state);
+            tap_code16(S(KC_O));
+            caps_word_on();
+        } else {
+            clear_mods();
+            clear_weak_mods();
+            tap_code16(KC_CIRCUMFLEX);
+            set_mods(mod_state);
+            tap_code(KC_O);
+        }
+    } else {
+        reset_tap_dance(state);
+    }
+}
+
+void h_taps(tap_dance_state_t *state, void *user_data) {
+    if (state->count == 1) {
+        if (is_caps_word_on()) {
+            tap_code16(S(KC_H));
+        } else {
+            tap_code16(KC_H);
+        }
+    } else if (state->count == 2) {
+        if (is_caps_word_on()) {
+            tap_code16(S(A(KC_C)));
+        } else {
+            tap_code16(A(KC_C));
+        }
+    } else if (state->count == 3) {
+        if (is_caps_word_on()) {
+            tap_code16(S(A(KC_C)));
+            tap_code16(KC_TILDE);
+            tap_code16(S(KC_A));
+            tap_code16(S(KC_O));
+        } else {
+            tap_code16(A(KC_C));
+            tap_code16(KC_TILDE);
+            tap_code(KC_A);
+            tap_code(KC_O);
+        }
+    } else if (state->count == 4) {
+        if (is_caps_word_on()) {
+            tap_code16(S(A(KC_C)));
+            tap_code16(KC_TILDE);
+            tap_code16(S(KC_O));
+            tap_code16(S(KC_E));
+            tap_code16(S(KC_S));
+        } else {
+            tap_code16(A(KC_C));
+            tap_code16(KC_TILDE);
+            tap_code(KC_O);
+            tap_code(KC_E);
+            tap_code(KC_S);
         }
     } else {
         reset_tap_dance(state);
@@ -187,7 +324,10 @@ tap_dance_action_t tap_dance_actions[] = {
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
-    [U_TD_U] = ACTION_TAP_DANCE_FN(u_taps),
+    [U_TD_AN] = ACTION_TAP_DANCE_FN(n_taps),
+    [U_TD_AE] = ACTION_TAP_DANCE_FN(e_taps),
+    [U_TD_AO] = ACTION_TAP_DANCE_FN(o_taps),
+    [U_TD_H] = ACTION_TAP_DANCE_FN(h_taps),
 };
 
 /*
@@ -212,17 +352,12 @@ const uint16_t PROGMEM lprn_combo[] = {HRM_N, TRM_L, COMBO_END};
 const uint16_t PROGMEM rprn_combo[] = {HRM_E, KC_U, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
 
-const uint16_t PROGMEM acute_a_combo[] = {HRM_N, KC_H, COMBO_END};
-const uint16_t PROGMEM acute_e_combo[] = {HRM_E, KC_COMMA, COMBO_END};
-const uint16_t PROGMEM acute_i_combo[] = {HRM_I, TD_DOT, COMBO_END};
-const uint16_t PROGMEM acute_o_combo[] = {HRM_O, KC_PSLS, COMBO_END};
-
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM quote_combo[] = {HRM_N, KC_M, COMBO_END};
-const uint16_t PROGMEM tilde_combo[] = {KC_H, KC_COMMA, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {TD_H, KC_COMMA, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {KC_COMMA, TD_DOT, COMBO_END};
 
 // Used combos.
@@ -237,10 +372,6 @@ combo_t key_combos[] = {
     COMBO(lprn_combo, KC_LPRN),
     COMBO(rprn_combo, KC_RPRN),
     COMBO(super_o_combo, A(KC_0)),
-    COMBO(acute_a_combo, U_AC_A),
-    COMBO(acute_e_combo, U_AC_E),
-    COMBO(acute_i_combo, U_AC_I),
-    COMBO(acute_o_combo, U_AC_O),
     COMBO(caps_word_combo, CW_TOGG),
     COMBO(quote_combo, KC_QUOTE),
     COMBO(tilde_combo, KC_TILDE),
@@ -463,18 +594,15 @@ bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case KC_A ... KC_Z:
-        case TD_U: // Added to make Caps Word work with TD_U.
+        case TD_AN:
+        case TD_AE:
+        case TD_AO:
+        case TD_H:
         case U_GR_A:
         case U_TIL_A:
         case U_TIL_O:
-        case U_CIRC_A:
-        case U_CIRC_E:
-        case U_CIRC_O:
-        case U_AC_A:
-        case U_AC_E:
         case U_AC_I:
-        case U_AC_O:
-        case U_CC:
+        case U_AC_U:
         case U_CAO:
         case U_COES:
         case KC_MINS:
@@ -483,7 +611,7 @@ bool caps_word_press_user(uint16_t keycode) {
 
         // Keycodes that continue Caps Word, without shifting.
         case KC_1 ... KC_0:
-        case KC_QUOTE: // Added to make Caps Word work with TD_U.
+        case KC_QUOTE:
         case KC_GRAVE:
         case KC_BSPC:
         case KC_DEL:
@@ -500,6 +628,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case HRM_A:
         case HRM_O:
+        case TD_AO:
         case TD_DOT:
             return 250;
         default:
@@ -554,16 +683,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code16(tap_hold->tap);
             }
             break;
-        // Cedilla
-        case U_CC:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(A(KC_C)));
-                } else {
-                    tap_code16(A(KC_C));
-                }
-            }
-            break;
         // Code for combos that output multiple characters
         case U_CAO:
             if (record->event.pressed) {
@@ -598,36 +717,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Code for accented characters
-        case U_AC_A:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_A));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_A);
-                }
-            }
-            break;
-        case U_AC_E:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_E));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_E);
-                }
-            }
-            break;
         case U_AC_I:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -643,18 +732,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 }
             }
             break;
-        case U_AC_O:
+        case U_AC_U:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
                     clear_mods();
                     tap_code(KC_QUOTE);
                     set_mods(mod_state);
-                    tap_code16(S(KC_O));
+                    tap_code16(S(KC_U));
                 } else {
                     clear_mods();
                     tap_code(KC_QUOTE);
                     set_mods(mod_state);
-                    tap_code(KC_O);
+                    tap_code(KC_U);
                 }
             }
             break;
@@ -703,51 +792,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 }
             }
             break;
-        case U_CIRC_A:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_A));
-                } else {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code(KC_A);
-                }
-            }
-            break;
-        case U_CIRC_E:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_E));
-                } else {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code(KC_E);
-                }
-            }
-            break;
-        case U_CIRC_O:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_O));
-                } else {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code(KC_O);
-                }
-            }
-            break;
     }
     return true;
 }
@@ -773,10 +817,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_BASE] = LAYOUT_split_3x5_3(
-        KC_Q,  KC_W,  KC_F,  TRM_P, KC_B,    KC_J,   TRM_L, TD_U,    KC_Y,   KC_MINUS,
-        HRM_A, HRM_R, HRM_S, HRM_T, KC_G,    KC_M,   HRM_N, HRM_E,   HRM_I,  HRM_O,
-        KC_Z,  KC_X,  KC_C,  KC_D,  KC_V,    KC_K,   KC_H,  KC_COMM, TD_DOT, KC_PSLS,
-                              LT_3,  LT_1,  LT_7,    LT_5,   LT_4,  LT_6
+        KC_Q,  KC_W,  KC_F,   TRM_P,  KC_B,      KC_J,   TRM_L,  KC_U,    KC_Y,   KC_MINUS,
+        HRM_A, HRM_R, HRM_S,  HRM_T,  KC_G,      KC_M,   HRM_N,  HRM_E,   HRM_I,  HRM_O,
+        KC_Z,  KC_X,  KC_C,   KC_D,   KC_V,      KC_K,   TD_H,   KC_COMM, TD_DOT, KC_PSLS,
+                              LT_MED, LT_NAV, LT_ACC,    LT_SYM, LT_NUM, LT_FUN
     ),
 
 /* Navigation
@@ -876,8 +920,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Function
     ,---------------------------------------.    ,---------------------------------------.
-    |  F12  |   F7  |   F8  |   F9  | PrScr |    |-------|-------|-------|-------| Flash |
-    |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
+    |  F12  |   F7  |   F8  |   F9  | PrScr |    |-------|-------|-------|-------|-------|
+    |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+ Flash |
     |  F11  |   F4  |   F5  |   F6  | Sleep |    |-------|-------|-------|-------|-------|
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |  F10  |   F1  |   F2  |   F3  | RMTog |    |-------|-------|-------|-------|-------|
@@ -887,17 +931,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_FUN] = LAYOUT_split_3x5_3(
-        KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     _______, _______, _______, _______, QK_BOOT,
-        KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    _______, _______, _______, _______, _______,
+        KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     _______, _______, _______, _______, _______,
+        KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    _______, _______, _______, _______, QK_BOOT,
         KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     _______, _______, _______, _______, _______,
                                QK_LEAD, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
 /* Accented Characters
     ,---------------------------------------.    ,---------------------------------------.
-    |-------|-------|-------|-------|-------|    |       |   ã   |   â   |       |       |
+    |-------|-------|-------|-------|-------|    |       |   ã   |   ú   |       |   õ   |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |-------|-------|-------|-------|-------|    |   à   |   ç   |   ê   |       |   ô   |
+    |-------|-------|-------|-------|-------|    |   à   |   á   |   é   |   í   |   ó   |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |-------|-------|-------|-------|-------|    |       |  ção  |  ções |       |       |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
@@ -905,16 +949,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     `-----------------------'    `-----------------------'
 */
 
-    // [_ACCENTED] = LAYOUT_split_3x5_3(
-    //     _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A,  U_AC_U, XXXXXXX, U_TIL_O,
-    //     _______, _______, _______, _______, _______,    U_GR_A,  U_AC_A, U_AC_E, U_AC_I, U_AC_O,
-    //     _______, _______, _______, _______, _______,    XXXXXXX, U_CC,     U_CAO,    U_COES,  XXXXXXX,
-    //                               XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX,  XXXXXXX
-    // ),
     [_ACCENTED] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A,  XXXXXXX,  XXXXXXX, U_TIL_O,
-        _______, _______, _______, _______, _______,    U_GR_A,  U_CIRC_A, U_CIRC_E, XXXXXXX, U_CIRC_O,
-        _______, _______, _______, _______, _______,    XXXXXXX, U_CC,     U_CAO,    U_COES,  XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX,  XXXXXXX
+        _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_AC_U,  XXXXXXX, U_TIL_O,
+        _______, _______, _______, _______, _______,    U_GR_A,  TD_AN,   TD_AE,   U_AC_I,  TD_AO,
+        _______, _______, _______, XXXXXXX, _______,    XXXXXXX, U_CAO,   U_COES,  XXXXXXX, XXXXXXX,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
     ),
 };
