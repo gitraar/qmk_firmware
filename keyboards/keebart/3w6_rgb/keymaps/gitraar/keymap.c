@@ -286,32 +286,6 @@ void h_taps(tap_dance_state_t *state, void *user_data) {
         } else {
             tap_code16(A(KC_C));
         }
-    } else if (state->count == 3) {
-        if (is_caps_word_on()) {
-            tap_code16(S(A(KC_C)));
-            tap_code16(KC_TILDE);
-            tap_code16(S(KC_A));
-            tap_code16(S(KC_O));
-        } else {
-            tap_code16(A(KC_C));
-            tap_code16(KC_TILDE);
-            tap_code(KC_A);
-            tap_code(KC_O);
-        }
-    } else if (state->count == 4) {
-        if (is_caps_word_on()) {
-            tap_code16(S(A(KC_C)));
-            tap_code16(KC_TILDE);
-            tap_code16(S(KC_O));
-            tap_code16(S(KC_E));
-            tap_code16(S(KC_S));
-        } else {
-            tap_code16(A(KC_C));
-            tap_code16(KC_TILDE);
-            tap_code(KC_O);
-            tap_code(KC_E);
-            tap_code(KC_S);
-        }
     } else {
         reset_tap_dance(state);
     }
@@ -353,7 +327,7 @@ const uint16_t PROGMEM rprn_combo[] = {HRM_E, KC_U, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
+const uint16_t PROGMEM caps_word_combo[] = {HRM_T, LT_MOU, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM quote_combo[] = {HRM_N, KC_M, COMBO_END};
@@ -492,9 +466,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 }
 
 /*
-#################
-### Achordion ###
-#################
+##########################
+### Achordion Settings ###
+##########################
 */
 
 void matrix_scan_user(void) {
@@ -507,7 +481,7 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, ui
     // uint8_t tap_hold_col = tap_hold_record->event.key.col; // Not needed given the way this keyboard maps sides.
     uint8_t other_row = other_record->event.key.row;
     // uint8_t other_col = other_record->event.key.col; // Not needed given the way this keyboard maps sides.
-    if (tap_hold_row == 3) return true; // I want the left thumbs to activate a hold even when used with keys on the same side for mouse usage.
+    if (tap_hold_row == 3) return true; // I want the left thumbs to activate a hold even when used with keys on the same side to make using a mouse easier.
     bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
     bool second_key_left = (other_row >= 0 && other_row <= 3);
     return first_key_left != second_key_left;
@@ -539,9 +513,9 @@ uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next
 }
 
 /*
-#####################
-### Sentence Case ###
-#####################
+##############################
+### Sentence Case Settings ###
+##############################
 */
 
 void housekeeping_task_user(void) {
@@ -585,9 +559,9 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
 }
 
 /*
-#####################
-### Assorted Code ###
-#####################
+##########################
+### Caps Word Settings ###
+##########################
 */
 
 bool caps_word_press_user(uint16_t keycode) {
@@ -623,6 +597,12 @@ bool caps_word_press_user(uint16_t keycode) {
     }
 }
 
+/*
+#############################
+### Tapping Term Settings ###
+#############################
+*/
+
 // Set tapping term per key.
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -635,6 +615,12 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return TAPPING_TERM;
     }
 }
+
+/*
+###########################
+### Process Record User ###
+###########################
+*/
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     if (!process_achordion(keycode, record)) { return false; }
@@ -651,10 +637,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         rgb_auto_disabled = false;
     }
     uint8_t mod_state = get_mods();
-    // uint8_t oneshot_mods = get_oneshot_mods();
     tap_dance_action_t *action;
     switch (keycode) {
-        // Code for advanced tap dances
+        // Advanced tap dances
         case TD_PGUP:
             action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
             if (!record->event.pressed && action->state.count && !action->state.finished) {
@@ -683,7 +668,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code16(tap_hold->tap);
             }
             break;
-        // Code for combos that output multiple characters
+        // Macros
         case U_CAO:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -716,7 +701,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 }
             }
             break;
-        // Code for accented characters
+        // Accented characters
         case U_AC_I:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -818,7 +803,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_BASE] = LAYOUT_split_3x5_3(
         KC_Q,  KC_W,  KC_F,   TRM_P,  KC_B,      KC_J,   TRM_L,  KC_U,    KC_Y,   KC_MINUS,
-        HRM_A, HRM_R, HRM_S,  HRM_T,  KC_G,      KC_M,   HRM_N,  HRM_E,   HRM_I,  HRM_O,
+        HRM_A, HRM_R, HRM_S,  HRM_T,  LT_MOU,    KC_M,   HRM_N,  HRM_E,   HRM_I,  HRM_O,
         KC_Z,  KC_X,  KC_C,   KC_D,   KC_V,      KC_K,   TD_H,   KC_COMM, TD_DOT, KC_PSLS,
                               LT_MED, LT_NAV, LT_ACC,    LT_SYM, LT_NUM, LT_FUN
     ),
@@ -846,17 +831,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,---------------------------------------.    ,---------------------------------------.
     |-------|-------|-------|-------|-------|    |  MWDn |       |  MUp  |       |       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |-------|-------|-------|-------|-------|    |  MWUp | MLeft | MDown | MRight|       |
+    |-------|-------|-------|-------|OOOOOOO|    |  MWUp | MLeft | MDown | MRight|       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |-------|-------|-------|-------|-------|    |       |       |       |       |       |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
-                    |       |       |OOOOOOO|    |   M1  |   M3  |   M2  |
+                    |       |       |       |    |   M1  |   M3  |   M2  |
                     `-----------------------'    `-----------------------'
 */
 
     [_MOUSE] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    MS_WHLD, XXXXXXX, MS_UP,   XXXXXXX, XXXXXXX,
-        _______, _______, _______, _______, _______,    MS_WHLU, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
+        _______, _______, _______, _______, XXXXXXX,    MS_WHLU, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
         _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    MS_BTN1, MS_BTN3, MS_BTN2
     ),
@@ -950,9 +935,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_ACCENTED] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_AC_U,  XXXXXXX, U_TIL_O,
+        _______, _______, _______, _______, _______,    _______, U_TIL_A, U_AC_U,  _______, U_TIL_O,
         _______, _______, _______, _______, _______,    U_GR_A,  TD_AN,   TD_AE,   U_AC_I,  TD_AO,
-        _______, _______, _______, XXXXXXX, _______,    XXXXXXX, U_CAO,   U_COES,  XXXXXXX, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+        _______, _______, _______, _______, _______,    _______, U_CAO,   U_COES,  _______, _______,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    _______, _______, _______
     ),
 };
