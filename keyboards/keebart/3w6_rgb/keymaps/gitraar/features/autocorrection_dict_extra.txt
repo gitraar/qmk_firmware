@@ -474,7 +474,9 @@ wierd         -> weird
 # Words with apostrophes
 :dont:        -> don't
 didnt         -> didn't
-doesnt        -> doesn'
+doesnt        -> doesn't
+isnt          -> isn't
+wasnt         -> wasn't
 
 # Portuguese words with ção and ções
 acao          -> a'c~ao
@@ -484,6 +486,7 @@ ocao          -> o'c~ao
 ucao          -> u'c~ao
 ccao          -> c'c~ao
 ncao          -> n'c~ao
+pcao          -> p'c~ao
 rcao          -> r'c~ao
 acoes         -> a'c~oes
 ecoes         -> e'c~oes
@@ -492,6 +495,7 @@ ocoes         -> o'c~oes
 ucoes         -> u'c~oes
 ccoes         -> c'c~oes
 ncoes         -> n'c~oes
+pcoes         -> p'c~oes
 rcoes         -> r'c~oes
 
 # Very common accented Portuguese word
