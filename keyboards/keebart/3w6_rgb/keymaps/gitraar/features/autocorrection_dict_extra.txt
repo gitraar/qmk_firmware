@@ -166,83 +166,83 @@ widht         -> width
 
 ## Words with tricky spelling.
 # If you are a good speller, you could drop this section.
-aberation     -> aberration
-accross       -> across
-adviced       -> advised
-aledge        -> allege
-alledge       -> allege
-amature       -> amateur
-anomolous     -> anomalous
-anomoly       -> anomaly
-aparent       -> apparent
-aparrent      -> apparent
-apparant      -> apparent
-apparrent     -> apparent
-asthetic      -> aesthetic
-auxilary      -> auxiliary
-auxillary     -> auxiliary
-auxilliary    -> auxiliary
-bankrupcy     -> bankruptcy
-busness       -> business
-bussiness     -> business
-calander      -> calendar
-commitee      -> committee
-comittee      -> committee
-competance    -> competence
-competant     -> competent
-concensus     -> consensus
-cognizent     -> cognizant
-copywrite:    -> copyright
-choosen       -> chosen
-collegue      -> colleague
-excercise     -> exercise
-:grammer      -> grammar
-:guage        -> gauge
-govement      -> government
-govenment     -> government
-goverment     -> government
-governmnet    -> government
-govorment     -> government
-govornment    -> government
-guaratee      -> guarantee
-garantee      -> guarantee
-gaurantee     -> guarantee
-heirarchy     -> hierarchy
-hygeine       -> hygiene
-hypocracy     -> hypocrisy
-hypocrasy     -> hypocrisy
-hypocricy     -> hypocrisy
-hypocrit:     -> hypocrite
-looses:       -> loses
-maintence     -> maintenance
-morgage       -> mortgage
-neccesary     -> necessary
-necesary      -> necessary
-pallete       -> palette
-paralel       -> parallel
-parralel      -> parallel
-parrallel     -> parallel
-priviledge    -> privilege
-probablly     -> probably
-prominant     -> prominent
-propogate     -> propagate
-proove        -> prove
-psuedo        -> pseudo
-reciept       -> receipt
-# Catch misspellings of "receives", "receiving", etc.
-receiev       -> receiv
-reciev        -> receiv
-recepient     -> recipient
-recipiant     -> recipient
-relevent      -> relevant
-repitition    -> repetition
-safty         -> safety
-saftey        -> safety
-# Catch misspellings of "separate", "separating", etc.
-seperat       -> separat
-spectogram    -> spectrogram
-symetric      -> symmetric
-tolerence     -> tolerance
+# aberation     -> aberration
+# accross       -> across
+# adviced       -> advised
+# aledge        -> allege
+# alledge       -> allege
+# amature       -> amateur
+# anomolous     -> anomalous
+# anomoly       -> anomaly
+# aparent       -> apparent
+# aparrent      -> apparent
+# apparant      -> apparent
+# apparrent     -> apparent
+# asthetic      -> aesthetic
+# auxilary      -> auxiliary
+# auxillary     -> auxiliary
+# auxilliary    -> auxiliary
+# bankrupcy     -> bankruptcy
+# busness       -> business
+# bussiness     -> business
+# calander      -> calendar
+# commitee      -> committee
+# comittee      -> committee
+# competance    -> competence
+# competant     -> competent
+# concensus     -> consensus
+# cognizent     -> cognizant
+# copywrite:    -> copyright
+# choosen       -> chosen
+# collegue      -> colleague
+# excercise     -> exercise
+# :grammer      -> grammar
+# :guage        -> gauge
+# govement      -> government
+# govenment     -> government
+# goverment     -> government
+# governmnet    -> government
+# govorment     -> government
+# govornment    -> government
+# guaratee      -> guarantee
+# garantee      -> guarantee
+# gaurantee     -> guarantee
+# heirarchy     -> hierarchy
+# hygeine       -> hygiene
+# hypocracy     -> hypocrisy
+# hypocrasy     -> hypocrisy
+# hypocricy     -> hypocrisy
+# hypocrit:     -> hypocrite
+# looses:       -> loses
+# maintence     -> maintenance
+# morgage       -> mortgage
+# neccesary     -> necessary
+# necesary      -> necessary
+# pallete       -> palette
+# paralel       -> parallel
+# parralel      -> parallel
+# parrallel     -> parallel
+# priviledge    -> privilege
+# probablly     -> probably
+# prominant     -> prominent
+# propogate     -> propagate
+# proove        -> prove
+# psuedo        -> pseudo
+# reciept       -> receipt
+# # Catch misspellings of "receives", "receiving", etc.
+# receiev       -> receiv
+# reciev        -> receiv
+# recepient     -> recipient
+# recipiant     -> recipient
+# relevent      -> relevant
+# repitition    -> repetition
+# safty         -> safety
+# saftey        -> safety
+# # Catch misspellings of "separate", "separating", etc.
+# seperat       -> separat
+# spectogram    -> spectrogram
+# symetric      -> symmetric
+# tolerence     -> tolerance
 
 
 ## Words particularly for coding.
@@ -378,7 +378,7 @@ comming:      -> coming
 considerd     -> considered
 dervied       -> derived
 desicion      -> decision
-diferent      -> different
+# diferent      -> different # Messes with the Portuguese word 'diferente'
 diferrent     -> different
 differnt      -> different
 diffrent      -> different
