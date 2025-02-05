@@ -69,7 +69,6 @@
 #define TD_AN TD(U_TD_AN)
 #define TD_AE TD(U_TD_AE)
 #define TD_AO TD(U_TD_AO)
-#define TD_H TD(U_TD_H)
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -87,7 +86,7 @@ enum custom_keycodes {
     SELWORD,
     U_GR_A, U_TIL_A, U_TIL_O, // accented characters
     U_AC_I, U_AC_U, // accented characters
-    U_CAO, U_COES, // "ção" and "ções"
+    U_CC, U_CAO, U_COES, // "ç", "ção", and "ções"
 };
 
 // Tap Dance stuff.
@@ -100,7 +99,7 @@ enum tap_dances {
     U_TD_AN,
     U_TD_AE,
     U_TD_AO,
-    U_TD_H,
+    // U_TD_H,
 };
 
 // Select Word keycode.
@@ -273,24 +272,6 @@ void o_taps(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void h_taps(tap_dance_state_t *state, void *user_data) {
-    if (state->count == 1) {
-        if (is_caps_word_on()) {
-            tap_code16(S(KC_H));
-        } else {
-            tap_code16(KC_H);
-        }
-    } else if (state->count == 2) {
-        if (is_caps_word_on()) {
-            tap_code16(S(A(KC_C)));
-        } else {
-            tap_code16(A(KC_C));
-        }
-    } else {
-        reset_tap_dance(state);
-    }
-}
-
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
     [DOT] = ACTION_TAP_DANCE_FN(dot_taps),
@@ -301,7 +282,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [U_TD_AN] = ACTION_TAP_DANCE_FN(n_taps),
     [U_TD_AE] = ACTION_TAP_DANCE_FN(e_taps),
     [U_TD_AO] = ACTION_TAP_DANCE_FN(o_taps),
-    [U_TD_H] = ACTION_TAP_DANCE_FN(h_taps),
 };
 
 /*
@@ -331,7 +311,7 @@ const uint16_t PROGMEM caps_word_combo[] = {HRM_T, LT_MOU, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM quote_combo[] = {HRM_N, KC_M, COMBO_END};
-const uint16_t PROGMEM tilde_combo[] = {TD_H, KC_COMMA, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {KC_H, KC_COMMA, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {KC_COMMA, TD_DOT, COMBO_END};
 
 // Used combos.
@@ -571,12 +551,12 @@ bool caps_word_press_user(uint16_t keycode) {
         case TD_AN:
         case TD_AE:
         case TD_AO:
-        case TD_H:
         case U_GR_A:
         case U_TIL_A:
         case U_TIL_O:
         case U_AC_I:
         case U_AC_U:
+        case U_CC:
         case U_CAO:
         case U_COES:
         case KC_MINS:
@@ -669,6 +649,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Macros
+        case U_CC:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(A(KC_C)));
+                } else {
+                    tap_code16(A(KC_C));
+                }
+            }
+            break;
         case U_CAO:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -804,7 +793,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT_split_3x5_3(
         KC_Q,  KC_W,  KC_F,   TRM_P,  KC_B,      KC_J,   TRM_L,  KC_U,    KC_Y,   KC_MINUS,
         HRM_A, HRM_R, HRM_S,  HRM_T,  LT_MOU,    KC_M,   HRM_N,  HRM_E,   HRM_I,  HRM_O,
-        KC_Z,  KC_X,  KC_C,   KC_D,   KC_V,      KC_K,   TD_H,   KC_COMM, TD_DOT, KC_PSLS,
+        KC_Z,  KC_X,  KC_C,   KC_D,   KC_V,      KC_K,   KC_H,   KC_COMM, TD_DOT, KC_PSLS,
                               LT_MED, LT_NAV, LT_ACC,    LT_SYM, LT_NUM, LT_FUN
     ),
 
@@ -935,9 +924,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_ACCENTED] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    _______, U_TIL_A, U_AC_U,  _______, U_TIL_O,
-        _______, _______, _______, _______, _______,    U_GR_A,  TD_AN,   TD_AE,   U_AC_I,  TD_AO,
-        _______, _______, _______, _______, _______,    _______, U_CAO,   U_COES,  _______, _______,
+        _______, _______, _______, _______, _______,    _______, U_TIL_A, U_AC_U, _______, U_TIL_O,
+        TD_AN,   _______, _______, _______, _______,    U_GR_A,  TD_AN,   TD_AE,  U_AC_I,  TD_AO,
+        _______, _______, U_CC,    _______, _______,    _______, U_CC,    U_CAO,  U_COES,  _______,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    _______, _______, _______
     ),
 };

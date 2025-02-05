@@ -475,3 +475,25 @@ wierd         -> weird
 :dont:        -> don't
 didnt         -> didn't
 doesnt        -> doesn'
+
+# Portuguese words with ção and ções
+acao          -> a'c~ao
+ecao          -> e'c~ao
+icao          -> i'c~ao
+ocao          -> o'c~ao
+ucao          -> u'c~ao
+ccao          -> c'c~ao
+ncao          -> n'c~ao
+rcao          -> r'c~ao
+acoes         -> a'c~oes
+ecoes         -> e'c~oes
+icoes         -> i'c~oes
+ocoes         -> o'c~oes
+ucoes         -> u'c~oes
+ccoes         -> c'c~oes
+ncoes         -> n'c~oes
+rcoes         -> r'c~oes
+
+# Very common accented Portuguese word
+:ha:          -> h'a
+
