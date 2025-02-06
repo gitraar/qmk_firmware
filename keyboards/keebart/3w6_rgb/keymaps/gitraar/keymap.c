@@ -30,16 +30,16 @@
 #define TAB_DOWN G(S(KC_RBRC))
 
 // Home row and top row mods
-#define HRM_A LCTL_T(KC_A)
-#define HRM_R LALT_T(KC_R)
-#define HRM_S LGUI_T(KC_S)
-#define HRM_T LSFT_T(KC_T)
-#define HRM_N LSFT_T(KC_N)
-#define HRM_E RGUI_T(KC_E)
-#define HRM_I LALT_T(KC_I)
-#define HRM_O RCTL_T(KC_O)
-#define TRM_L HYPR_T(KC_L)
-#define TRM_P HYPR_T(KC_P)
+#define HRM_1 LCTL_T(KC_A)
+#define HRM_2 LALT_T(KC_R)
+#define HRM_3 LGUI_T(KC_S)
+#define HRM_4 LSFT_T(KC_T)
+#define HRM_7 LSFT_T(KC_N)
+#define HRM_8 RGUI_T(KC_E)
+#define HRM_9 LALT_T(KC_I)
+#define HRM_10 RCTL_T(KC_O)
+#define TRM_4 HYPR_T(KC_P)
+#define TRM_7 HYPR_T(KC_L)
 
 // Mod taps
 #define MT_C LT(0, KC_C)
@@ -295,26 +295,26 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // Combo definitions.
 // Left-side vertical combos.
-const uint16_t PROGMEM cut_combo[] = {HRM_R, KC_W, COMBO_END};
-const uint16_t PROGMEM copy_combo[] = {HRM_S, KC_F, COMBO_END};
-const uint16_t PROGMEM paste_combo[] = {HRM_T, TRM_P, COMBO_END};
+const uint16_t PROGMEM cut_combo[] = {HRM_2, KC_W, COMBO_END};
+const uint16_t PROGMEM copy_combo[] = {HRM_3, KC_F, COMBO_END};
+const uint16_t PROGMEM paste_combo[] = {HRM_4, TRM_4, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {KC_G, KC_B, COMBO_END};
 
-const uint16_t PROGMEM percentage_combo[] = {HRM_S, KC_C, COMBO_END};
-const uint16_t PROGMEM at_combo[] = {HRM_T, LT_MOU, COMBO_END};
+const uint16_t PROGMEM percentage_combo[] = {HRM_3, KC_C, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {HRM_4, LT_MOU, COMBO_END};
 const uint16_t PROGMEM astr_combo[] = {KC_G, KC_V, COMBO_END};
 
 // Right-side vertical combos.
-const uint16_t PROGMEM lprn_combo[] = {HRM_N, TRM_L, COMBO_END};
-const uint16_t PROGMEM rprn_combo[] = {HRM_E, KC_U, COMBO_END};
-const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
+const uint16_t PROGMEM lprn_combo[] = {HRM_7, TRM_7, COMBO_END};
+const uint16_t PROGMEM rprn_combo[] = {HRM_8, KC_U, COMBO_END};
+const uint16_t PROGMEM super_o_combo[] = {HRM_9, KC_Y, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
+const uint16_t PROGMEM caps_word_combo[] = {HRM_4, KC_G, COMBO_END};
 // const uint16_t PROGMEM cedilla_combo[] = {KC_C, LT_MOU, COMBO_END};
 
 // Right-side horizontal combos.
-const uint16_t PROGMEM tilde_combo[] = {HRM_N, KC_M, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {HRM_7, KC_M, COMBO_END};
 const uint16_t PROGMEM quote_combo[] = {KC_H, KC_COMMA, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {KC_COMMA, TD_DOT, COMBO_END};
 
@@ -596,8 +596,8 @@ bool caps_word_press_user(uint16_t keycode) {
 // Set tapping term per key.
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case HRM_A:
-        case HRM_O:
+        case HRM_1:
+        case HRM_10:
         case TD_AO:
         case TD_DOT:
             return 250;
@@ -830,8 +830,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_BASE] = LAYOUT_split_3x5_3(
-        KC_Q,  KC_W,  KC_F,   TRM_P,  KC_B,      KC_J,   TRM_L,  KC_U,    KC_Y,   KC_MINUS,
-        HRM_A, HRM_R, HRM_S,  HRM_T,  KC_G,      KC_M,   HRM_N,  HRM_E,   HRM_I,  HRM_O,
+        KC_Q,  KC_W,  KC_F,   TRM_4,  KC_B,      KC_J,   TRM_7,  KC_U,    KC_Y,   KC_MINUS,
+        HRM_1, HRM_2, HRM_3,  HRM_4,  KC_G,      KC_M,   HRM_7,  HRM_8,   HRM_9,  HRM_10,
         KC_Z,  KC_X,  MT_C,   LT_MOU, KC_V,      KC_K,   KC_H,   KC_COMM, TD_DOT, KC_PSLS,
                               LT_MED, LT_NAV, LT_ACC,    LT_SYM, LT_NUM, LT_FUN
     ),
