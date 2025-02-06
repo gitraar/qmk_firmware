@@ -41,6 +41,9 @@
 #define TRM_L HYPR_T(KC_L)
 #define TRM_P HYPR_T(KC_P)
 
+// Mod taps
+#define MT_C LT(0, KC_C)
+
 // Layers
 #define _BASE 0
 #define _NAV 1
@@ -308,7 +311,7 @@ const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
-const uint16_t PROGMEM cedilla_combo[] = {KC_C, LT_MOU, COMBO_END};
+// const uint16_t PROGMEM cedilla_combo[] = {KC_C, LT_MOU, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM tilde_combo[] = {HRM_N, KC_M, COMBO_END};
@@ -328,7 +331,7 @@ combo_t key_combos[] = {
     COMBO(rprn_combo, KC_RPRN),
     COMBO(super_o_combo, A(KC_0)),
     COMBO(caps_word_combo, CW_TOGG),
-    COMBO(cedilla_combo, U_CC),
+    // COMBO(cedilla_combo, U_CC),
     COMBO(tilde_combo, U_TILDE),
     COMBO(quote_combo, U_QUOTE),
     COMBO(semicolon_combo, KC_SCLN),
@@ -655,6 +658,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code16(tap_hold->tap);
             }
             break;
+        // Hold intercepts
+        case MT_C:
+            if (!record->tap.count && record->event.pressed) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(A(KC_C)));
+                } else {
+                    tap_code16(A(KC_C));
+                }
+            }
+            return true;
         // Macros
         case U_QUOTE:
             if (record->event.pressed) {
@@ -818,7 +831,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT_split_3x5_3(
         KC_Q,  KC_W,  KC_F,   TRM_P,  KC_B,      KC_J,   TRM_L,  KC_U,    KC_Y,   KC_MINUS,
         HRM_A, HRM_R, HRM_S,  HRM_T,  KC_G,      KC_M,   HRM_N,  HRM_E,   HRM_I,  HRM_O,
-        KC_Z,  KC_X,  KC_C,   LT_MOU, KC_V,      KC_K,   KC_H,   KC_COMM, TD_DOT, KC_PSLS,
+        KC_Z,  KC_X,  MT_C,   LT_MOU, KC_V,      KC_K,   KC_H,   KC_COMM, TD_DOT, KC_PSLS,
                               LT_MED, LT_NAV, LT_ACC,    LT_SYM, LT_NUM, LT_FUN
     ),
 
