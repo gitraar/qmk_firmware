@@ -472,11 +472,17 @@ wherre        -> where
 wierd         -> weird
 
 # Words with apostrophes
-:dont:        -> don't
+:dont         -> don't
 didnt         -> didn't
 doesnt        -> doesn't
 isnt          -> isn't
 wasnt         -> wasn't
+shouldnt      -> shouldn't
+wouldnt       -> wouldn't
+couldnt       -> couldn't
+havent        -> haven't
+youre         -> you're
+youd          -> you'd
 
 # Portuguese words with ção and ções
 acao          -> a'c~ao
@@ -500,4 +506,3 @@ rcoes         -> r'c~oes
 
 # Very common accented Portuguese word
 :ha:          -> h'a
-

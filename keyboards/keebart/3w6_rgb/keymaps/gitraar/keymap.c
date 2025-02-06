@@ -87,6 +87,7 @@ enum custom_keycodes {
     U_GR_A, U_TIL_A, U_TIL_O, // accented characters
     U_AC_I, U_AC_U, // accented characters
     U_CC, U_CAO, U_COES, // "ç", "ção", and "ções"
+    U_QUOTE, U_GRAVE, U_TILDE // accents with space to never act like dead keys
 };
 
 // Tap Dance stuff.
@@ -99,7 +100,6 @@ enum tap_dances {
     U_TD_AN,
     U_TD_AE,
     U_TD_AO,
-    // U_TD_H,
 };
 
 // Select Word keycode.
@@ -308,10 +308,11 @@ const uint16_t PROGMEM super_o_combo[] = {HRM_I, KC_Y, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {HRM_T, KC_G, COMBO_END};
+const uint16_t PROGMEM cedilla_combo[] = {KC_C, LT_MOU, COMBO_END};
 
 // Right-side horizontal combos.
-const uint16_t PROGMEM quote_combo[] = {HRM_N, KC_M, COMBO_END};
-const uint16_t PROGMEM tilde_combo[] = {KC_H, KC_COMMA, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {HRM_N, KC_M, COMBO_END};
+const uint16_t PROGMEM quote_combo[] = {KC_H, KC_COMMA, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {KC_COMMA, TD_DOT, COMBO_END};
 
 // Used combos.
@@ -327,8 +328,9 @@ combo_t key_combos[] = {
     COMBO(rprn_combo, KC_RPRN),
     COMBO(super_o_combo, A(KC_0)),
     COMBO(caps_word_combo, CW_TOGG),
-    COMBO(quote_combo, KC_QUOTE),
-    COMBO(tilde_combo, KC_TILDE),
+    COMBO(cedilla_combo, U_CC),
+    COMBO(tilde_combo, U_TILDE),
+    COMBO(quote_combo, U_QUOTE),
     COMBO(semicolon_combo, KC_SCLN),
 };
 
@@ -530,6 +532,8 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_SPC:
                 return ' '; // Space key.
             case KC_QUOT:
+            case U_QUOTE:
+            case KC_DQUO:
                 return '\''; // Quote key.
         }
     }
@@ -565,8 +569,11 @@ bool caps_word_press_user(uint16_t keycode) {
 
         // Keycodes that continue Caps Word, without shifting.
         case KC_1 ... KC_0:
+        case U_QUOTE:
         case KC_QUOTE:
+        case KC_DQUO:
         case KC_GRAVE:
+        case U_GRAVE:
         case KC_BSPC:
         case KC_DEL:
         case KC_UNDS:
@@ -649,6 +656,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Macros
+        case U_QUOTE:
+            if (record->event.pressed) {
+                tap_code(KC_QUOTE);
+                tap_code(KC_SPACE);
+            }
+            break;
+        case U_GRAVE:
+            if (record->event.pressed) {
+                tap_code(KC_GRAVE);
+                tap_code(KC_SPACE);
+            }
+            break;
+        case U_TILDE:
+            if (record->event.pressed) {
+                tap_code16(KC_TILDE);
+                tap_code(KC_SPACE);
+            }
+            break;
         case U_CC:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -896,7 +921,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,---------------------------------------.    ,---------------------------------------.
     |  F12  |   F7  |   F8  |   F9  | PrScr |    |  ---  |  ---  |  ---  |  ---  |  ---  |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |  F11  |   F4  |   F5  |   F6  | Sleep |    |  ---  |  ---  |  ---  |  ---  | Flash |
+    |  F11  |   F4  |   F5  |   F6  | Sleep |    |  ---  |  ---  |  ---  | ACTog | Flash |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |  F10  |   F1  |   F2  |   F3  | RMTog |    |  ---  |  ---  |  ---  |  ---  |  ---  |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
@@ -907,7 +932,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_FUN] = LAYOUT_split_3x5_3(
         KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     _______, _______, _______, _______, _______,
         KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    _______, _______, _______, _______, QK_BOOT,
-        KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     _______, _______, _______, _______, _______,
+        KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     _______, _______, _______, _______, AC_TOGG,
                                QK_LEAD, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
