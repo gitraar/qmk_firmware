@@ -16,7 +16,7 @@
 #define COPY G(KC_C)
 #define CUT G(KC_X)
 #define PASTE G(KC_V)
-#define CLIP_HIST G(A(KC_BSLS))
+#define CLIP_HIST G(A(KC_BACKSLASH))
 #define LOCK_SCR C(G(KC_Q))
 #define SPC_LEFT C(KC_LEFT)
 #define SPC_RIGHT C(KC_RIGHT)
@@ -24,25 +24,10 @@
 #define REDO G(S(KC_Z))
 
 // Web Browser commands
-#define BACK G(KC_LBRC)
-#define FORWARD G(KC_RBRC)
-#define TAB_UP G(S(KC_LBRC))
-#define TAB_DOWN G(S(KC_RBRC))
-
-// Home row and top row mods
-#define HRM_1 LCTL_T(KC_A)
-#define HRM_2 LALT_T(KC_R)
-#define HRM_3 LGUI_T(KC_S)
-#define HRM_4 LSFT_T(KC_T)
-#define HRM_7 LSFT_T(KC_N)
-#define HRM_8 RGUI_T(KC_E)
-#define HRM_9 LALT_T(KC_I)
-#define HRM_10 RCTL_T(KC_O)
-#define TRM_4 HYPR_T(KC_P)
-#define TRM_7 HYPR_T(KC_L)
-
-// Mod taps
-#define MT_C LT(0, KC_C)
+#define BACK G(KC_LEFT_BRACKET)
+#define FORWARD G(KC_RIGHT_BRACKET)
+#define TAB_UP G(S(KC_LEFT_BRACKET))
+#define TAB_DOWN G(S(KC_RIGHT_BRACKET))
 
 // Layers
 #define _BASE 0
@@ -55,13 +40,17 @@
 #define _ACCENTED 7
 
 // Layer taps
-#define LT_NAV LT(_NAV,KC_BSPC)
+#define LT_NAV LT(_NAV,KC_R)
 #define LT_ACC LT(_ACCENTED,KC_TAB)
-#define LT_MED LT(_MEDIA,KC_ESC)
-#define LT_NUM LT(_NUM,KC_SPC)
-#define LT_SYM LT(_SYM,KC_ENT)
-#define LT_FUN LT(_FUN,KC_DEL)
-#define LT_MOU LT(_MOUSE,KC_D)
+#define LT_MED LT(_MEDIA,KC_BACKSPACE)
+#define LT_NUM LT(_NUM,KC_SPACE)
+#define LT_SYM LT(_SYM,KC_ENTER)
+#define LT_FUN LT(_FUN,KC_ESCAPE)
+#define LT_MOU LT(_MOUSE,KC_M)
+
+// Mod taps
+#define MT_F LT(0, KC_F)
+#define MT_P LT(0, KC_P)
 
 // Tap dances
 #define TD_DOT TD(DOT)
@@ -72,6 +61,51 @@
 #define TD_AN TD(U_TD_AN)
 #define TD_AE TD(U_TD_AE)
 #define TD_AO TD(U_TD_AO)
+
+// Key matrix assigments
+#define UM_L11 MT_F
+#define UM_L12 MT_P
+#define UM_L13 KC_D
+#define UM_L14 HYPR_T(KC_L)
+#define UM_L15 KC_X
+
+#define UM_L21 LCTL_T(KC_S)
+#define UM_L22 LALT_T(KC_N)
+#define UM_L23 LGUI_T(KC_T)
+#define UM_L24 LSFT_T(KC_H)
+#define UM_L25 KC_K
+
+#define UM_L31 KC_V
+#define UM_L32 KC_W
+#define UM_L33 KC_G
+#define UM_L34 LT_MOU
+#define UM_L35 KC_J
+
+#define UM_L41 LT_MED
+#define UM_L42 LT_NAV
+#define UM_L43 LT_ACC
+
+#define UM_R11 KC_SCLN
+#define UM_R12 HYPR_T(KC_U)
+#define UM_R13 KC_O
+#define UM_R14 KC_Y
+#define UM_R15 KC_B
+
+#define UM_R21 KC_COMMA
+#define UM_R22 LSFT_T(KC_A)
+#define UM_R23 RGUI_T(KC_E)
+#define UM_R24 LALT_T(KC_I)
+#define UM_R25 RCTL_T(KC_C)
+
+#define UM_R31 KC_MINUS
+#define UM_R32 KC_DOT
+#define UM_R33 U_QUOTE
+#define UM_R34 U_CC
+#define UM_R35 KC_KP_SLASH
+
+#define UM_R41 LT_SYM
+#define UM_R42 LT_NUM
+#define UM_R43 LT_FUN
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -89,13 +123,12 @@ enum custom_keycodes {
     SELWORD,
     U_GR_A, U_TIL_A, U_TIL_O, // accented characters
     U_AC_I, U_AC_U, // accented characters
-    U_CC, U_CAO, U_COES, // "ç", "ção", and "ções"
+    U_CC, // "ç"
     U_QUOTE, U_GRAVE, U_TILDE // accents with space to never act like dead keys
 };
 
 // Tap Dance stuff.
 enum tap_dances {
-    DOT,
     PGUP,
     PGDOWN,
     HOME,
@@ -113,21 +146,6 @@ uint16_t SELECT_WORD_KEYCODE = SELWORD;
 ### Tap Dances ###
 ##################
 */
-
-// Function to provide three taps on the Dot key.
-void dot_taps(tap_dance_state_t *state, void *user_data) {
-    if (state->count == 1) {
-        tap_code16(KC_DOT);
-    } else if (state->count == 2) {
-        tap_code16(KC_COLN);
-    } else if (state->count == 3) {
-        register_mods(MOD_BIT(KC_LALT));
-        tap_code16(KC_SCLN); // This produces an ellipsis.
-        unregister_mods(MOD_BIT(KC_LALT));
-    } else {
-        reset_tap_dance(state);
-    }
-}
 
 // Code to enable tap-and-hold tap dances.
 typedef struct {
@@ -164,7 +182,7 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
 // Code for tap dances with advanded keycodes
-void n_taps(tap_dance_state_t *state, void *user_data) {
+void an_taps(tap_dance_state_t *state, void *user_data) {
     uint8_t mod_state = get_mods();
     if (state->count == 1) {
         if (is_caps_word_on()) {
@@ -201,7 +219,7 @@ void n_taps(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void e_taps(tap_dance_state_t *state, void *user_data) {
+void ae_taps(tap_dance_state_t *state, void *user_data) {
     uint8_t mod_state = get_mods();
     if (state->count == 1) {
         if (is_caps_word_on()) {
@@ -238,7 +256,7 @@ void e_taps(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void o_taps(tap_dance_state_t *state, void *user_data) {
+void ao_taps(tap_dance_state_t *state, void *user_data) {
     uint8_t mod_state = get_mods();
     if (state->count == 1) {
         if (is_caps_word_on()) {
@@ -277,14 +295,13 @@ void o_taps(tap_dance_state_t *state, void *user_data) {
 
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
-    [DOT] = ACTION_TAP_DANCE_FN(dot_taps),
     [PGUP] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
-    [U_TD_AN] = ACTION_TAP_DANCE_FN(n_taps),
-    [U_TD_AE] = ACTION_TAP_DANCE_FN(e_taps),
-    [U_TD_AO] = ACTION_TAP_DANCE_FN(o_taps),
+    [U_TD_AN] = ACTION_TAP_DANCE_FN(an_taps),
+    [U_TD_AE] = ACTION_TAP_DANCE_FN(ae_taps),
+    [U_TD_AO] = ACTION_TAP_DANCE_FN(ao_taps),
 };
 
 /*
@@ -295,28 +312,25 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // Combo definitions.
 // Left-side vertical combos.
-const uint16_t PROGMEM cut_combo[] = {HRM_2, KC_W, COMBO_END};
-const uint16_t PROGMEM copy_combo[] = {HRM_3, KC_F, COMBO_END};
-const uint16_t PROGMEM paste_combo[] = {HRM_4, TRM_4, COMBO_END};
-const uint16_t PROGMEM clip_hist_combo[] = {KC_G, KC_B, COMBO_END};
+const uint16_t PROGMEM cut_combo[] = {UM_L12, UM_L22, COMBO_END};
+const uint16_t PROGMEM copy_combo[] = {UM_L13, UM_L23, COMBO_END};
+const uint16_t PROGMEM paste_combo[] = {UM_L14, UM_L24, COMBO_END};
+const uint16_t PROGMEM clip_hist_combo[] = {UM_L15, UM_L25, COMBO_END};
 
-const uint16_t PROGMEM percentage_combo[] = {HRM_3, KC_C, COMBO_END};
-const uint16_t PROGMEM at_combo[] = {HRM_4, LT_MOU, COMBO_END};
-const uint16_t PROGMEM astr_combo[] = {KC_G, KC_V, COMBO_END};
+const uint16_t PROGMEM percentage_combo[] = {UM_L23, UM_L33, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {UM_L24, UM_L34, COMBO_END};
+const uint16_t PROGMEM astr_combo[] = {UM_L25, UM_L35, COMBO_END};
 
 // Right-side vertical combos.
-const uint16_t PROGMEM lprn_combo[] = {HRM_7, TRM_7, COMBO_END};
-const uint16_t PROGMEM rprn_combo[] = {HRM_8, KC_U, COMBO_END};
-const uint16_t PROGMEM super_o_combo[] = {HRM_9, KC_Y, COMBO_END};
+const uint16_t PROGMEM lprn_combo[] = {UM_R12, UM_R22, COMBO_END};
+const uint16_t PROGMEM rprn_combo[] = {UM_R13, UM_R23, COMBO_END};
+const uint16_t PROGMEM super_o_combo[] = {UM_R14, UM_R24, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM caps_word_combo[] = {HRM_4, KC_G, COMBO_END};
-// const uint16_t PROGMEM cedilla_combo[] = {KC_C, LT_MOU, COMBO_END};
+const uint16_t PROGMEM caps_word_combo[] = {UM_L24, UM_L25, COMBO_END};
 
 // Right-side horizontal combos.
-const uint16_t PROGMEM tilde_combo[] = {HRM_7, KC_M, COMBO_END};
-const uint16_t PROGMEM quote_combo[] = {KC_H, KC_COMMA, COMBO_END};
-const uint16_t PROGMEM semicolon_combo[] = {KC_COMMA, TD_DOT, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {UM_R21, UM_R22, COMBO_END};
 
 // Used combos.
 combo_t key_combos[] = {
@@ -331,10 +345,7 @@ combo_t key_combos[] = {
     COMBO(rprn_combo, KC_RPRN),
     COMBO(super_o_combo, A(KC_0)),
     COMBO(caps_word_combo, CW_TOGG),
-    // COMBO(cedilla_combo, U_CC),
     COMBO(tilde_combo, U_TILDE),
-    COMBO(quote_combo, U_QUOTE),
-    COMBO(semicolon_combo, KC_SCLN),
 };
 
 /*
@@ -345,10 +356,11 @@ combo_t key_combos[] = {
 
 // Key overrides.
 const key_override_t super_a = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, A(KC_0), A(KC_9), ~0, MOD_MASK_CAG);
-const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, TD_DOT, KC_EXLM, ~0, MOD_MASK_CAG);
-const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_ALT, TD_DOT, A(KC_1), ~0, MOD_MASK_CSG);
+const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_DOT, KC_EXLM, ~0, MOD_MASK_CAG);
+const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SA, KC_DOT, A(KC_1), ~0, MOD_MASK_CG);
+const key_override_t ellipsis = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_DOT, A(KC_SCLN), ~0, MOD_MASK_CSG);
 const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMMA, KC_QUES, ~0, MOD_MASK_CAG);
-const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_COMMA, A(S(KC_SLSH)), ~0, MOD_MASK_CSG);
+const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_SA, KC_COMMA, A(S(KC_SLSH)), ~0, MOD_MASK_CG);
 const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
 const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
 const key_override_t open_fancy_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LPRN, A(KC_RBRC), ~0, MOD_MASK_CAG);
@@ -361,6 +373,7 @@ const key_override_t *key_overrides[] = {
     &super_a,
     &exclamation,
     &inv_exclamation,
+    &ellipsis,
     &question,
     &inv_question,
     &gte,
@@ -514,8 +527,8 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
         switch (keycode) {
             case KC_A ... KC_Z:
                 return 'a'; // Letter key.
-            case KC_DOT: // . is punctuation, Shift . is a symbol (>)
-                return !shifted ? '.' : '#';
+            // case KC_DOT: // . is punctuation, Shift . is a symbol (>)
+                // return !shifted ? '.' : '#';
             case KC_1:
             case KC_SLSH:
                 return shifted ? '.' : '#';
@@ -530,7 +543,7 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
                 return '#'; // Symbol key.
             case KC_COMMA:
                 return shifted ? '.' : '#'; // Shift-, is punctuation (?), but , is just a symbol.
-            case TD_DOT:
+            case KC_DOT:
                 return shifted ? '.' : '.'; // Both . and ! are punctuation.
             case KC_SPC:
                 return ' '; // Space key.
@@ -564,8 +577,6 @@ bool caps_word_press_user(uint16_t keycode) {
         case U_AC_I:
         case U_AC_U:
         case U_CC:
-        case U_CAO:
-        case U_COES:
         case KC_MINS:
             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
             return true;
@@ -596,10 +607,8 @@ bool caps_word_press_user(uint16_t keycode) {
 // Set tapping term per key.
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case HRM_1:
-        case HRM_10:
-        case TD_AO:
-        case TD_DOT:
+        case UM_L21:
+        case UM_R25:
             return 250;
         default:
             return TAPPING_TERM;
@@ -659,12 +668,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Hold intercepts
-        case MT_C:
+        case MT_F:
             if (!record->tap.count && record->event.pressed) {
                 if (is_caps_word_on()) {
-                    tap_code16(S(A(KC_C)));
+                    tap_code16(S(KC_Z));
                 } else {
-                    tap_code16(A(KC_C));
+                    tap_code16(KC_Z);
+                }
+                return false;
+            }
+            return true;
+        case MT_P:
+            if (!record->tap.count && record->event.pressed) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(KC_Q));
+                } else {
+                    tap_code16(KC_Q);
                 }
                 return false;
             }
@@ -694,38 +713,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code16(S(A(KC_C)));
                 } else {
                     tap_code16(A(KC_C));
-                }
-            }
-            break;
-        case U_CAO:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(A(KC_C)));
-                    tap_code16(KC_TILDE);
-                    tap_code16(S(KC_A));
-                    tap_code16(S(KC_O));
-                } else {
-                    tap_code16(A(KC_C));
-                    tap_code16(KC_TILDE);
-                    tap_code(KC_A);
-                    tap_code(KC_O);
-                }
-            }
-            break;
-        case U_COES:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(A(KC_C)));
-                    tap_code16(KC_TILDE);
-                    tap_code16(S(KC_O));
-                    tap_code16(S(KC_E));
-                    tap_code16(S(KC_S));
-                } else {
-                    tap_code16(A(KC_C));
-                    tap_code16(KC_TILDE);
-                    tap_code(KC_O);
-                    tap_code(KC_E);
-                    tap_code(KC_S);
                 }
             }
             break;
@@ -819,21 +806,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
     ,---------------------------------------.    ,---------------------------------------.
-    |   q   |   w   |   f   |   p   |   b   |    |   j   |   l   |   u   |   y   |   -   |
+    |   f   |   p   |   d   |   l   |   x   |    |   ;   |   u   |   o   |   b   |   z   |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |   a   |   r   |   s   |   t   |   g   |    |   m   |   n   |   e   |   i   |   o   |
+    |   s   |   n   |   t   |   h   |   k   |    |   ,   |   a   |   e   |   i   |   c   |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |   z   |   x   |   c   |   d   |   v   |    |   k   |   h   |   ,   |   .   |   /   |
+    |   v   |   w   |   g   |   m   |   j   |    |   -   |   .   |   '   |   ç   |   /   |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
-                    |  Esc  |  Bspc |  Tab  |    |  Ent  |  Spc  |  Del  |
+                    |  Bspc |   r   |  Tab  |    | Enter | Space |  Del  |
                     `-----------------------'    `-----------------------'
 */
 
     [_BASE] = LAYOUT_split_3x5_3(
-        KC_Q,  KC_W,  KC_F,   TRM_4,  KC_B,      KC_J,   TRM_7,  KC_U,    KC_Y,   KC_MINUS,
-        HRM_1, HRM_2, HRM_3,  HRM_4,  KC_G,      KC_M,   HRM_7,  HRM_8,   HRM_9,  HRM_10,
-        KC_Z,  KC_X,  MT_C,   LT_MOU, KC_V,      KC_K,   KC_H,   KC_COMM, TD_DOT, KC_PSLS,
-                              LT_MED, LT_NAV, LT_ACC,    LT_SYM, LT_NUM, LT_FUN
+        UM_L11, UM_L12, UM_L13, UM_L14, UM_L15,    UM_R11, UM_R12, UM_R13, UM_R14, UM_R15,
+        UM_L21, UM_L22, UM_L23, UM_L24, UM_L25,    UM_R21, UM_R22, UM_R23, UM_R24, UM_R25,
+        UM_L31, UM_L32, UM_L33, UM_L34, UM_L35,    UM_R31, UM_R32, UM_R33, UM_R34, UM_R35,
+                                UM_L41, UM_L42, UM_L43,    UM_R41, UM_R42, UM_R43
     ),
 
 /* Navigation
@@ -901,15 +888,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |   ^   |   1   |   2   |   3   |   =   |    |  ---  |  ---  |  ---  |  ---  |  ---  |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
-                    |   0   |  Bspc |  Ent  |    |       |OOOOOOO|       |
+                    |  Bspc |   0   |  Ent  |    |       |OOOOOOO|       |
                     `-----------------------'    `-----------------------'
 */
 
     [_NUM] = LAYOUT_split_3x5_3(
-        KC_PSLS, KC_7, KC_8,  KC_9,    KC_PAST,    _______, _______, _______, _______, _______,
-        KC_PMNS, KC_4, KC_5,  KC_6,    KC_PPLS,    _______, _______, _______, _______, _______,
-        KC_CIRC, KC_1, KC_2,  KC_3,    KC_PEQL,    _______, _______, _______, _______, _______,
-                               KC_P0, KC_BSPC, KC_ENT,     XXXXXXX, XXXXXXX, XXXXXXX
+        KC_PSLS, KC_7, KC_8,    KC_9,  KC_PAST,    _______, _______, _______, _______, _______,
+        KC_PMNS, KC_4, KC_5,    KC_6,  KC_PPLS,    _______, _______, _______, _______, _______,
+        KC_CIRC, KC_1, KC_2,    KC_3,  KC_PEQL,    _______, _______, _______, _______, _______,
+                               KC_BSPC, KC_P0, KC_ENT,     XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
 /* Symbols
@@ -926,7 +913,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_SYM] = LAYOUT_split_3x5_3(
         XXXXXXX, KC_BSLS, KC_LT,   KC_GT,   A(S(KC_K)),    _______, _______, _______, _______, _______,
-        XXXXXXX, KC_PIPE, KC_LBRC, KC_RBRC, KC_DOLLAR,     _______, _______, _______, _______, _______,
+        XXXXXXX, KC_PIPE, KC_LBRC, KC_RBRC, KC_DLR,        _______, _______, _______, _______, _______,
         XXXXXXX, XXXXXXX, KC_LCBR, KC_RCBR, A(KC_3),       _______, _______, _______, _______, _______,
                                   KC_AMPR, KC_HASH, A(KC_AT),      XXXXXXX, XXXXXXX, XXXXXXX
     ),
@@ -952,20 +939,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Accented Characters
     ,---------------------------------------.    ,---------------------------------------.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   ú   |       |   õ   |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |   õ   |       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |   á   |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |   ó   |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |  ---  |  ---  |   ç   |  ---  |  ---  |    |       |   ç   |  ção  |  ções |       |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |  ---  |  ---  |       |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
                     |       |       |OOOOOOO|    |       |       |       |
                     `-----------------------'    `-----------------------'
 */
 
     [_ACCENTED] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    _______, U_TIL_A, U_AC_U, _______, U_TIL_O,
-        TD_AN,   _______, _______, _______, _______,    U_GR_A,  TD_AN,   TD_AE,  U_AC_I,  TD_AO,
-        _______, _______, U_CC,    _______, _______,    _______, U_CC,    U_CAO,  U_COES,  _______,
+        _______, _______, _______, _______, _______,    _______, U_AC_U,  TD_AO,   U_TIL_O, _______,
+        _______, _______, _______, _______, _______,    U_GR_A,  TD_AN,   TD_AE,   U_AC_I,  _______,
+        _______, _______, _______, _______, _______,    _______, U_TIL_A, _______, _______, _______,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    _______, _______, _______
     ),
 };
