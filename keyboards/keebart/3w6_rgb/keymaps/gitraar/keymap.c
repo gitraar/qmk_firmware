@@ -54,49 +54,49 @@
 #define TD_AO TD(U_TD_AO)
 
 // Key matrix assigments
-#define UM_L11 MT_ZF
-#define UM_L12 MT_QuP
-#define UM_L13 KC_D
-#define UM_L14 HYPR_T(KC_L)
-#define UM_L15 KC_X
+#define UM_LT5 MT_ZF
+#define UM_LT4 MT_QuP
+#define UM_LT3 KC_D
+#define UM_LT2 HYPR_T(KC_L)
+#define UM_LT1 KC_X
 
-#define UM_L21 LCTL_T(KC_S)
-#define UM_L22 LALT_T(KC_N)
-#define UM_L23 LGUI_T(KC_T)
-#define UM_L24 LSFT_T(KC_H)
-#define UM_L25 KC_K
+#define UM_LM5 LCTL_T(KC_S)
+#define UM_LM4 LALT_T(KC_N)
+#define UM_LM3 LGUI_T(KC_T)
+#define UM_LM2 LSFT_T(KC_H)
+#define UM_LM1 KC_K
 
-#define UM_L31 KC_V
-#define UM_L32 KC_W
-#define UM_L33 KC_G
-#define UM_L34 LT(_MOUSE, KC_M)
-#define UM_L35 KC_J
+#define UM_LB5 KC_V
+#define UM_LB4 KC_W
+#define UM_LB3 KC_G
+#define UM_LB2 LT(_MOUSE, KC_M)
+#define UM_LB1 KC_J
 
-#define UM_L41 LT(_MEDIA, KC_BACKSPACE)
-#define UM_L42 LT(_NAV, KC_R)
-#define UM_L43 LT(_ACCENTED, KC_TAB)
+#define UM_LH3 LT(_MEDIA, KC_BACKSPACE)
+#define UM_LH2 LT(_NAV, KC_R)
+#define UM_LH1 LT(_ACCENTED, KC_TAB)
 
-#define UM_R11 KC_SCLN
-#define UM_R12 HYPR_T(KC_U)
-#define UM_R13 KC_O
-#define UM_R14 KC_Y
-#define UM_R15 KC_B
+#define UM_RT1 KC_SCLN
+#define UM_RT2 HYPR_T(KC_U)
+#define UM_RT3 KC_O
+#define UM_RT4 KC_Y
+#define UM_RT5 KC_B
 
-#define UM_R21 KC_COMMA
-#define UM_R22 LSFT_T(KC_A)
-#define UM_R23 RGUI_T(KC_E)
-#define UM_R24 LALT_T(KC_I)
-#define UM_R25 RCTL_T(KC_C)
+#define UM_RM1 KC_COMMA
+#define UM_RM2 LSFT_T(KC_A)
+#define UM_RM3 RGUI_T(KC_E)
+#define UM_RM4 LALT_T(KC_I)
+#define UM_RM5 RCTL_T(KC_C)
 
-#define UM_R31 KC_MINUS
-#define UM_R32 KC_DOT
-#define UM_R33 U_QUOTE
-#define UM_R34 U_CC
-#define UM_R35 KC_KP_SLASH
+#define UM_RB1 KC_MINUS
+#define UM_RB2 KC_DOT
+#define UM_RB3 U_QUOTE
+#define UM_RB4 U_CC
+#define UM_RB5 KC_KP_SLASH
 
-#define UM_R41 LT(_SYM, KC_ENTER)
-#define UM_R42 LT(_NUM, KC_SPACE)
-#define UM_R43 LT(_FUN, KC_DELETE)
+#define UM_RH1 LT(_SYM, KC_ENTER)
+#define UM_RH2 LT(_NUM, KC_SPACE)
+#define UM_RH3 LT(_FUN, KC_DELETE)
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -303,26 +303,26 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // Combo definitions.
 // Left-side vertical combos.
-const uint16_t PROGMEM cut_combo[] = {UM_L12, UM_L22, COMBO_END};
-const uint16_t PROGMEM copy_combo[] = {UM_L13, UM_L23, COMBO_END};
-const uint16_t PROGMEM paste_combo[] = {UM_L14, UM_L24, COMBO_END};
-const uint16_t PROGMEM clip_hist_combo[] = {UM_L15, UM_L25, COMBO_END};
+const uint16_t PROGMEM cut_combo[] = {UM_LT4, UM_LM4, COMBO_END};
+const uint16_t PROGMEM copy_combo[] = {UM_LT3, UM_LM3, COMBO_END};
+const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
+const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
-const uint16_t PROGMEM percentage_combo[] = {UM_L23, UM_L33, COMBO_END};
-const uint16_t PROGMEM at_combo[] = {UM_L24, UM_L34, COMBO_END};
-const uint16_t PROGMEM astr_combo[] = {UM_L25, UM_L35, COMBO_END};
+const uint16_t PROGMEM percentage_combo[] = {UM_LM3, UM_LB3, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
+const uint16_t PROGMEM astr_combo[] = {UM_LM1, UM_LB1, COMBO_END};
 
 // Right-side vertical combos.
-const uint16_t PROGMEM lprn_combo[] = {UM_R12, UM_R22, COMBO_END};
-const uint16_t PROGMEM rprn_combo[] = {UM_R13, UM_R23, COMBO_END};
-const uint16_t PROGMEM super_o_combo[] = {UM_R14, UM_R24, COMBO_END};
+const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
+const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
+const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM esc_combo[] = {UM_L23, UM_L24, COMBO_END};
-const uint16_t PROGMEM caps_word_combo[] = {UM_L24, UM_L25, COMBO_END};
+const uint16_t PROGMEM esc_combo[] = {UM_LM3, UM_LM2, COMBO_END};
+const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 // Right-side horizontal combos.
-const uint16_t PROGMEM tilde_combo[] = {UM_R21, UM_R22, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 
 // Used combos.
 combo_t key_combos[] = {
@@ -599,8 +599,8 @@ bool caps_word_press_user(uint16_t keycode) {
 // Set tapping term per key.
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case UM_L21:
-        case UM_R25:
+        case UM_LM5:
+        case UM_RM5:
             return 250;
         default:
             return TAPPING_TERM;
@@ -819,10 +819,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_BASE] = LAYOUT_split_3x5_3(
-        UM_L11, UM_L12, UM_L13, UM_L14, UM_L15,    UM_R11, UM_R12, UM_R13, UM_R14, UM_R15,
-        UM_L21, UM_L22, UM_L23, UM_L24, UM_L25,    UM_R21, UM_R22, UM_R23, UM_R24, UM_R25,
-        UM_L31, UM_L32, UM_L33, UM_L34, UM_L35,    UM_R31, UM_R32, UM_R33, UM_R34, UM_R35,
-                                UM_L41, UM_L42, UM_L43,    UM_R41, UM_R42, UM_R43
+        UM_LT5, UM_LT4, UM_LT3, UM_LT2, UM_LT1,    UM_RT1, UM_RT2, UM_RT3, UM_RT4, UM_RT5,
+        UM_LM5, UM_LM4, UM_LM3, UM_LM2, UM_LM1,    UM_RM1, UM_RM2, UM_RM3, UM_RM4, UM_RM5,
+        UM_LB5, UM_LB4, UM_LB3, UM_LB2, UM_LB1,    UM_RB1, UM_RB2, UM_RB3, UM_RB4, UM_RB5,
+                                UM_LH3, UM_LH2, UM_LH1,    UM_RH1, UM_RH2, UM_RH3
     ),
 
 /* Navigation
