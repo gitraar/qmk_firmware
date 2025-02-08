@@ -22,6 +22,7 @@
 #define SPC_RIGHT C(KC_RIGHT)
 #define UNDO G(KC_Z)
 #define REDO G(S(KC_Z))
+#define RAYCAST G(KC_SPC)
 
 // Web Browser commands
 #define BACK G(KC_LEFT_BRACKET)
@@ -653,6 +654,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         rgb_auto_disabled = false;
     }
     uint8_t mod_state = get_mods();
+    uint8_t new_mod_state = mod_state;
     tap_dance_action_t *action;
     switch (keycode) {
         // Advanced tap dances
@@ -690,23 +692,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code(KC_Z);
                 return false;
             }
-            return true;
+            break;
         case MT_QP:
             if (!record->tap.count && record->event.pressed) {
                 if (mod_state & MOD_MASK_GUI) {
                     tap_code(KC_Q);
                 } else if (is_caps_word_on()) {
-                    tap_code16(S(KC_Q));
-                    tap_code16(S(KC_U));
+                    if (mod_state & MOD_MASK_ALT) {
+                        new_mod_state &= ~MOD_MASK_ALT; // Clear Alt from mod_state
+                        set_mods(new_mod_state); // Apply the updated mod_state
+                        tap_code16(S(KC_Q));
+                        set_mods(mod_state);
+                    } else {
+                        tap_code16(S(KC_Q));
+                        tap_code16(S(KC_U));
+                    }
                 } else {
-                    tap_code(KC_Q);
-                    clear_mods();
-                    tap_code(KC_U);
-                    set_mods(mod_state);
+                    if (mod_state & MOD_MASK_ALT) {
+                        new_mod_state &= ~MOD_MASK_ALT;
+                        set_mods(new_mod_state);
+                        tap_code(KC_Q);
+                        set_mods(mod_state);
+                    } else {
+                        tap_code(KC_Q);
+                        clear_mods();
+                        tap_code(KC_U);
+                        set_mods(mod_state);
+                    }
                 }
                 return false;
             }
-            return true;
+            break;
         // Macros
         case U_QUOTE:
             if (record->event.pressed) {
@@ -861,10 +877,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_NAV] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,   KC_UP,   TD_END,    TD_PGUP,
-        _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,   KC_DOWN, KC_RIGHT,  TD_PGDN,
-        _______, _______, _______, _______, _______,    BACK,      SPC_LEFT,  SELWORD, SPC_RIGHT, FORWARD,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), G(KC_SPC), UNDO
+        _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
+        _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
+        _______, _______, _______, _______, _______,    BACK,      SPC_LEFT, SELWORD, SPC_RIGHT, FORWARD,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST,  UNDO
     ),
 
 /* Mouse Keys
@@ -920,7 +936,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_NUM] = LAYOUT_split_3x5_3(
         KC_PSLS, KC_7, KC_8,    KC_9,  KC_PAST,    _______, _______, _______, _______, _______,
         KC_PMNS, KC_4, KC_5,    KC_6,  KC_PPLS,    _______, _______, _______, _______, _______,
-        U_CIRC,  KC_1, KC_2,    KC_3,  KC_PEQL,    _______, _______, _______, _______, _______,
+        XXXXXXX, KC_1, KC_2,    KC_3,  KC_PEQL,    _______, _______, _______, _______, _______,
                                KC_BSPC, KC_P0, KC_ENT,     XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
