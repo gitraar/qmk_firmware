@@ -41,7 +41,7 @@
 
 // Mod taps
 #define MT_ZF LT(0, KC_F)
-#define MT_QuP LT(0, KC_P)
+#define MT_QP LT(0, KC_P)
 
 // Tap dances
 #define TD_DOT TD(DOT)
@@ -55,7 +55,7 @@
 
 // Key matrix assigments
 #define UM_LT5 MT_ZF
-#define UM_LT4 MT_QuP
+#define UM_LT4 MT_QP
 #define UM_LT3 KC_D
 #define UM_LT2 HYPR_T(KC_L)
 #define UM_LT1 KC_X
@@ -318,7 +318,7 @@ const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM esc_combo[] = {UM_LM3, UM_LM2, COMBO_END};
+const uint16_t PROGMEM esc_combo[] = {UM_LB3, UM_LB2, COMBO_END};
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 // Right-side horizontal combos.
@@ -670,9 +670,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             return true;
-        case MT_QuP:
+        case MT_QP:
             if (!record->tap.count && record->event.pressed) {
-                if (is_caps_word_on()) {
+                if (mod_state & MOD_MASK_GUI) {
+                    tap_code(KC_Q);
+                } else if (is_caps_word_on()) {
                     tap_code16(S(KC_Q));
                     tap_code16(S(KC_U));
                 } else {
@@ -897,7 +899,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_NUM] = LAYOUT_split_3x5_3(
         KC_PSLS, KC_7, KC_8,    KC_9,  KC_PAST,    _______, _______, _______, _______, _______,
         KC_PMNS, KC_4, KC_5,    KC_6,  KC_PPLS,    _______, _______, _______, _______, _______,
-        U_CIRC, KC_1, KC_2,    KC_3,  KC_PEQL,    _______, _______, _______, _______, _______,
+        U_CIRC,  KC_1, KC_2,    KC_3,  KC_PEQL,    _______, _______, _______, _______, _______,
                                KC_BSPC, KC_P0, KC_ENT,     XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
