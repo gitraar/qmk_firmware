@@ -49,7 +49,7 @@
 #define TD_PGDN TD(PGDOWN)
 #define TD_HOME TD(HOME)
 #define TD_END TD(END)
-#define TD_AN TD(U_TD_AN)
+#define TD_AA TD(U_TD_AA)
 #define TD_AE TD(U_TD_AE)
 #define TD_AO TD(U_TD_AO)
 
@@ -124,7 +124,7 @@ enum tap_dances {
     PGDOWN,
     HOME,
     END,
-    U_TD_AN,
+    U_TD_AA,
     U_TD_AE,
     U_TD_AO,
 };
@@ -290,7 +290,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
-    [U_TD_AN] = ACTION_TAP_DANCE_FN(an_taps),
+    [U_TD_AA] = ACTION_TAP_DANCE_FN(an_taps),
     [U_TD_AE] = ACTION_TAP_DANCE_FN(ae_taps),
     [U_TD_AO] = ACTION_TAP_DANCE_FN(ao_taps),
 };
@@ -503,6 +503,15 @@ uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next
     }
 }
 
+uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
+    switch (tap_hold_keycode) {
+        case MT_ZF:
+        case MT_QP:
+            return 0;  // Bypass Achordion for these keys.
+    }
+    return 800;  // Otherwise use a timeout of 800 ms.
+}
+
 /*
 ##############################
 ### Sentence Case Settings ###
@@ -561,9 +570,11 @@ bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case KC_A ... KC_Z:
-        case TD_AN:
+        case TD_AA:
         case TD_AE:
         case TD_AO:
+        case MT_ZF:
+        case MT_QP:
         case U_GR_A:
         case U_TIL_A:
         case U_TIL_O:
@@ -599,9 +610,12 @@ bool caps_word_press_user(uint16_t keycode) {
 // Set tapping term per key.
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case UM_LT5:
-        case UM_LT4:
-            return 100;
+        case TD_AA:
+        case TD_AE:
+        case TD_AO:
+        case MT_ZF:
+        case MT_QP:
+            return 150;
         default:
             return TAPPING_TERM;
     }
@@ -673,11 +687,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         // Hold intercepts
         case MT_ZF:
             if (!record->tap.count && record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(KC_Z));
-                } else {
-                    tap_code(KC_Z);
-                }
+                tap_code(KC_Z);
                 return false;
             }
             return true;
@@ -966,7 +976,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_ACCENTED] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   U_TIL_O, XXXXXXX,
-        _______, _______, _______, _______, _______,    U_GR_A,  TD_AN,   TD_AE,   U_AC_I,  XXXXXXX,
+        _______, _______, _______, _______, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  XXXXXXX,
         _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, XXXXXXX, XXXXXXX, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
     ),
