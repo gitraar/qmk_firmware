@@ -28,9 +28,11 @@
 
 // Suggested for mod taps to work well
 #define PERMISSIVE_HOLD
-#define TAPPING_TERM 150
+#define TAPPING_TERM 500
 #define TAPPING_TERM_PER_KEY
 #define COMBO_TERM 40
+#define QUICK_TAP_TERM 0
+#define QUICK_TAP_TERM_PER_KEY
 #define ACHORDION_STREAK
 
 // RGB stuff

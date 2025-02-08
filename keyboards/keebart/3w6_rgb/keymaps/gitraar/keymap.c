@@ -591,19 +591,30 @@ bool caps_word_press_user(uint16_t keycode) {
 }
 
 /*
-#############################
-### Tapping Term Settings ###
-#############################
+########################
+### General Settings ###
+########################
 */
 
 // Set tapping term per key.
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case UM_LM5:
-        case UM_RM5:
-            return 250;
+        case UM_LT5:
+        case UM_LT4:
+            return 100;
         default:
             return TAPPING_TERM;
+    }
+}
+
+uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case UM_LH3:
+        case UM_RH2:
+        case UM_RH3:
+            return 120;
+        default:
+            return QUICK_TAP_TERM;
     }
 }
 
