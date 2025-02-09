@@ -44,6 +44,7 @@
 #define MT_ZP LT(0, KC_P)
 #define MT_QF LT(0, KC_F)
 #define MT_QUK LT(0, KC_K)
+#define MT_ALT_REPEAT LSFT_T(KC_COMMA)
 
 // Tap dances
 #define TD_DOT TD(DOT)
@@ -78,7 +79,9 @@
 #define UM_LM5 LCTL_T(KC_S)
 #define UM_LM4 LALT_T(KC_N)
 #define UM_LM3 LGUI_T(KC_T)
-#define UM_LM2 LSFT_T(KC_H)
+// #define UM_LM2 LSFT_T(KC_H)
+#define UM_LM2 MT_ALT_REPEAT
+
 #define UM_LM1 MT_QUK
 
 #define UM_LB5 KC_V
@@ -131,6 +134,10 @@ enum custom_keycodes {
     U_AC_I, U_AC_U, // accented characters
     U_CC, // "ç"
     U_QUOTE, U_TILDE, U_CIRC, // accents with space to never act like dead keys
+    U_GL,
+    U_LG,
+    U_MP,
+    U_PS
 };
 
 // Tap Dance stuff.
@@ -333,27 +340,56 @@ const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM esc_combo[] = {UM_LB3, UM_LB2, COMBO_END};
+const uint16_t PROGMEM esc_combo[] = {UM_LB4, UM_LB3, COMBO_END};
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM tilde_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 
+// Combos as "adaptives"
+const uint16_t PROGMEM gm_gl_combo[] = {UM_LB3, UM_LB2, COMBO_END};
+const uint16_t PROGMEM mg_lg_combo[] = {UM_LB2, UM_LB3, COMBO_END};
+const uint16_t PROGMEM mw_mp_combo[] = {UM_LB2, UM_LB4, COMBO_END};
+const uint16_t PROGMEM pf_ps_combo[] = {UM_LT5, UM_LT4, COMBO_END};
+
+enum combos {
+    CUT_COMBO,
+    COPY_COMBO,
+    PASTE_COMBO,
+    CLIP_HIST_COMBO,
+    PERCENTAGE_COMBO,
+    AT_COMBO,
+    ASTR_COMBO,
+    LPRN_COMBO,
+    RPRN_COMBO,
+    SUPER_O_COMBO,
+    CAPS_WORD_COMBO,
+    ESC_COMBO,
+    TILDE_COMBO,
+    GM_GL_COMBO,
+    // MG_LG_COMBO,
+    MW_MP_COMBO,
+    PF_PS_COMBO,
+  };
+
 // Used combos.
 combo_t key_combos[] = {
-    COMBO(cut_combo, CUT),
-    COMBO(copy_combo, COPY),
-    COMBO(paste_combo, PASTE),
-    COMBO(clip_hist_combo, CLIP_HIST),
-    COMBO(percentage_combo, KC_PERCENT),
-    COMBO(at_combo, KC_AT),
-    COMBO(astr_combo, KC_PAST),
-    COMBO(lprn_combo, KC_LPRN),
-    COMBO(rprn_combo, KC_RPRN),
-    COMBO(super_o_combo, A(KC_0)),
-    COMBO(caps_word_combo, CW_TOGG),
-    COMBO(esc_combo, KC_ESCAPE),
-    COMBO(tilde_combo, U_TILDE),
+    [CUT_COMBO] = COMBO(cut_combo, CUT),
+    [COPY_COMBO] = COMBO(copy_combo, COPY),
+    [PASTE_COMBO] = COMBO(paste_combo, PASTE),
+    [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
+    [PERCENTAGE_COMBO] = COMBO(percentage_combo, KC_PERCENT),
+    [AT_COMBO] = COMBO(at_combo, KC_AT),
+    [ASTR_COMBO] = COMBO(astr_combo, KC_PAST),
+    [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
+    [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
+    [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
+    [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
+    [ESC_COMBO] = COMBO(esc_combo, KC_ESCAPE),
+    [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
+    [GM_GL_COMBO] = COMBO(gm_gl_combo, U_GL),
+    [MW_MP_COMBO] = COMBO(mw_mp_combo, U_MP),
+    [PF_PS_COMBO] = COMBO(pf_ps_combo, U_PS),
 };
 
 /*
@@ -619,6 +655,43 @@ bool caps_word_press_user(uint16_t keycode) {
 }
 
 /*
+#####################################
+### Repeat/Alternate Key Settings ###
+#####################################
+*/
+
+uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+    switch (keycode) {
+        case KC_B:
+        case KC_D:
+        case KC_F:
+        case LT(_MOUSE, KC_M):
+            return KC_Y;
+        case LSFT_T(KC_A):
+        case RGUI_T(KC_E):
+        case LALT_T(KC_I):
+        case KC_O:
+        case HYPR_T(KC_U):
+        case U_TIL_A:
+        case U_TIL_O:
+        case U_AC_I:
+        case U_GR_A:
+        case U_AC_U:
+        case TD_AA:
+        case TD_AE:
+        case TD_AO:
+            return KC_V;
+        default:
+            return KC_H;
+    }
+}
+
+bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* remembered_mods) {
+    if (keycode == MT_ALT_REPEAT) { return false; }
+    return true;
+}
+
+/*
 ########################
 ### General Settings ###
 ########################
@@ -630,6 +703,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TD_AA:
         case TD_AE:
         case TD_AO:
+            return 200;
         case MT_ZP:
         case MT_QF:
         case MT_QUK:
@@ -703,6 +777,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Hold intercepts
+        case MT_ALT_REPEAT:
+            if (record->tap.count) {  // On tap.
+              alt_repeat_key_invoke(&record->event);  // Repeat the last key.
+              return false;  // Skip default handling.
+            }
+            return true;  // Continue default handling.
         case MT_ZP:
             if (!record->tap.count && record->event.pressed) {
                 tap_code(KC_Z);
@@ -760,6 +840,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code16(S(A(KC_C)));
                 } else {
                     tap_code16(A(KC_C));
+                }
+            }
+            break;
+        case U_GL:
+            if (record->event.pressed) {
+                tap_code(KC_G);
+                if (!is_caps_word_on()) {
+                    clear_mods();
+                    tap_code(KC_L);
+                    set_mods(mod_state);
+                }
+            }
+            break;
+        case U_MP:
+            if (record->event.pressed) {
+                tap_code(KC_M);
+                if (!is_caps_word_on()) {
+                    clear_mods();
+                    tap_code(KC_L);
+                    set_mods(mod_state);
+                }
+            }
+            break;
+        case U_PS:
+            if (record->event.pressed) {
+                tap_code(KC_P);
+                if (!is_caps_word_on()) {
+                    clear_mods();
+                    tap_code(KC_S);
+                    set_mods(mod_state);
                 }
             }
             break;
@@ -969,26 +1079,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
     |  F12  |   F7  |   F8  |   F9  | PrScr |    |  ---  |  ---  |  RMUp |  ---  |  ---  |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  F11  |   F4  |   F5  |   F6  | Sleep |    |  ---  | RMNxt | RMDown| ACTog | Flash |
+    |  F11  |   F4  |   F5  |   F6  |       |    |  ---  | RMNxt | RMDown| ACTog | Flash |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  F10  |   F1  |   F2  |   F3  | RMTog |    |  ---  |  ---  |  ---  |  ---  |  ---  |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    | Leader|  Caps |  Tab  |    |       |       |OOOOOOO|
+                    | Leader|  Caps | Sleep |    |       |       |OOOOOOO|
                     `———————————————————————'    `———————————————————————'
 */
 
     [_FUN] = LAYOUT_split_3x5_3(
         KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     XXXXXXX, XXXXXXX, RM_VALU, XXXXXXX, XXXXXXX,
-        KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    XXXXXXX, RM_NEXT, RM_VALD, AC_TOGG, QK_BOOT,
+        KC_F11, KC_F4, KC_F5,   KC_F6,   XXXXXXX,    XXXXXXX, RM_NEXT, RM_VALD, AC_TOGG, QK_BOOT,
         KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                               QK_LEAD, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
+                               QK_LEAD, KC_CAPS, LOCK_SCR,      XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
 /* Alpha Extension
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |   õ   |       |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |       |
+    |  ---  |  ---  |  ---  |   h   |  ---  |    |   à   |   á   |   é   |   í   |   ç   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |       |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
@@ -998,7 +1108,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXTENSION] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    XXXXXXX,   U_AC_U,  TD_AO,   U_TIL_O, XXXXXXX,
-        _______, _______, _______, _______, _______,    U_GR_A,    TD_AA,   TD_AE,   U_AC_I,  XXXXXXX,
+        _______, _______, _______, KC_H,    _______,    U_GR_A,    TD_AA,   TD_AE,   U_AC_I,  U_CC,
         _______, _______, _______, _______, _______,    XXXXXXX,   U_TIL_A, XXXXXXX, XXXXXXX, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST, UNDO
     ),
