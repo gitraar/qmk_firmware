@@ -38,11 +38,12 @@
 #define _NUM 4
 #define _SYM 5
 #define _FUN 6
-#define _ACCENTED 7
+#define _EXTENSION 7
 
 // Mod taps
-#define MT_ZF LT(0, KC_F)
-#define MT_QP LT(0, KC_P)
+#define MT_ZP LT(0, KC_P)
+#define MT_QF LT(0, KC_F)
+#define MT_QUK LT(0, KC_K)
 
 // Tap dances
 #define TD_DOT TD(DOT)
@@ -55,8 +56,8 @@
 #define TD_AO TD(U_TD_AO)
 
 // Key matrix assigments
-#define UM_LT5 MT_ZF
-#define UM_LT4 MT_QP
+#define UM_LT5 MT_QF
+#define UM_LT4 MT_ZP
 #define UM_LT3 KC_D
 #define UM_LT2 HYPR_T(KC_L)
 #define UM_LT1 KC_X
@@ -65,7 +66,7 @@
 #define UM_LM4 LALT_T(KC_N)
 #define UM_LM3 LGUI_T(KC_T)
 #define UM_LM2 LSFT_T(KC_H)
-#define UM_LM1 KC_K
+#define UM_LM1 MT_QUK
 
 #define UM_LB5 KC_V
 #define UM_LB4 KC_W
@@ -74,8 +75,8 @@
 #define UM_LB1 KC_J
 
 #define UM_LH3 LT(_MEDIA, KC_BACKSPACE)
-#define UM_LH2 LT(_NAV, KC_R)
-#define UM_LH1 LT(_ACCENTED, KC_TAB)
+#define UM_LH2 LT(_EXTENSION, KC_R)
+#define UM_LH1 LT(_NAV, KC_TAB)
 
 #define UM_RT1 KC_SCLN
 #define UM_RT2 HYPR_T(KC_U)
@@ -111,7 +112,7 @@ enum custom_keycodes {
     NUM,
     SYM,
     FUN,
-    ACCENTED,
+    EXTENSION,
     SELWORD,
     U_GR_A, U_TIL_A, U_TIL_O, // accented characters
     U_AC_I, U_AC_U, // accented characters
@@ -506,8 +507,9 @@ uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next
 
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     switch (tap_hold_keycode) {
-        case MT_ZF:
-        case MT_QP:
+        case MT_ZP:
+        case MT_QF:
+        case MT_QUK:
             return 0;  // Bypass Achordion for these keys.
     }
     return 800;  // Otherwise use a timeout of 800 ms.
@@ -574,8 +576,9 @@ bool caps_word_press_user(uint16_t keycode) {
         case TD_AA:
         case TD_AE:
         case TD_AO:
-        case MT_ZF:
-        case MT_QP:
+        case MT_ZP:
+        case MT_QF:
+        case MT_QUK:
         case U_GR_A:
         case U_TIL_A:
         case U_TIL_O:
@@ -614,8 +617,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TD_AA:
         case TD_AE:
         case TD_AO:
-        case MT_ZF:
-        case MT_QP:
+        case MT_ZP:
+        case MT_QF:
+        case MT_QUK:
             return 150;
         default:
             return TAPPING_TERM;
@@ -654,7 +658,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         rgb_auto_disabled = false;
     }
     uint8_t mod_state = get_mods();
-    uint8_t new_mod_state = mod_state;
     tap_dance_action_t *action;
     switch (keycode) {
         // Advanced tap dances
@@ -687,38 +690,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Hold intercepts
-        case MT_ZF:
+        case MT_ZP:
             if (!record->tap.count && record->event.pressed) {
                 tap_code(KC_Z);
                 return false;
             }
             break;
-        case MT_QP:
+        case MT_QF:
             if (!record->tap.count && record->event.pressed) {
-                if (mod_state & MOD_MASK_GUI) {
-                    tap_code(KC_Q);
-                } else if (is_caps_word_on()) {
-                    if (mod_state & MOD_MASK_ALT) {
-                        new_mod_state &= ~MOD_MASK_ALT; // Clear Alt from mod_state
-                        set_mods(new_mod_state); // Apply the updated mod_state
-                        tap_code16(S(KC_Q));
-                        set_mods(mod_state);
-                    } else {
-                        tap_code16(S(KC_Q));
-                        tap_code16(S(KC_U));
-                    }
+                tap_code(KC_Q);
+                return false;
+            }
+            break;
+        case MT_QUK:
+            if (!record->tap.count && record->event.pressed) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(KC_Q));
+                    tap_code16(S(KC_U));
                 } else {
-                    if (mod_state & MOD_MASK_ALT) {
-                        new_mod_state &= ~MOD_MASK_ALT;
-                        set_mods(new_mod_state);
-                        tap_code(KC_Q);
-                        set_mods(mod_state);
-                    } else {
-                        tap_code(KC_Q);
-                        clear_mods();
-                        tap_code(KC_U);
-                        set_mods(mod_state);
-                    }
+                    tap_code(KC_Q);
+                    clear_mods();
+                    tap_code(KC_U);
+                    set_mods(mod_state);
                 }
                 return false;
             }
@@ -866,37 +859,37 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Navigation
     ,---------------------------------------.    ,---------------------------------------.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabUp |  Home |   Up  |  End  | PgUp  |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabUp |  Home |   Up  |  End  |  PgUp |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabDo |  Left |  Down | Right |  PgDo |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |  Back |SpcLeft|SelWord|SpcRght|Forward|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |SpcLeft|SelWord|SpcRght|       |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
-                    |       |OOOOOOO|       |    | Enter |  RayC |  Undo |
+                    |       |       |OOOOOOO|    |       |       |       |
                     `-----------------------'    `-----------------------'
 */
 
     [_NAV] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
-        _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
-        _______, _______, _______, _______, _______,    BACK,      SPC_LEFT, SELWORD, SPC_RIGHT, FORWARD,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST,  UNDO
+        _______, _______, _______, _______, _______,    TAB_UP,   TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
+        _______, _______, _______, _______, _______,    TAB_DOWN, KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
+        _______, _______, _______, _______, _______,    XXXXXXX,  SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    _______,  _______,  _______
     ),
 
 /* Mouse Keys
     ,---------------------------------------.    ,---------------------------------------.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |  MWDn |       |  MUp  |       |       |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |  MWDn |  MB4  |  MUp  |  MB5  |       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |  MWUp | MLeft | MDown | MRight|       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |  ---  |  ---  |  ---  |OOOOOOO|  ---  |    |       |       |       |       |       |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
-                    |       |       |       |    |   M1  |   M3  |   M2  |
+                    |       |       |       |    |  MB1  |  MB3  |  MB2  |
                     `-----------------------'    `-----------------------'
 */
 
     [_MOUSE] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    MS_WHLD, XXXXXXX, MS_UP,   XXXXXXX, XXXXXXX,
+        _______, _______, _______, _______, _______,    MS_WHLD, MS_BTN4, MS_UP,   MS_BTN5, XXXXXXX,
         _______, _______, _______, _______, _______,    MS_WHLU, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
         _______, _______, _______, XXXXXXX, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    MS_BTN1, MS_BTN3, MS_BTN2
@@ -904,9 +897,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Media
     ,---------------------------------------.    ,---------------------------------------.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    | RMTog | RMNxt | RMHue |  RMDo |  RMUp |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |       | VolUp |       |       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |  VolD | VolUp |  Prev |  Next |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |  Prev | VolDo |  Next |       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |       |       |       |       |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
@@ -915,10 +908,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_MEDIA] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    RM_TOGG, RM_NEXT, RM_HUEU, RM_VALD, RM_VALU,
-        _______, _______, _______, _______, _______,    XXXXXXX, KC_VOLD, KC_VOLU, KC_MPRV, KC_MNXT,
+        _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, KC_VOLU, XXXXXXX, XXXXXXX,
+        _______, _______, _______, _______, _______,    XXXXXXX, KC_MPRV, KC_VOLD, KC_MNXT, XXXXXXX,
         _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    KC_MNXT, KC_MPLY, KC_MUTE
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, KC_MPLY, KC_MUTE
     ),
 
 /* Numbers
@@ -961,9 +954,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Function
     ,---------------------------------------.    ,---------------------------------------.
-    |  F12  |   F7  |   F8  |   F9  | PrScr |    |  ---  |  ---  |  ---  |  ---  |  ---  |
+    |  F12  |   F7  |   F8  |   F9  | PrScr |    |  ---  |  ---  |  RMUp |  ---  |  ---  |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
-    |  F11  |   F4  |   F5  |   F6  | Sleep |    |  ---  |  ---  |  ---  | ACTog | Flash |
+    |  F11  |   F4  |   F5  |   F6  | Sleep |    |  ---  | RMNxt | RMDown| ACTog | Flash |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |  F10  |   F1  |   F2  |   F3  | RMTog |    |  ---  |  ---  |  ---  |  ---  |  ---  |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
@@ -972,13 +965,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_FUN] = LAYOUT_split_3x5_3(
-        KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     _______, _______, _______, _______, _______,
-        KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    _______, _______, _______, _______, QK_BOOT,
-        KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     _______, _______, _______, _______, AC_TOGG,
+        KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     XXXXXXX, XXXXXXX, RM_VALU, XXXXXXX, XXXXXXX,
+        KC_F11, KC_F4, KC_F5,   KC_F6,   LOCK_SCR,    XXXXXXX, RM_NEXT, RM_VALD, AC_TOGG, QK_BOOT,
+        KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                QK_LEAD, KC_CAPS, KC_TAB,      XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
-/* Accented Characters
+/* Alpha Extension
     ,---------------------------------------.    ,---------------------------------------.
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |   õ   |       |
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
@@ -986,14 +979,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |       |       |       |
     `-------+-------+-------+-------+-------|    |-------+-------+-------+-------+-------'
-                    |       |       |OOOOOOO|    |       |       |       |
+                    |       |OOOOOOO|       |    |Confirm|  RayC |  Undo |
                     `-----------------------'    `-----------------------'
 */
 
-    [_ACCENTED] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   U_TIL_O, XXXXXXX,
-        _______, _______, _______, _______, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  XXXXXXX,
-        _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, XXXXXXX, XXXXXXX, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+    [_EXTENSION] = LAYOUT_split_3x5_3(
+        _______, _______, _______, _______, _______,    XXXXXXX,   U_AC_U,  TD_AO,   U_TIL_O, XXXXXXX,
+        _______, _______, _______, _______, _______,    U_GR_A,    TD_AA,   TD_AE,   U_AC_I,  XXXXXXX,
+        _______, _______, _______, _______, _______,    XXXXXXX,   U_TIL_A, XXXXXXX, XXXXXXX, XXXXXXX,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST, UNDO
     ),
 };
