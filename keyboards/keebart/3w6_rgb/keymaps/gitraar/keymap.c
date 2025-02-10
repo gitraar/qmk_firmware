@@ -89,7 +89,7 @@
 #define UM_LB2 LT(_MOUSE, KC_M)
 #define UM_LB1 KC_J
 
-#define UM_LH3 LT(_MEDIA, KC_BACKSPACE)
+#define UM_LH3 LT(0, KC_BACKSPACE)
 #define UM_LH2 LT(_EXTENSION, KC_R)
 #define UM_LH1 LT(_NAV, KC_TAB)
 
@@ -226,6 +226,7 @@ void an_taps(tap_dance_state_t *state, void *user_data) {
     } else {
         reset_tap_dance(state);
     }
+    layer_clear();  // I never want two accented characters in a row
 }
 
 void ae_taps(tap_dance_state_t *state, void *user_data) {
@@ -263,6 +264,7 @@ void ae_taps(tap_dance_state_t *state, void *user_data) {
     } else {
         reset_tap_dance(state);
     }
+    layer_clear();  // I never want two accented characters in a row
 }
 
 void ao_taps(tap_dance_state_t *state, void *user_data) {
@@ -300,6 +302,7 @@ void ao_taps(tap_dance_state_t *state, void *user_data) {
     } else {
         reset_tap_dance(state);
     }
+    layer_clear();  // I never want two accented characters in a row
 }
 
 // Definition for each tap dance using the functions above.
@@ -328,7 +331,6 @@ const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
 const uint16_t PROGMEM percentage_combo[] = {UM_LM3, UM_LB3, COMBO_END};
 const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
-const uint16_t PROGMEM astr_combo[] = {UM_LM1, UM_LB1, COMBO_END};
 
 // Right-side vertical combos.
 const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
@@ -336,7 +338,6 @@ const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM esc_combo[] = {UM_LB4, UM_LB3, COMBO_END};
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 // Right-side horizontal combos.
@@ -348,6 +349,9 @@ const uint16_t PROGMEM ld_lg_combo[] = {UM_LT2, UM_LT3, COMBO_END};
 const uint16_t PROGMEM mw_mp_combo[] = {UM_LB2, UM_LB4, COMBO_END};
 const uint16_t PROGMEM pf_ps_combo[] = {UM_LT5, UM_LT4, COMBO_END};
 
+// Media combos
+const uint16_t PROGMEM mute_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
+
 enum combos {
     CUT_COMBO,
     COPY_COMBO,
@@ -355,17 +359,16 @@ enum combos {
     CLIP_HIST_COMBO,
     PERCENTAGE_COMBO,
     AT_COMBO,
-    ASTR_COMBO,
     LPRN_COMBO,
     RPRN_COMBO,
     SUPER_O_COMBO,
     CAPS_WORD_COMBO,
-    ESC_COMBO,
     TILDE_COMBO,
     GM_GL_COMBO,
     LD_LG_COMBO,
     MW_MP_COMBO,
     PF_PS_COMBO,
+    MUTE_COMBO
   };
 
 // Used combos.
@@ -374,19 +377,18 @@ combo_t key_combos[] = {
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [PASTE_COMBO] = COMBO(paste_combo, PASTE),
     [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
-    [PERCENTAGE_COMBO] = COMBO(percentage_combo, KC_PERCENT),
+    [PERCENTAGE_COMBO] = COMBO(percentage_combo, KC_PERC),
     [AT_COMBO] = COMBO(at_combo, KC_AT),
-    [ASTR_COMBO] = COMBO(astr_combo, KC_PAST),
     [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
-    [ESC_COMBO] = COMBO(esc_combo, KC_ESCAPE),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [GM_GL_COMBO] = COMBO(gm_gl_combo, U_GL),
     [LD_LG_COMBO] = COMBO(ld_lg_combo, U_LG),
     [MW_MP_COMBO] = COMBO(mw_mp_combo, U_MP),
     [PF_PS_COMBO] = COMBO(pf_ps_combo, U_PS),
+    [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
 };
 
 /*
@@ -556,6 +558,7 @@ uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
         case MT_ZP:
         case MT_QF:
         case MT_QUK:
+        case UM_LH3:
             return 0;  // Bypass Achordion for these keys.
     }
     return 800;  // Otherwise use a timeout of 800 ms.
@@ -647,6 +650,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_DQUO:
         case KC_GRAVE:
         case KC_BSPC:
+        case LT(0, KC_BACKSPACE):
         case KC_DEL:
         case KC_UNDS:
             return true;
@@ -698,7 +702,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* reme
 
 /*
 ########################
-### General Settings ###
+### Tapping Settings ###
 ########################
 */
 
@@ -711,6 +715,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return 200;
         case MT_ZP:
         case MT_QF:
+            return 175;
         case MT_QUK:
             return 150;
         default:
@@ -782,6 +787,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Hold intercepts
+        case LT(0, KC_BACKSPACE):
+            if (!record->tap.count && record->event.pressed) {
+                tap_code(KC_ESCAPE);
+                return false;
+            }
+            break;
         case MT_SFT_ALTREP:
             if (record->tap.count) { // On tap.
                 guied = (mod_state & MOD_MASK_GUI);  // the key should always be "h" if Command is held
@@ -868,6 +879,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code16(A(KC_C));
                 }
             }
+            if (layer_state_is(_EXTENSION)) {
+                layer_clear();  // I never want two accented characters in a row (nor "ç")
+                return false;
+            }
             break;
         case U_GL:
             if (record->event.pressed) {
@@ -936,7 +951,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_I);
                 }
             }
-            break;
+            layer_clear();  // I never want two accented characters in a row
+            return false;
         case U_AC_U:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -951,7 +967,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_U);
                 }
             }
-            break;
+            layer_clear();  // I never want two accented characters in a row
+            return false;
         case U_GR_A:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -966,7 +983,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_A);
                 }
             }
-            break;
+            layer_clear();  // I never want two accented characters in a row
+            return false;
         case U_TIL_A:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -981,7 +999,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_A);
                 }
             }
-            break;
+            layer_clear();  // I never want two accented characters in a row
+            return false;
         case U_TIL_O:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -996,7 +1015,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_O);
                 }
             }
-            break;
+            layer_clear();  // I never want two accented characters in a row
+            return false;
     }
     return true;
 }
@@ -1036,7 +1056,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |SpcLeft|SelWord|SpcRght|       |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |       |       |OOOOOOO|    |       |       |       |
+                    |       |       |OOOOOOO|    |Confirm|       |       |
                     `———————————————————————'    `———————————————————————'
 */
 
@@ -1044,7 +1064,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______,    TAB_UP,   TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
         _______, _______, _______, _______, _______,    TAB_DOWN, KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
         _______, _______, _______, _______, _______,    XXXXXXX,  SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    _______,  _______,  _______
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT),  _______,  _______
     ),
 
 /* Mouse Keys
@@ -1053,7 +1073,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |  MWUp | MLeft | MDown | MRight|       |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |OOOOOOO|  ---  |    |       |       |       |       |       |
+    |  ---  |  ---  |  ---  |OOOOOOO|  ---  |    |  Play | VolDo | VolUp |  Prev |  Next |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
                     |       |       |       |    |  MB1  |  MB3  |  MB2  |
                     `———————————————————————'    `———————————————————————'
@@ -1062,7 +1082,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_MOUSE] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    MS_WHLD, MS_BTN4, MS_UP,   MS_BTN5, XXXXXXX,
         _______, _______, _______, _______, _______,    MS_WHLU, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
-        _______, _______, _______, XXXXXXX, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        _______, _______, _______, XXXXXXX, _______,    KC_MPLY, KC_VOLD, KC_VOLU, KC_MPRV, KC_MNXT,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    MS_BTN1, MS_BTN3, MS_BTN2
     ),
 
@@ -1078,12 +1098,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     `———————————————————————'    `———————————————————————'
 */
 
-    [_MEDIA] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, KC_VOLU, XXXXXXX, XXXXXXX,
-        _______, _______, _______, _______, _______,    XXXXXXX, KC_MPRV, KC_VOLD, KC_MNXT, XXXXXXX,
-        _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, KC_MPLY, KC_MUTE
-    ),
+    // [_MEDIA] = LAYOUT_split_3x5_3(
+    //     _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, KC_VOLU, XXXXXXX, XXXXXXX,
+    //     _______, _______, _______, _______, _______,    XXXXXXX, KC_MPRV, KC_VOLD, KC_MNXT, XXXXXXX,
+    //     _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    //                               XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, KC_MPLY, KC_MUTE
+    // ),
 
 /* Numbers
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
@@ -1150,14 +1170,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
-                    |       |OOOOOOO|       |    |Confirm|  RayC |  Undo |
+                    |       |OOOOOOO|       |    |       |  RayC |  Undo |
                     `———————————————————————'    `———————————————————————'
 */
 
     [_EXTENSION] = LAYOUT_split_3x5_3(
-        _______, _______, _______, _______, _______,    XXXXXXX,   U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
-        _______, _______, _______, KC_H,    _______,    U_GR_A,    TD_AA,   TD_AE,   U_AC_I,  U_CC,
-        _______, _______, _______, _______, _______,    XXXXXXX,   U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST, UNDO
+        _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
+        _______, _______, _______, KC_H,    _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
+        _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, RAYCAST, UNDO
     ),
 };
