@@ -661,8 +661,11 @@ bool caps_word_press_user(uint16_t keycode) {
 ### Repeat/Alternate Key Settings ###
 #####################################
 */
-
+static bool guied = false;  // is Command held
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+    if (guied) {  // the key should always be "h" if Command is held
+        return KC_H;
+    }
     switch (keycode) {
         case KC_B:
         case KC_D:
@@ -682,7 +685,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
         case TD_AA:
         case TD_AE:
         case TD_AO:
-            return KC_V;
+            return KC_V; // ... and the reverse is Shift + Tab.
         default:
             return KC_H;
     }
@@ -781,8 +784,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         // Hold intercepts
         case MT_SFT_ALTREP:
             if (record->tap.count) { // On tap.
-              alt_repeat_key_invoke(&record->event);
-              return false; // Skip default handling.
+                guied = (mod_state & MOD_MASK_GUI);  // the key should always be "h" if Command is held
+                alt_repeat_key_invoke(&record->event);
+                return false; // Skip default handling.
             }
             return true; // Continue default handling.
         case MT_ZP:
