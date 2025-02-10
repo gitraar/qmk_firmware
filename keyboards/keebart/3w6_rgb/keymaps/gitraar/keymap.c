@@ -850,6 +850,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     clear_mods();
                     tap_code(KC_L);
                     set_mods(mod_state);
+                } else {
+                    tap_code(KC_L);
                 }
             }
             break;
@@ -858,8 +860,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code(KC_M);
                 if (!is_caps_word_on()) {
                     clear_mods();
-                    tap_code(KC_L);
+                    tap_code(KC_P);
                     set_mods(mod_state);
+                } else {
+                    tap_code(KC_P);
                 }
             }
             break;
@@ -870,6 +874,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     clear_mods();
                     tap_code(KC_S);
                     set_mods(mod_state);
+                } else {
+                    tap_code(KC_S);
                 }
             }
             break;
