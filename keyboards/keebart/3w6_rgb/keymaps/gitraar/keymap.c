@@ -384,7 +384,7 @@ combo_t key_combos[] = {
     [ESC_COMBO] = COMBO(esc_combo, KC_ESCAPE),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [GM_GL_COMBO] = COMBO(gm_gl_combo, U_GL),
-    [LD_LG_COMBO] = COMBO(gm_gl_combo, U_LG),
+    [LD_LG_COMBO] = COMBO(ld_lg_combo, U_LG),
     [MW_MP_COMBO] = COMBO(mw_mp_combo, U_MP),
     [PF_PS_COMBO] = COMBO(pf_ps_combo, U_PS),
 };
@@ -635,6 +635,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case U_LG:
         case U_MP:
         case U_PS:
+        case MT_SFT_ALTREP:
         case KC_MINS:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
             return true;
@@ -779,20 +780,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         // Hold intercepts
         case MT_SFT_ALTREP:
-            if (record->tap.count) {  // On tap.
-              alt_repeat_key_invoke(&record->event);  // Repeat the last key.
-              return false;  // Skip default handling.
+            if (record->tap.count) { // On tap.
+              alt_repeat_key_invoke(&record->event);
+              return false; // Skip default handling.
             }
-            return true;  // Continue default handling.
+            return true; // Continue default handling.
         case MT_ZP:
             if (!record->tap.count && record->event.pressed) {
-                tap_code(KC_Z);
+                if (is_caps_word_on()) {
+                    tap_code16(S(KC_Z));
+                } else {
+                    if (is_sentence_case_primed()) {
+                        tap_code16(S(KC_Z));
+                        sentence_case_clear();
+                    } else {
+                        tap_code(KC_Z);
+                    }
+                }
                 return false;
             }
             break;
         case MT_QF:
             if (!record->tap.count && record->event.pressed) {
-                tap_code(KC_Q);
+                if (is_caps_word_on()) {
+                    tap_code16(S(KC_Q));
+                } else if (is_sentence_case_primed()) {
+                    tap_code16(S(KC_Q));
+                    sentence_case_clear();
+                } else {
+                    tap_code(KC_Q);
+                }
                 return false;
             }
             break;
@@ -801,6 +818,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 if (is_caps_word_on()) {
                     tap_code16(S(KC_Q));
                     tap_code16(S(KC_U));
+                } else if (is_sentence_case_primed()) {
+                    tap_code16(S(KC_Q));
+                    sentence_case_clear();
+                    tap_code(KC_U);
                 } else {
                     tap_code(KC_Q);
                     clear_mods();
@@ -846,49 +867,53 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case U_GL:
             if (record->event.pressed) {
-                tap_code(KC_G);
-                if (!is_caps_word_on()) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(KC_G));
+                    tap_code16(S(KC_L));
+                } else {
+                    tap_code(KC_G);
                     clear_mods();
                     tap_code(KC_L);
                     set_mods(mod_state);
-                } else {
-                    tap_code(KC_L);
                 }
             }
             break;
         case U_LG:
             if (record->event.pressed) {
-                tap_code(KC_L);
-                if (!is_caps_word_on()) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(KC_L));
+                    tap_code16(S(KC_G));
+                } else {
+                    tap_code(KC_L);
                     clear_mods();
                     tap_code(KC_G);
                     set_mods(mod_state);
-                } else {
-                    tap_code(KC_G);
                 }
             }
             break;
         case U_MP:
             if (record->event.pressed) {
-                tap_code(KC_M);
-                if (!is_caps_word_on()) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(KC_M));
+                    tap_code16(S(KC_P));
+                } else {
+                    tap_code(KC_M);
                     clear_mods();
                     tap_code(KC_P);
                     set_mods(mod_state);
-                } else {
-                    tap_code(KC_P);
                 }
             }
             break;
         case U_PS:
             if (record->event.pressed) {
-                tap_code(KC_P);
-                if (!is_caps_word_on()) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(KC_P));
+                    tap_code16(S(KC_S));
+                } else {
+                    tap_code(KC_P);
                     clear_mods();
                     tap_code(KC_S);
                     set_mods(mod_state);
-                } else {
-                    tap_code(KC_S);
                 }
             }
             break;
