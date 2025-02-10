@@ -45,10 +45,6 @@
 # that to avoid false triggering.)
 :htere        -> there
 abbout        -> about
-abotu         -> about
-baout         -> about
-:theri        -> their
-:thier        -> their
 :owudl        -> would
 woudl         -> would
 peaple        -> people
@@ -96,7 +92,6 @@ beeing        -> being
 ## Common words, 21-30.
 aroud         -> around
 arround       -> around
-arund         -> around
 thign         -> thing
 thigsn        -> things
 thnigs        -> things
@@ -137,7 +132,6 @@ firend        -> friend
 freind        -> friend
 heigth        -> height
 iamge         -> image
-inital        -> initial
 intput        -> input
 laguage       -> language
 lenght        -> length
@@ -151,7 +145,6 @@ probaly       -> probably
 probelm       -> problem
 recrod        -> record
 reponse       -> response
-reprot        -> report
 singel        -> single
 stregth       -> strength
 strengh       -> strength
@@ -248,7 +241,6 @@ widht         -> width
 ## Words particularly for coding.
 # Entries for common code keywords ("const") and terminology ("lookup").
 cacheing      -> caching
-complier      -> compiler
 doulbe        -> double
 dyanmic       -> dynamic
 # As in "execute", "executable", "executing", ...
@@ -266,12 +258,10 @@ namesapce     -> namespace
 namespcae     -> namespace
 nulltpr       -> nullptr
 operaotr      -> operator
-overide       -> override
 ovveride      -> override
 poitner       -> pointer
 :rference     -> reference
 referece      -> reference
-singed        -> signed
 stirng        -> string
 strign        -> string
 swithc        -> switch
@@ -280,7 +270,6 @@ teamplate     -> template
 tempalte      -> template
 :ture         -> true
 retrun        -> return
-retun         -> return
 reutrn        -> return
 cosnt         -> const
 virutal       -> virtual
@@ -292,7 +281,6 @@ yeild         -> yield
 :alot:        -> a lot
 :andteh       -> and the
 :andthe       -> and the
-:asthe        -> as the
 :atthe        -> at the
 abouta        -> about a
 aboutit       -> about it
@@ -339,7 +327,6 @@ acurate       -> accurate
 acutally      -> actually
 addtion       -> addition
 againnst      -> against
-aganist       -> against
 aggreed       -> agreed
 agianst       -> against
 ahppn         -> happen
@@ -358,7 +345,6 @@ bandwith      -> bandwidth
 begginer      -> beginner
 beleif        -> belief
 beleive       -> believe
-belive        -> believe
 breif         -> brief
 burried       -> buried
 caluclate     -> calculate
@@ -506,3 +492,174 @@ rcoes         -> r'c~oes
 
 # Very common accented Portuguese word
 :ha:          -> h'a
+
+# Handle instances where my magic key will fail
+anhil         -> anvil
+bidonhille    -> bidonville
+bienhenu      -> bienvenu
+bougainh      -> bougainv
+buginh        -> buginv
+canhas        -> canvas
+conhales      -> convales
+conhall       -> convall
+conharie      -> convarie
+conhect       -> convect
+conhen        -> conven
+conher        -> conver
+conhet        -> convet
+conhex        -> convex
+conhi         -> convi
+conho         -> convo
+conhuls       -> convuls
+downhot       -> downvot
+eigenh        -> eigenv
+elinhar       -> elinvar
+enhassal      -> envassal
+enheigle      -> enveigle
+enheil        -> enveil
+enhelop       -> envelop
+enhenom       -> envenom
+enherdur      -> enverdur
+enhermeil     -> envermeil
+enhie         -> envie
+enhious       -> envious
+enhiro        -> enviro
+enhisa        -> envisa
+enhisi        -> envisi
+enhoi         -> envoi
+enholk        -> envolk
+enhoutement   -> envoutement
+enhoy         -> envoy
+enhy          -> envy
+inconh        -> inconv
+inhadable     -> invadable
+inhade        -> invade
+inhading      -> invading
+inhagi        -> invagi
+inhali        -> invali
+inhaluabl     -> invaluabl
+inhalued      -> invalued
+inhariab      -> invariab
+inharian      -> invarian
+inharied      -> invaried
+inhasi        -> invasi
+inhecked      -> invecked
+inhect        -> invect
+inheig        -> inveig
+inheil        -> inveil
+inhenit       -> invenit
+inhent        -> invent
+inheracities  -> inveracities
+inheracity    -> inveracity
+inherness     -> inverness
+inhers        -> invers
+inhert        -> invert
+inhest        -> invest
+inhetera      -> invetera
+inhiabil      -> inviabil
+inhiable      -> inviable
+inhidious     -> invidious
+inhig         -> invig
+inhin         -> invin
+inhiola       -> inviola
+inhious       -> invious
+inhiron       -> inviron
+inhirtuat     -> invirtuat
+inhis         -> invis
+inhit         -> invit
+inhocable     -> invocable
+inhocant      -> invocant
+inhocate      -> invocate
+inhocating    -> invocating
+inhocation    -> invocation
+inhocative    -> invocative
+inhocator     -> invocator
+inhoice       -> invoice
+inhoke        -> invoke
+inhoking      -> invoking
+inholat       -> involat
+inholt        -> involt
+inholu        -> involu
+inholv        -> involv
+inhulnerab    -> invulnerab
+lakenhelder   -> lakenvelder
+llanhirn      -> llanvirn
+manhantara    -> manvantara
+moonhine      -> moonvine
+nhey          -> nvey
+nonhalid      -> nonvalid
+nonhanishing  -> nonvanishing
+nonhascular   -> nonvascular
+nonhector     -> nonvector
+nonhegetarian -> nonvegetarian
+nonhenomous   -> nonvenomous
+nonherbal     -> nonverbal
+nonhernalized -> nonvernalized
+nonheteran    -> nonveteran
+nonhia        -> nonvia
+nonhib        -> nonvib
+nonhiewer     -> nonviewer
+nonhin        -> nonvin
+nonhio        -> nonvio
+nonhir        -> nonvir
+nonhiscous    -> nonviscous
+nonhisual     -> nonvisual
+nonhoca       -> nonvoca
+nonhocoid     -> nonvocoid
+nonhol        -> nonvol
+nonhot        -> nonvot
+renherse      -> renverse
+renhersing    -> renversing
+sanhitalia    -> sanvitalia
+turnherein    -> turnverein
+unhaccinated  -> unvaccinated
+unhaluable    -> unvaluable
+unhalue       -> unvalue
+unhanquish    -> unvanquish
+unhapor       -> unvapor
+unhapour      -> unvapour
+unhariable    -> unvariable
+unharied      -> unvaried
+unhariegated  -> unvariegated
+unharnished   -> unvarnished
+unharying     -> unvarying
+unhaulted     -> unvaulted
+unhax         -> unvax
+unheil        -> unveil
+unhendible    -> unvendible
+unhenerable   -> unvenerable
+unhented      -> unvented
+unhentilated  -> unventilated
+unhentured    -> unventured
+unheracious   -> unveracious
+unheracit     -> unveracit
+unherbalized  -> unverbalized
+unherifiab    -> unverifiab
+unherified    -> unverified
+unhernalize   -> unvernalize
+unhersed      -> unversed
+unhest        -> unvest
+unhexed       -> unvexed
+unhiable      -> unviable
+unhicious     -> unvicious
+unhictorious  -> unvictorious
+unhiewed      -> unviewed
+unhigilant    -> unvigilant
+unhindic      -> unvindic
+unhiol        -> unviol
+unhirt        -> unvirt
+unhisited     -> unvisited
+unhisored     -> unvisored
+unhital       -> unvital
+unhitiated    -> unvitiated
+unhitrifi     -> unvitrifi
+unhocal       -> unvocal
+unhoice       -> unvoice
+unhoicing     -> unvoicing
+unhouched     -> unvouched
+unhowed       -> unvowed
+unhowelled    -> unvowelled
+unhoyageable  -> unvoyageable
+unhulcanized  -> unvulcanized
+unhulgar      -> unvulgar
+venhille      -> venville
