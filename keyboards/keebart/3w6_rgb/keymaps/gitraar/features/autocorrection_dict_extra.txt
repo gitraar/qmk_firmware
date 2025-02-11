@@ -470,206 +470,206 @@ rcoes         -> r'c~oes
 :ha:          -> h'a
 
 # Handle instances where my magic key will fail
-:ov:          -> oh
-:havava       -> hahaha
-:av:          -> ah
-:hery         -> very
-anhil         -> anvil
-bidonhille    -> bidonville
-bienhenu      -> bienvenu
-bougainh      -> bougainv
-buginh        -> buginv
-canhas        -> canvas
-conharie      -> convarie
-conhen        -> conven
-conher        -> conver
-conhet        -> convet
-conhex        -> convex
-conhi         -> convi
-conho         -> convo
-downhot       -> downvot
-eigenh        -> eigenv
-elinhar       -> elinvar
-enhassal      -> envassal
-enheigle      -> enveigle
-enheil        -> enveil
-enhelop       -> envelop
-enhenom       -> envenom
-enherdur      -> enverdur
-enhermeil     -> envermeil
-enhie         -> envie
-enhiro        -> enviro
-enhisa        -> envisa
-enhisi        -> envisi
-enhoi         -> envoi
-enhoutement   -> envoutement
-enhoy         -> envoy
-enhy          -> envy
-inconh        -> inconv
-inhagi        -> invagi
-inhali        -> invali
-inhaluabl     -> invaluabl
-inhalued      -> invalued
-inhecked      -> invecked
-inhect        -> invect
-inheig        -> inveig
-inheil        -> inveil
-inhenit       -> invenit
-inhent        -> invent
-inheracities  -> inveracities
-inheracity    -> inveracity
-inhers        -> invers
-inhert        -> invert
-inhest        -> invest
-inhetera      -> invetera
-inhiable      -> inviable
-inhidious     -> invidious
-inhig         -> invig
-inhin         -> invin
-inhious       -> invious
-inhiron       -> inviron
-inhirtuat     -> invirtuat
-inhis         -> invis
-inhit         -> invit
-inhocable     -> invocable
-inhocant      -> invocant
-inhocate      -> invocate
-inhocating    -> invocating
-inhocation    -> invocation
-inhocative    -> invocative
-inhocator     -> invocator
-inhoice       -> invoice
-inhoke        -> invoke
-inhoking      -> invoking
-inholat       -> involat
-inholt        -> involt
-inholu        -> involu
-inholv        -> involv
-inhulnerab    -> invulnerab
-lakenhelder   -> lakenvelder
-llanhirn      -> llanvirn
-manhantara    -> manvantara
-moonhine      -> moonvine
-nhey          -> nvey
-nonhalid      -> nonvalid
-nonhanishing  -> nonvanishing
-nonhascular   -> nonvascular
-nonhector     -> nonvector
-nonhegetarian -> nonvegetarian
-nonhenomous   -> nonvenomous
-nonherbal     -> nonverbal
-nonhernalized -> nonvernalized
-nonheteran    -> nonveteran
-nonhia        -> nonvia
-nonhib        -> nonvib
-nonhiewer     -> nonviewer
-nonhin        -> nonvin
-nonhio        -> nonvio
-nonhir        -> nonvir
-nonhiscous    -> nonviscous
-nonhisual     -> nonvisual
-nonhoca       -> nonvoca
-nonhocoid     -> nonvocoid
-nonhol        -> nonvol
-nonhot        -> nonvot
-renherse      -> renverse
-renhersing    -> renversing
-sanhitalia    -> sanvitalia
-turnherein    -> turnverein
-unhaccinated  -> unvaccinated
-unhaluable    -> unvaluable
-unhalue       -> unvalue
-unhanquish    -> unvanquish
-unhapor       -> unvapor
-unhapour      -> unvapour
-unhariable    -> unvariable
-unharied      -> unvaried
-unhariegated  -> unvariegated
-unharnished   -> unvarnished
-unharying     -> unvarying
-unhaulted     -> unvaulted
-unhax         -> unvax
-unheil        -> unveil
-unhendible    -> unvendible
-unhenerable   -> unvenerable
-unhented      -> unvented
-unhentilated  -> unventilated
-unhentured    -> unventured
-unheracious   -> unveracious
-unheracit     -> unveracit
-unherbalized  -> unverbalized
-unherifiab    -> unverifiab
-unherified    -> unverified
-unhernalize   -> unvernalize
-unhersed      -> unversed
-unhest        -> unvest
-unhexed       -> unvexed
-unhiable      -> unviable
-unhicious     -> unvicious
-unhictorious  -> unvictorious
-unhiewed      -> unviewed
-unhigilant    -> unvigilant
-unhindic      -> unvindic
-unhiol        -> unviol
-unhirt        -> unvirt
-unhisited     -> unvisited
-unhisored     -> unvisored
-unhital       -> unvital
-unhitiated    -> unvitiated
-unhitrifi     -> unvitrifi
-unhocal       -> unvocal
-unhoice       -> unvoice
-unhoicing     -> unvoicing
-unhouched     -> unvouched
-unhowed       -> unvowed
-unhowelled    -> unvowelled
-unhoyageable  -> unvoyageable
-unhulcanized  -> unvulcanized
-unhulgar      -> unvulgar
-
-circumyent    -> circumvent
-farmyouse     -> farmhouse
-advere        -> adhere
-adveri        -> adheri
-advesi        -> adhesi
-childvood     -> childhood
-dvarma        -> dharma
-handveld      -> handheld
-redvead       -> redhead
-secondvand    -> secondhand
-obhious       -> obvious
-subhersi      -> subversi
-
-:enhai        -> envai
-:enhe         -> enve
-:enhid        -> envid
-:inhen        -> inven
-:inho         -> invo
-conhal        -> conval
-conhec        -> convec
-conheio       -> conveio
-conheses      -> conveses
-conhul        -> convul
-cunha         -> cunva
-cunhi         -> cunvi
-cunhol        -> cunvol
-enhasilhar    -> envasilhar
-enhia         -> envia
-enhil         -> envil
-enhinagrar    -> envinagrar
-enhio         -> envio
-enhiu         -> enviu
-enhol         -> envol
-inhad         -> invad
-inhari        -> invari
-inhas         -> invas
-inhej         -> invej
-inhericidade  -> invericidade
-inhern        -> invern
-inheros       -> inveros
-inhiabi       -> inviabi
-inhict        -> invict
-inhiol        -> inviol
-inhulgar      -> invulgar
-inhulnerado   -> invulnerado
-unhirato      -> unvirato
+# :ov:          -> oh
+# :havava       -> hahaha
+# :av:          -> ah
+# :hery         -> very
+# anhil         -> anvil
+# bidonhille    -> bidonville
+# bienhenu      -> bienvenu
+# bougainh      -> bougainv
+# buginh        -> buginv
+# canhas        -> canvas
+# conharie      -> convarie
+# conhen        -> conven
+# conher        -> conver
+# conhet        -> convet
+# conhex        -> convex
+# conhi         -> convi
+# conho         -> convo
+# downhot       -> downvot
+# eigenh        -> eigenv
+# elinhar       -> elinvar
+# enhassal      -> envassal
+# enheigle      -> enveigle
+# enheil        -> enveil
+# enhelop       -> envelop
+# enhenom       -> envenom
+# enherdur      -> enverdur
+# enhermeil     -> envermeil
+# enhie         -> envie
+# enhiro        -> enviro
+# enhisa        -> envisa
+# enhisi        -> envisi
+# enhoi         -> envoi
+# enhoutement   -> envoutement
+# enhoy         -> envoy
+# enhy          -> envy
+# inconh        -> inconv
+# inhagi        -> invagi
+# inhali        -> invali
+# inhaluabl     -> invaluabl
+# inhalued      -> invalued
+# inhecked      -> invecked
+# inhect        -> invect
+# inheig        -> inveig
+# inheil        -> inveil
+# inhenit       -> invenit
+# inhent        -> invent
+# inheracities  -> inveracities
+# inheracity    -> inveracity
+# inhers        -> invers
+# inhert        -> invert
+# inhest        -> invest
+# inhetera      -> invetera
+# inhiable      -> inviable
+# inhidious     -> invidious
+# inhig         -> invig
+# inhin         -> invin
+# inhious       -> invious
+# inhiron       -> inviron
+# inhirtuat     -> invirtuat
+# inhis         -> invis
+# inhit         -> invit
+# inhocable     -> invocable
+# inhocant      -> invocant
+# inhocate      -> invocate
+# inhocating    -> invocating
+# inhocation    -> invocation
+# inhocative    -> invocative
+# inhocator     -> invocator
+# inhoice       -> invoice
+# inhoke        -> invoke
+# inhoking      -> invoking
+# inholat       -> involat
+# inholt        -> involt
+# inholu        -> involu
+# inholv        -> involv
+# inhulnerab    -> invulnerab
+# lakenhelder   -> lakenvelder
+# llanhirn      -> llanvirn
+# manhantara    -> manvantara
+# moonhine      -> moonvine
+# nhey          -> nvey
+# nonhalid      -> nonvalid
+# nonhanishing  -> nonvanishing
+# nonhascular   -> nonvascular
+# nonhector     -> nonvector
+# nonhegetarian -> nonvegetarian
+# nonhenomous   -> nonvenomous
+# nonherbal     -> nonverbal
+# nonhernalized -> nonvernalized
+# nonheteran    -> nonveteran
+# nonhia        -> nonvia
+# nonhib        -> nonvib
+# nonhiewer     -> nonviewer
+# nonhin        -> nonvin
+# nonhio        -> nonvio
+# nonhir        -> nonvir
+# nonhiscous    -> nonviscous
+# nonhisual     -> nonvisual
+# nonhoca       -> nonvoca
+# nonhocoid     -> nonvocoid
+# nonhol        -> nonvol
+# nonhot        -> nonvot
+# renherse      -> renverse
+# renhersing    -> renversing
+# sanhitalia    -> sanvitalia
+# turnherein    -> turnverein
+# unhaccinated  -> unvaccinated
+# unhaluable    -> unvaluable
+# unhalue       -> unvalue
+# unhanquish    -> unvanquish
+# unhapor       -> unvapor
+# unhapour      -> unvapour
+# unhariable    -> unvariable
+# unharied      -> unvaried
+# unhariegated  -> unvariegated
+# unharnished   -> unvarnished
+# unharying     -> unvarying
+# unhaulted     -> unvaulted
+# unhax         -> unvax
+# unheil        -> unveil
+# unhendible    -> unvendible
+# unhenerable   -> unvenerable
+# unhented      -> unvented
+# unhentilated  -> unventilated
+# unhentured    -> unventured
+# unheracious   -> unveracious
+# unheracit     -> unveracit
+# unherbalized  -> unverbalized
+# unherifiab    -> unverifiab
+# unherified    -> unverified
+# unhernalize   -> unvernalize
+# unhersed      -> unversed
+# unhest        -> unvest
+# unhexed       -> unvexed
+# unhiable      -> unviable
+# unhicious     -> unvicious
+# unhictorious  -> unvictorious
+# unhiewed      -> unviewed
+# unhigilant    -> unvigilant
+# unhindic      -> unvindic
+# unhiol        -> unviol
+# unhirt        -> unvirt
+# unhisited     -> unvisited
+# unhisored     -> unvisored
+# unhital       -> unvital
+# unhitiated    -> unvitiated
+# unhitrifi     -> unvitrifi
+# unhocal       -> unvocal
+# unhoice       -> unvoice
+# unhoicing     -> unvoicing
+# unhouched     -> unvouched
+# unhowed       -> unvowed
+# unhowelled    -> unvowelled
+# unhoyageable  -> unvoyageable
+# unhulcanized  -> unvulcanized
+# unhulgar      -> unvulgar
+#
+# circumyent    -> circumvent
+# farmyouse     -> farmhouse
+# advere        -> adhere
+# adveri        -> adheri
+# advesi        -> adhesi
+# childvood     -> childhood
+# dvarma        -> dharma
+# handveld      -> handheld
+# redvead       -> redhead
+# secondvand    -> secondhand
+# obhious       -> obvious
+# subhersi      -> subversi
+#
+# :enhai        -> envai
+# :enhe         -> enve
+# :enhid        -> envid
+# :inhen        -> inven
+# :inho         -> invo
+# conhal        -> conval
+# conhec        -> convec
+# conheio       -> conveio
+# conheses      -> conveses
+# conhul        -> convul
+# cunha         -> cunva
+# cunhi         -> cunvi
+# cunhol        -> cunvol
+# enhasilhar    -> envasilhar
+# enhia         -> envia
+# enhil         -> envil
+# enhinagrar    -> envinagrar
+# enhio         -> envio
+# enhiu         -> enviu
+# enhol         -> envol
+# inhad         -> invad
+# inhari        -> invari
+# inhas         -> invas
+# inhej         -> invej
+# inhericidade  -> invericidade
+# inhern        -> invern
+# inheros       -> inveros
+# inhiabi       -> inviabi
+# inhict        -> invict
+# inhiol        -> inviol
+# inhulgar      -> invulgar
+# inhulnerado   -> invulnerado
+# unhirato      -> unvirato

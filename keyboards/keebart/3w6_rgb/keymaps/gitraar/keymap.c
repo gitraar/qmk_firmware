@@ -44,7 +44,6 @@
 #define MT_ZP LT(0, KC_P)
 #define MT_QF LT(0, KC_F)
 #define MT_QUK LT(0, KC_K)
-#define MT_SFT_ALTREP LSFT_T(KC_COMMA)
 
 // Tap dances
 #define TD_DOT TD(DOT)
@@ -79,7 +78,7 @@
 #define UM_LM5 LCTL_T(KC_S)
 #define UM_LM4 LALT_T(KC_N)
 #define UM_LM3 LGUI_T(KC_T)
-#define UM_LM2 MT_SFT_ALTREP
+#define UM_LM2 LSFT_T(KC_H)
 
 #define UM_LM1 MT_QUK
 
@@ -345,7 +344,6 @@ const uint16_t PROGMEM tilde_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 
 // Combos as "adaptives"
 const uint16_t PROGMEM gm_gl_combo[] = {UM_LB3, UM_LB2, COMBO_END};
-// const uint16_t PROGMEM ld_lg_combo[] = {UM_LT2, UM_LT3, COMBO_END};
 const uint16_t PROGMEM mw_mp_combo[] = {UM_LB2, UM_LB4, COMBO_END};
 const uint16_t PROGMEM pf_ps_combo[] = {UM_LT5, UM_LT4, COMBO_END};
 
@@ -365,7 +363,6 @@ enum combos {
     CAPS_WORD_COMBO,
     TILDE_COMBO,
     GM_GL_COMBO,
-    // LD_LG_COMBO,
     MW_MP_COMBO,
     PF_PS_COMBO,
     MUTE_COMBO
@@ -385,7 +382,6 @@ combo_t key_combos[] = {
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [GM_GL_COMBO] = COMBO(gm_gl_combo, U_GL),
-    // [LD_LG_COMBO] = COMBO(ld_lg_combo, U_LG),
     [MW_MP_COMBO] = COMBO(mw_mp_combo, U_MP),
     [PF_PS_COMBO] = COMBO(pf_ps_combo, U_PS),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
@@ -638,7 +634,6 @@ bool caps_word_press_user(uint16_t keycode) {
         case U_LG:
         case U_MP:
         case U_PS:
-        case MT_SFT_ALTREP:
         case KC_MINS:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
             return true;
@@ -658,42 +653,6 @@ bool caps_word_press_user(uint16_t keycode) {
         default:
             return false; // Deactivate Caps Word.
     }
-}
-
-/*
-#####################################
-### Repeat/Alternate Key Settings ###
-#####################################
-*/
-static bool guied = false;  // is Command held
-uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
-    if (guied) {  // the key should always be "h" if Command is held
-        return KC_H;
-    }
-    switch (keycode) {
-        case KC_D:
-        case LSFT_T(KC_A):
-        case RGUI_T(KC_E):
-        case LALT_T(KC_I):
-        case KC_O:
-        case HYPR_T(KC_U):
-        case U_TIL_A:
-        case U_TIL_O:
-        case U_AC_I:
-        case U_GR_A:
-        case U_AC_U:
-        case TD_AA:
-        case TD_AE:
-        case TD_AO:
-            return KC_V; // ... and the reverse is Shift + Tab.
-        default:
-            return KC_H;
-    }
-}
-
-bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* remembered_mods) {
-    if (keycode == MT_SFT_ALTREP) { return false; }
-    return true;
 }
 
 /*
@@ -789,13 +748,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
-        case MT_SFT_ALTREP:
-            if (record->tap.count) { // On tap.
-                guied = (mod_state & MOD_MASK_GUI);  // the key should always be "h" if Command is held
-                alt_repeat_key_invoke(&record->event);
-                return false; // Skip default handling.
-            }
-            return true; // Continue default handling.
         case MT_ZP:
             if (!record->tap.count && record->event.pressed) {
                 if (is_caps_word_on()) {
