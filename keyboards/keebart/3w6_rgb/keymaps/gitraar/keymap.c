@@ -345,7 +345,7 @@ const uint16_t PROGMEM tilde_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 
 // Combos as "adaptives"
 const uint16_t PROGMEM gm_gl_combo[] = {UM_LB3, UM_LB2, COMBO_END};
-const uint16_t PROGMEM ld_lg_combo[] = {UM_LT2, UM_LT3, COMBO_END};
+// const uint16_t PROGMEM ld_lg_combo[] = {UM_LT2, UM_LT3, COMBO_END};
 const uint16_t PROGMEM mw_mp_combo[] = {UM_LB2, UM_LB4, COMBO_END};
 const uint16_t PROGMEM pf_ps_combo[] = {UM_LT5, UM_LT4, COMBO_END};
 
@@ -365,7 +365,7 @@ enum combos {
     CAPS_WORD_COMBO,
     TILDE_COMBO,
     GM_GL_COMBO,
-    LD_LG_COMBO,
+    // LD_LG_COMBO,
     MW_MP_COMBO,
     PF_PS_COMBO,
     MUTE_COMBO
@@ -385,7 +385,7 @@ combo_t key_combos[] = {
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [GM_GL_COMBO] = COMBO(gm_gl_combo, U_GL),
-    [LD_LG_COMBO] = COMBO(ld_lg_combo, U_LG),
+    // [LD_LG_COMBO] = COMBO(ld_lg_combo, U_LG),
     [MW_MP_COMBO] = COMBO(mw_mp_combo, U_MP),
     [PF_PS_COMBO] = COMBO(pf_ps_combo, U_PS),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
@@ -671,11 +671,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
         return KC_H;
     }
     switch (keycode) {
-        case KC_B:
         case KC_D:
-        case KC_F:
-        case LT(_MOUSE, KC_M):
-            return KC_Y;
         case LSFT_T(KC_A):
         case RGUI_T(KC_E):
         case LALT_T(KC_I):
