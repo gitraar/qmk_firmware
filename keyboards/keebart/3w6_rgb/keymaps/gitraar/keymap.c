@@ -32,18 +32,15 @@
 
 // Layers
 #define _BASE 0
-#define _NAV 1
-#define _MOU 2
-// #define _MED 3
+#define _EXT 1
+#define _NAV 2
+#define _MOU 3
 #define _NUM 4
 #define _SYM 5
 #define _FUN 6
-#define _EXT 7
 
 // Mod taps
-#define MT_ZD LT(0, KC_D)
 #define MT_QF LT(0, KC_F)
-#define MT_QUO LT(0, KC_O)
 
 // Tap dances
 #define TD_DOT TD(DOT)
@@ -71,7 +68,7 @@
 
 #define UM_LT5 MT_QF
 #define UM_LT4 KC_P
-#define UM_LT3 MT_ZD
+#define UM_LT3 KC_D
 #define UM_LT2 HYPR_T(KC_L)
 #define UM_LT1 KC_X
 
@@ -93,7 +90,7 @@
 
 #define UM_RT1 U_CC
 #define UM_RT2 HYPR_T(KC_U)
-#define UM_RT3 MT_QUO
+#define UM_RT3 KC_O
 #define UM_RT4 KC_Y
 #define UM_RT5 KC_B
 
@@ -119,19 +116,20 @@
 // Custom keycodes
 enum custom_keycodes {
     BASE = SAFE_RANGE,
+    EXT,
     NAV,
     MOU,
- // MED,
     NUM,
     SYM,
     FUN,
-    EXT,
     SELWORD,
+    U_QU,  // "Qu"
     U_GR_A, U_TIL_A, U_TIL_O, // accented characters
     U_AC_I, U_AC_U, // accented characters
     U_CC, // "ç"
     U_QUOTE, U_TILDE, U_CIRC, // accents with space to never act like dead keys
-    U_GL, U_MP, U_PS, // "adaptives"
+    U_MP, U_PS, // "adaptives"
+    U_RGB_T  // macro for RGB toggle with extra info
 };
 
 // Tap Dance stuff.
@@ -343,7 +341,8 @@ const uint16_t PROGMEM tilde_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {UM_RB2, UM_RB3, COMBO_END};
 
 // Combos for "adaptives"
-const uint16_t PROGMEM gm_gl_combo[] = {UM_LB3, UM_LB2, COMBO_END};
+const uint16_t PROGMEM qu_combo[] = {UM_LB3, UM_LB2, COMBO_END};
+const uint16_t PROGMEM z_combo[] = {UM_LB4, UM_LB3, COMBO_END};
 const uint16_t PROGMEM mw_mp_combo[] = {UM_LB2, UM_LB4, COMBO_END};
 const uint16_t PROGMEM pf_ps_combo[] = {UM_LT5, UM_LT4, COMBO_END};
 
@@ -363,7 +362,8 @@ enum combos {
     CAPS_WORD_COMBO,
     TILDE_COMBO,
     SEMICOLON_COMBO,
-    GM_GL_COMBO,
+    QU_COMBO,
+    Z_COMBO,
     MW_MP_COMBO,
     PF_PS_COMBO,
     MUTE_COMBO
@@ -383,7 +383,8 @@ combo_t key_combos[] = {
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
-    [GM_GL_COMBO] = COMBO(gm_gl_combo, U_GL),
+    [QU_COMBO] = COMBO(qu_combo, U_QU),
+    [Z_COMBO] = COMBO(z_combo, KC_Z),
     [MW_MP_COMBO] = COMBO(mw_mp_combo, U_MP),
     [PF_PS_COMBO] = COMBO(pf_ps_combo, U_PS),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
@@ -477,12 +478,12 @@ void leader_end_user(void) {
 ##################
 */
 
-bool rgb_auto_disabled = false;
+bool rgb_disabled_manually = false;
+
 // Function to do things when the keyboard is idle.
 static uint32_t idle_callback(uint32_t trigger_time, void* cb_arg) {
     // If execution reaches here, the keyboard has gone idle.
     if (rgb_matrix_is_enabled()) {
-        rgb_auto_disabled = true; // Used to inform decision about automatically turning RGB back on.
         rgb_matrix_disable(); // Disables the RGB Matrix.
     }
     return 0;
@@ -553,9 +554,7 @@ uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next
 
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     switch (tap_hold_keycode) {
-        case MT_ZD:
         case MT_QF:
-        case MT_QUO:
         case UM_LH3:
             return 0;  // Bypass Achordion for these keys.
     }
@@ -623,16 +622,14 @@ bool caps_word_press_user(uint16_t keycode) {
         case TD_AA:
         case TD_AE:
         case TD_AO:
-        case MT_ZD:
+        case U_QU:
         case MT_QF:
-        case MT_QUO:
         case U_GR_A:
         case U_TIL_A:
         case U_TIL_O:
         case U_AC_I:
         case U_AC_U:
         case U_CC:
-        case U_GL:
         case U_MP:
         case U_PS:
         case KC_MINS:
@@ -669,11 +666,11 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TD_AE:
         case TD_AO:
             return 200;
-        case MT_ZD:
         case MT_QF:
             return 175;
-        case MT_QUO:
-            return 150;
+        case UM_LM2:
+        case UM_LM4:
+            return 150;  // these need to be short so the eager mods apply quickly
         default:
             return TAPPING_TERM;
     }
@@ -706,9 +703,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         idle_token = defer_exec(IDLE_TIMEOUT_MS, idle_callback, NULL);
     }
     // Restore the RGB matrix when returning from idle.
-    if (!rgb_matrix_is_enabled() && rgb_auto_disabled) {
+    if (!rgb_matrix_is_enabled() && !rgb_disabled_manually) {
         rgb_matrix_enable();
-        rgb_auto_disabled = false;
     }
     uint8_t mod_state = get_mods();
     tap_dance_action_t *action;
@@ -749,21 +745,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
-        case MT_ZD:
-            if (!record->tap.count && record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(KC_Z));
-                } else {
-                    if (is_sentence_case_primed()) {
-                        tap_code16(S(KC_Z));
-                        sentence_case_clear();
-                    } else {
-                        tap_code(KC_Z);
-                    }
-                }
-                return false;
-            }
-            break;
         case MT_QF:
             if (!record->tap.count && record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -777,8 +758,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
-        case MT_QUO:
-            if (!record->tap.count && record->event.pressed) {
+        // Macros
+        case U_RGB_T:
+            if (record->event.pressed) {
+                if (rgb_matrix_is_enabled()) {
+                    rgb_disabled_manually = true;
+                    rgb_matrix_disable();
+                } else {
+                    rgb_disabled_manually = false;
+                    rgb_matrix_enable();
+                }
+            }
+            break;
+        case U_QU:
+            if (record->event.pressed) {
                 if (is_caps_word_on()) {
                     tap_code16(S(KC_Q));
                     tap_code16(S(KC_U));
@@ -795,7 +788,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
-        // Macros
         case U_QUOTE:
             if (record->event.pressed) {
                 if (mod_state & MOD_MASK_ALT) {
@@ -831,19 +823,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             if (layer_state_is(_EXT)) {
                 layer_clear();  // I never want two accented characters in a row (nor "ç")
                 return false;
-            }
-            break;
-        case U_GL:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(KC_G));
-                    tap_code16(S(KC_L));
-                } else {
-                    tap_code(KC_G);
-                    clear_mods();
-                    tap_code(KC_L);
-                    set_mods(mod_state);
-                }
             }
             break;
         case U_MP:
@@ -1094,7 +1073,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_FUN] = LAYOUT_split_3x5_3(
         KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     XXXXXXX, XXXXXXX, RM_VALU, XXXXXXX, XXXXXXX,
         KC_F11, KC_F4, KC_F5,   KC_F6,   XXXXXXX,     XXXXXXX, RM_NEXT, RM_VALD, AC_TOGG, QK_BOOT,
-        KC_F10, KC_F1, KC_F2,   KC_F3,   RM_TOGG,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        KC_F10, KC_F1, KC_F2,   KC_F3,   U_RGB_T,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                QK_LEAD, KC_CAPS, LOCK_SCR,    XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
