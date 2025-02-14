@@ -85,8 +85,8 @@
 #define UM_LB1 KC_J
 
 #define UM_LH3 LT(0, KC_BACKSPACE)
-#define UM_LH2 LT(_EXT, KC_R)
-#define UM_LH1 LT(_NAV, KC_TAB)
+#define UM_LH2 LT(_NAV, KC_R)
+#define UM_LH1 LT(_EXT, KC_TAB)
 
 #define UM_RT1 U_CC
 #define UM_RT2 HYPR_T(KC_U)
@@ -335,14 +335,14 @@ const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
+const uint16_t PROGMEM z_combo[] = {UM_LB4, UM_LB3, COMBO_END};
+const uint16_t PROGMEM qu_combo[] = {UM_LB3, UM_LB2, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM tilde_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {UM_RB2, UM_RB3, COMBO_END};
 
 // Combos for "adaptives"
-const uint16_t PROGMEM qu_combo[] = {UM_LB3, UM_LB2, COMBO_END};
-const uint16_t PROGMEM z_combo[] = {UM_LB4, UM_LB3, COMBO_END};
 const uint16_t PROGMEM mw_mp_combo[] = {UM_LB2, UM_LB4, COMBO_END};
 const uint16_t PROGMEM pf_ps_combo[] = {UM_LT5, UM_LT4, COMBO_END};
 
@@ -360,10 +360,10 @@ enum combos {
     RPRN_COMBO,
     SUPER_O_COMBO,
     CAPS_WORD_COMBO,
+    Z_COMBO,
+    QU_COMBO,
     TILDE_COMBO,
     SEMICOLON_COMBO,
-    QU_COMBO,
-    Z_COMBO,
     MW_MP_COMBO,
     PF_PS_COMBO,
     MUTE_COMBO
@@ -381,10 +381,10 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
+    [Z_COMBO] = COMBO(z_combo, KC_Z),
+    [QU_COMBO] = COMBO(qu_combo, U_QU),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
-    [QU_COMBO] = COMBO(qu_combo, U_QU),
-    [Z_COMBO] = COMBO(z_combo, KC_Z),
     [MW_MP_COMBO] = COMBO(mw_mp_combo, U_MP),
     [PF_PS_COMBO] = COMBO(pf_ps_combo, U_PS),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
@@ -991,7 +991,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |SpcLeft|SelWord|SpcRght|       |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |       |       |OOOOOOO|    |Confirm|       |       |
+                    |       |       |OOOOOOO|    |Confirm|  RayC |  Undo |
                     `———————————————————————'    `———————————————————————'
 */
 
@@ -999,7 +999,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
         _______, _______, _______, KC_LSFT, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
         _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), _______,  _______
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST, UNDO
     ),
 
 /* Mouse and Media Keys
@@ -1086,14 +1086,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
-                    |       |OOOOOOO|       |    |       |  RayC |  Undo |
+                    |       |OOOOOOO|       |    |       |       |       |
                     `———————————————————————'    `———————————————————————'
 */
 
-    [_EXT] = LAYOUT_split_3x5_3(
+    [_EXT] = LAYOUT_split_3x5_3(  // Left shift is not left transparent to prevent the one-shot mod-tap from messing with accented characters
         _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
         _______, _______, _______, KC_LSFT, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
         _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, RAYCAST, UNDO
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
     ),
 };
