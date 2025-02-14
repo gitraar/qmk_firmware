@@ -529,11 +529,10 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, ui
 
 bool achordion_eager_mod(uint8_t mod) {
     switch (mod) {
-        case MOD_LSFT:
-        case MOD_RSFT:
+        // case MOD_LSFT:  // this prevents shift one-shot mod-tap from working but isn't needed with a low tapping term
         case MOD_LALT:
         case MOD_LGUI:
-            return true; // Eagerly apply mods.
+            return true;  // Eagerly apply mods.
         default:
             return false;
     }
@@ -688,6 +687,23 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
 }
 
 /*
+########################
+### One-shot mod-tap ###
+########################
+*/
+
+static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
+    if (record->tap.count == 0) {  // Key is being held.
+        if (record->event.pressed) {
+            const uint8_t mods = (keycode >> 8) & 0x1f;
+            add_oneshot_mods(((mods & 0x10) == 0) ? mods : (mods << 4));
+        }
+        return false;  // Skip default handling.
+    }
+    return true;  // Continue default handling.
+}
+
+/*
 ###########################
 ### Process Record User ###
 ###########################
@@ -709,6 +725,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     uint8_t mod_state = get_mods();
     tap_dance_action_t *action;
     switch (keycode) {
+        // One-shot mod-taps
+        case UM_LM2:
+        case UM_RM2:
+            return oneshot_mod_tap(keycode, record);
         // Advanced tap dances
         case TD_PGUP:
             action = &tap_dance_actions[QK_TAP_DANCE_GET_INDEX(keycode)];
@@ -967,7 +987,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
     |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabUp |  Home |   Up  |  End  |  PgUp |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabDo |  Left |  Down | Right |  PgDo |
+    |  ---  |  ---  |  ---  | Shift |  ---  |    | TabDo |  Left |  Down | Right |  PgDo |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |SpcLeft|SelWord|SpcRght|       |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
@@ -975,9 +995,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     `———————————————————————'    `———————————————————————'
 */
 
-    [_NAV] = LAYOUT_split_3x5_3(
+    [_NAV] = LAYOUT_split_3x5_3(  // Left shift is not left transparent to prevent the one-shot mod-tap from messing with text selection
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
-        _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
+        _______, _______, _______, KC_LSFT, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
         _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), _______,  _______
     ),
@@ -1000,25 +1020,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, XXXXXXX, _______,    KC_MPLY, KC_VOLD, KC_VOLU, KC_MPRV, KC_MNXT,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    MS_BTN1, MS_BTN3, MS_BTN2
     ),
-
-/* Media
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |       | VolUp |       |       |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |  Prev | VolDo |  Next |       |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |       |       |       |       |
-    `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |OOOOOOO|       |       |    |  Next |  Play |  Mute |
-                    `———————————————————————'    `———————————————————————'
-*/
-
-    // [_MED] = LAYOUT_split_3x5_3(
-    //     _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, KC_VOLU, XXXXXXX, XXXXXXX,
-    //     _______, _______, _______, _______, _______,    XXXXXXX, KC_MPRV, KC_VOLD, KC_MNXT, XXXXXXX,
-    //     _______, _______, _______, _______, _______,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    //                               XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, KC_MPLY, KC_MUTE
-    // ),
 
 /* Numbers
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
@@ -1043,7 +1044,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
     |       |   \   |   <   |   >   |      |    |  ---  |  ---  |  ---  |  ---  |  ---  |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |       |   |   |   [   |   ]   |   $   |    |  ---  |  ---  |  ---  |  ---  |  ---  |
+    |       |   |   |   [   |   ]   |   $   |    |  ---  | Shift |  ---  |  ---  |  ---  |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |       |   ^   |   {   |   }   |   £   |    |  ---  |  ---  |  ---  |  ---  |  ---  |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
@@ -1053,7 +1054,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_SYM] = LAYOUT_split_3x5_3(
         XXXXXXX, KC_BSLS, KC_LT,   KC_GT,   A(S(KC_K)),    _______, _______, _______, _______, _______,
-        XXXXXXX, KC_PIPE, KC_LBRC, KC_RBRC, KC_DLR,        _______, _______, _______, _______, _______,
+        XXXXXXX, KC_PIPE, KC_LBRC, KC_RBRC, KC_DLR,        _______, KC_LSFT, _______, _______, _______,
         XXXXXXX, U_CIRC,  KC_LCBR, KC_RCBR, A(KC_3),       _______, _______, _______, _______, _______,
                                   KC_AMPR, KC_HASH, A(KC_AT),      XXXXXXX, XXXXXXX, XXXXXXX
     ),
@@ -1081,7 +1082,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |       |       |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |   ç   |
+    |  ---  |  ---  |  ---  | Shift |  ---  |    |   à   |   á   |   é   |   í   |   ç   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
@@ -1091,7 +1092,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXT] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
-        _______, _______, _______, _______, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
+        _______, _______, _______, KC_LSFT, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
         _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, RAYCAST, UNDO
     ),
