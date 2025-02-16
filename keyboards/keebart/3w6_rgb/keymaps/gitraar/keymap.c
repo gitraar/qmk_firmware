@@ -88,7 +88,7 @@
 #define UM_LH2 LT(_NAV, KC_R)
 #define UM_LH1 LT(_EXT, KC_TAB)
 
-#define UM_RT1 U_CC
+#define UM_RT1 KC_DELETE
 #define UM_RT2 HYPR_T(KC_U)
 #define UM_RT3 KC_O
 #define UM_RT4 KC_Y
@@ -108,7 +108,7 @@
 
 #define UM_RH1 LT(_SYM, KC_ENTER)
 #define UM_RH2 LT(_NUM, KC_SPACE)
-#define UM_RH3 LT(_FUN, KC_DELETE)
+#define UM_RH3 LT(_FUN, KC_BACKSPACE)  // tap is intercepted to output Alternate Repeat
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -720,6 +720,40 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
 }
 
 /*
+##############################
+### Alternate Key Settings ###
+##############################
+*/
+
+uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
+    bool shifted = (mods & MOD_MASK_SHIFT);  // Was Shift held?
+    switch (keycode) {
+        case UM_LH1:
+            if (shifted) {        // If the last key was Shift + Tab,
+                return KC_TAB;    // ... the reverse is Tab.
+            } else {              // Otherwise, the last key was Tab,
+                return S(KC_TAB); // ... and the reverse is Shift + Tab.
+            }
+            break;
+        case UM_LM5: SEND_STRING(/*s*/"sion"); break;
+        case UM_LM4: SEND_STRING(/*n*/"ion"); break;
+        case UM_LM3: SEND_STRING(/*t*/"heir"); break;
+        case UM_LB2: SEND_STRING(/*m*/"ent"); break;
+        case UM_RT5: SEND_STRING(/*b*/"ecause"); break;
+        case UM_RM2: SEND_STRING(/*a*/"tion"); break;
+        case UM_RM4: SEND_STRING(/*i*/"tion"); break;
+        case UM_RH2: SEND_STRING(/* */"the"); break;
+        case KC_W: SEND_STRING(/*w*/"hich"); break;
+    }
+    return KC_NO;
+}
+
+bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* remembered_mods) {
+    if (keycode == UM_RH3) { return false; }
+    return true;
+}
+
+/*
 ########################
 ### One-shot mod-tap ###
 ########################
@@ -791,9 +825,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Hold intercepts
-        case LT(0, KC_BACKSPACE):
+        case UM_LH3:
             if (!record->tap.count && record->event.pressed) {
                 tap_code(KC_ESCAPE);
+                return false;
+            }
+            break;
+        case UM_RH3:
+            if (record->tap.count && record->event.pressed) {
+                alt_repeat_key_invoke(&record->event);
                 return false;
             }
             break;
@@ -994,13 +1034,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |   f   |   p   |   d   |   l   |   x   |    |   ç   |   u   |   o   |   y   |   b   |
+    |   f   |   p   |   d   |   l   |   x   |    |  Del  |   u   |   o   |   y   |   b   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |   s   |   n   |   t   |   h   |   k   |    |   -   |   a   |   e   |   i   |   c   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |   v   |   w   |   g   |   m   |   j   |    |   ;   |   .   |   ,   |   '   |   /   |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |  Bspc |   r   |  Tab  |    | Enter | Space |  Del  |
+                    |  Bspc |   r   |  Tab  |    | Enter | Space | Magic |
                     `———————————————————————'    `———————————————————————'
 */
 
