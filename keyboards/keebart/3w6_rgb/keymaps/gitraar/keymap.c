@@ -84,7 +84,7 @@
 #define UM_LB2 LT(_MOU, KC_M)
 #define UM_LB1 KC_J
 
-#define UM_LH3 LT(0, KC_BACKSPACE)
+#define UM_LH3 LT(0, KC_BACKSPACE)  // hold is intercepted to output Escape
 #define UM_LH2 LT(_NAV, KC_R)
 #define UM_LH1 LT(_EXT, KC_TAB)
 
@@ -95,7 +95,7 @@
 #define UM_RT5 KC_B
 
 #define UM_RM1 KC_MINUS
-#define UM_RM2 LSFT_T(KC_A)
+#define UM_RM2 RSFT_T(KC_A)
 #define UM_RM3 RGUI_T(KC_E)
 #define UM_RM4 LALT_T(KC_I)
 #define UM_RM5 RCTL_T(KC_C)
@@ -441,20 +441,18 @@ void leader_end_user(void) {
         // Leader, t => Process one segment
         tap_code16(G(KC_A));
         wait_ms(500);
-        tap_code16(G(S(KC_C)));
-        tap_code16(G(S(KC_C)));
-        wait_ms(500);
+        tap_code16(G(A(KC_C)));
+        wait_ms(1000);
         tap_code(KC_ENTER);
     } else if (leader_sequence_two_keys(KC_T, KC_T)) {
         // Leader, t, t => Process ten segments
         for (int i = 0; i < 10; i++) {
             tap_code16(G(KC_A));
             wait_ms(500);
-            tap_code16(G(S(KC_C)));
-            tap_code16(G(S(KC_C)));
-            wait_ms(500);
+            tap_code16(G(A(KC_C)));
+            wait_ms(1000);
             tap_code(KC_ENTER);
-            wait_ms(5000);
+            wait_ms(500);
             tap_code(KC_DOWN);
         }
     } else if (leader_sequence_three_keys(KC_T, KC_T, KC_T)) {
@@ -462,15 +460,50 @@ void leader_end_user(void) {
         for (int i = 0; i < 50; i++) {
             tap_code16(G(KC_A));
             wait_ms(500);
-            tap_code16(G(S(KC_C)));
-            tap_code16(G(S(KC_C)));
-            wait_ms(500);
+            tap_code16(G(A(KC_C)));
+            wait_ms(1000);
             tap_code(KC_ENTER);
-            wait_ms(5000);
+            wait_ms(500);
             tap_code(KC_DOWN);
         }
     }
 }
+
+// void leader_end_user(void) {
+//     if (leader_sequence_one_key(KC_T)) {
+//         // Leader, t => Process one segment
+//         tap_code16(G(KC_A));
+//         wait_ms(500);
+//         tap_code16(G(S(KC_C)));
+//         tap_code16(G(S(KC_C)));
+//         wait_ms(500);
+//         tap_code(KC_ENTER);
+//     } else if (leader_sequence_two_keys(KC_T, KC_T)) {
+//         // Leader, t, t => Process ten segments
+//         for (int i = 0; i < 10; i++) {
+//             tap_code16(G(KC_A));
+//             wait_ms(500);
+//             tap_code16(G(S(KC_C)));
+//             tap_code16(G(S(KC_C)));
+//             wait_ms(500);
+//             tap_code(KC_ENTER);
+//             wait_ms(5000);
+//             tap_code(KC_DOWN);
+//         }
+//     } else if (leader_sequence_three_keys(KC_T, KC_T, KC_T)) {
+//         // Leader, t, t, t => Process fifty segments
+//         for (int i = 0; i < 50; i++) {
+//             tap_code16(G(KC_A));
+//             wait_ms(500);
+//             tap_code16(G(S(KC_C)));
+//             tap_code16(G(S(KC_C)));
+//             wait_ms(500);
+//             tap_code(KC_ENTER);
+//             wait_ms(5000);
+//             tap_code(KC_DOWN);
+//         }
+//     }
+// }
 
 /*
 ##################
@@ -529,7 +562,7 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, ui
 
 bool achordion_eager_mod(uint8_t mod) {
     switch (mod) {
-        // case MOD_LSFT:  // this prevents shift one-shot mod-tap from working but isn't needed with a low tapping term
+        case MOD_LSFT:
         case MOD_LALT:
         case MOD_LGUI:
             return true;  // Eagerly apply mods.
@@ -726,7 +759,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     tap_dance_action_t *action;
     switch (keycode) {
         // One-shot mod-taps
-        case UM_LM2:
         case UM_RM2:
             return oneshot_mod_tap(keycode, record);
         // Advanced tap dances
@@ -839,10 +871,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 } else {
                     tap_code16(A(KC_C));
                 }
-            }
-            if (layer_state_is(_EXT)) {
-                layer_clear();  // I never want two accented characters in a row (nor "ç")
-                return false;
             }
             break;
         case U_MP:
@@ -983,11 +1011,30 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                 UM_LH3, UM_LH2, UM_LH1,    UM_RH1, UM_RH2, UM_RH3
     ),
 
+/* Alpha Extension
+    ,———————————————————————————————————————.    ,———————————————————————————————————————.
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |       |       |
+    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |   ç   |
+    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
+    `———————————————————————————————————————|    |———————————————————————————————————————'
+                    |       |OOOOOOO|       |    |       |       |       |
+                    `———————————————————————'    `———————————————————————'
+*/
+
+[_EXT] = LAYOUT_split_3x5_3(
+    _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
+    _______, _______, _______, _______, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
+    _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
+                              XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+),
+
 /* Navigation
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
     |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabUp |  Home |   Up  |  End  |  PgUp |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  | Shift |  ---  |    | TabDo |  Left |  Down | Right |  PgDo |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabDo |  Left |  Down | Right |  PgDo |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |SpcLeft|SelWord|SpcRght|       |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
@@ -997,7 +1044,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_NAV] = LAYOUT_split_3x5_3(  // Left shift is not left transparent to prevent the one-shot mod-tap from messing with text selection
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
-        _______, _______, _______, KC_LSFT, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
+        _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
         _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST, UNDO
     ),
@@ -1076,24 +1123,5 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F11, KC_F4, KC_F5,   KC_F6,   XXXXXXX,     XXXXXXX, RM_NEXT, RM_VALD, AC_TOGG, QK_BOOT,
         KC_F10, KC_F1, KC_F2,   KC_F3,   U_RGB_T,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                QK_LEAD, KC_CAPS, LOCK_SCR,    XXXXXXX, XXXXXXX, XXXXXXX
-    ),
-
-/* Alpha Extension
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |       |       |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  | Shift |  ---  |    |   à   |   á   |   é   |   í   |   ç   |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
-    `———————————————————————————————————————|    |———————————————————————————————————————'
-                    |       |OOOOOOO|       |    |       |       |       |
-                    `———————————————————————'    `———————————————————————'
-*/
-
-    [_EXT] = LAYOUT_split_3x5_3(  // Left shift is not left transparent to prevent the one-shot mod-tap from messing with accented characters
-        _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
-        _______, _______, _______, KC_LSFT, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
-        _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
     ),
 };
