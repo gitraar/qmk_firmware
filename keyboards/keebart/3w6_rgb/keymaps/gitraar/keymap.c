@@ -735,15 +735,69 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 return S(KC_TAB); // ... and the reverse is Shift + Tab.
             }
             break;
-        case UM_LM5: SEND_STRING(/*s*/"sion"); break;
-        case UM_LM4: SEND_STRING(/*n*/"ion"); break;
-        case UM_LM3: SEND_STRING(/*t*/"heir"); break;
-        case UM_LB2: SEND_STRING(/*m*/"ent"); break;
-        case UM_RT5: SEND_STRING(/*b*/"ecause"); break;
-        case UM_RM2: SEND_STRING(/*a*/"tion"); break;
-        case UM_RM4: SEND_STRING(/*i*/"tion"); break;
-        case UM_RH2: SEND_STRING(/* */"the"); break;
-        case KC_W: SEND_STRING(/*w*/"hich"); break;
+        case UM_LM5:
+            if (is_caps_word_on()) {
+                SEND_STRING(/*s*/"SION");
+            } else {
+                SEND_STRING(/*s*/"sion");
+            }
+            break;
+        case UM_LM4:
+            if (is_caps_word_on()) {
+                SEND_STRING(/*n*/"ION");
+            } else {
+                SEND_STRING(/*n*/"ion");
+            }
+            break;
+        case UM_LM3:
+            if (is_caps_word_on()) {
+                SEND_STRING(/*t*/"HEIR");
+            } else {
+                SEND_STRING(/*t*/"heir");
+            }
+            break;
+        case UM_LB4:
+            if (is_caps_word_on()) {
+                SEND_STRING(/*w*/"HICH");
+            } else {
+                SEND_STRING(/*w*/"hich");
+            }
+            break;
+        case UM_LB2:
+            if (is_caps_word_on()) {
+                SEND_STRING(/*m*/"ENT");
+            } else {
+                SEND_STRING(/*m*/"ent");
+            }
+            break;
+        case UM_RT5:
+            if (is_caps_word_on()) {
+                SEND_STRING(/*b*/"ECAUSE");
+            } else {
+                SEND_STRING(/*b*/"ecause");
+            }
+            break;
+        case UM_RM2:
+            if (is_caps_word_on()) {
+                SEND_STRING(/*a*/"TION");
+            } else {
+                SEND_STRING(/*a*/"tion");
+            }
+            break;
+        case UM_RM4:
+            if (is_caps_word_on()) {
+                SEND_STRING(/*i*/"TION");
+            } else {
+                SEND_STRING(/*i*/"tion");
+            }
+            break;
+        case UM_RH2:
+            SEND_STRING(/* */"the");
+            break;
+        case U_QU:
+            tap_code16(KC_CIRCUMFLEX);
+            tap_code(KC_E);
+            break;
     }
     return KC_NO;
 }
