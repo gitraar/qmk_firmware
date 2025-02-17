@@ -108,7 +108,7 @@
 
 #define UM_RH1 LT(_SYM, KC_ENTER)
 #define UM_RH2 LT(_NUM, KC_SPACE)
-#define UM_RH3 LT(_FUN, KC_BACKSPACE)  // tap is intercepted to output Alternate Repeat
+#define UM_RH3 LT(_FUN, KC_A)  // tap is intercepted to output Alternate Repeat
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -609,6 +609,7 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
         const bool shifted = mods & MOD_MASK_SHIFT;
         switch (keycode) {
             case KC_A ... KC_Z:
+            case U_QU:
                 return 'a'; // Letter key.
             // case KC_DOT: // . is punctuation, Shift . is a symbol (>)
                 // return !shifted ? '.' : '#';
@@ -792,11 +793,22 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             }
             break;
         case UM_RH2:
-            SEND_STRING(/* */"the");
+            if (is_sentence_case_primed()) {
+                SEND_STRING(/* */"The");
+            } else {
+                SEND_STRING(/* */"the");
+            }
             break;
         case U_QU:
-            tap_code16(KC_CIRCUMFLEX);
-            tap_code(KC_E);
+            if (is_caps_word_on()) {
+                tap_code16(KC_CIRCUMFLEX);
+                tap_code(KC_E);
+            } else {
+                tap_code16(KC_CIRCUMFLEX);
+                tap_code16(S(KC_E));
+            }
+            break;
+
             break;
     }
     return KC_NO;
