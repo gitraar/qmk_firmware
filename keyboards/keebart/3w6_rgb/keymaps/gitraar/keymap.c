@@ -1,4 +1,5 @@
 #include "action.h"
+#include "keycodes.h"
 #include "modifiers.h"
 #include QMK_KEYBOARD_H
 #include "features/achordion.h"
@@ -81,14 +82,15 @@
 #define UM_LB5 KC_V
 #define UM_LB4 KC_W
 #define UM_LB3 KC_G
-#define UM_LB2 LT(_MOU, KC_M)
+#define UM_LB2 KC_M
 #define UM_LB1 KC_J
 
-#define UM_LH3 LT(0, KC_BACKSPACE)  // hold is intercepted to output Escape
+// #define UM_LH3 LT(0, KC_BACKSPACE)  // hold is intercepted to output Escape
+#define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
 #define UM_LH1 LT(_EXT, KC_TAB)
 
-#define UM_RT1 KC_DELETE
+#define UM_RT1 QK_ALT_REPEAT_KEY
 #define UM_RT2 HYPR_T(KC_U)
 #define UM_RT3 KC_O
 #define UM_RT4 KC_Y
@@ -108,7 +110,7 @@
 
 #define UM_RH1 LT(_SYM, KC_ENTER)
 #define UM_RH2 LT(_NUM, KC_SPACE)
-#define UM_RH3 LT(_FUN, KC_A)  // tap is intercepted to output Alternate Repeat
+#define UM_RH3 LT(_FUN, KC_ESCAPE)
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -587,7 +589,7 @@ uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     switch (tap_hold_keycode) {
         case MT_QF:
-        case UM_LH3:
+        // case UM_LH3:
             return 0;  // Bypass Achordion for these keys.
     }
     return 800;  // Otherwise use a timeout of 800 ms.
@@ -804,7 +806,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case UM_LH3:
         case UM_RH2:
-        case UM_RH3:
+        // case UM_RH3:
             return 120;
         default:
             return QUICK_TAP_TERM;
@@ -885,18 +887,19 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             break;
         case UM_RH2:
             if (is_sentence_case_primed()) {
-                SEND_STRING(/* */"The");
+                SEND_STRING(/* */"And");
+                sentence_case_clear();
             } else {
-                SEND_STRING(/* */"the");
+                SEND_STRING(/* */"and");
             }
             break;
         case U_QU:
             if (is_caps_word_on()) {
                 tap_code16(KC_CIRCUMFLEX);
-                tap_code(KC_E);
+                tap_code16(S(KC_E));
             } else {
                 tap_code16(KC_CIRCUMFLEX);
-                tap_code16(S(KC_E));
+                tap_code(KC_E);
             }
             break;
     }
@@ -904,7 +907,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 }
 
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* remembered_mods) {
-    if (keycode == UM_RH3) { return false; }
+    if (keycode == UM_RT1) { return false; }
     return true;
 }
 
@@ -980,18 +983,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Hold intercepts
-        case UM_LH3:
-            if (!record->tap.count && record->event.pressed) {
-                tap_code(KC_ESCAPE);
-                return false;
-            }
-            break;
-        case UM_RH3:
-            if (record->tap.count && record->event.pressed) {
-                alt_repeat_key_invoke(&record->event);
-                return false;
-            }
-            break;
+        // case UM_LH3:
+        //     if (!record->tap.count && record->event.pressed) {
+        //         tap_code(KC_ESCAPE);
+        //         return false;
+        //     }
+        //     break;
         case MT_QF:
             if (!record->tap.count && record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -1189,13 +1186,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |   f   |   p   |   d   |   l   |   x   |    |  Del  |   u   |   o   |   y   |   b   |
+    |   f   |   p   |   d   |   l   |   x   |    | Magic |   u   |   o   |   y   |   b   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |   s   |   n   |   t   |   h   |   k   |    |   -   |   a   |   e   |   i   |   c   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |   v   |   w   |   g   |   m   |   j   |    |   ;   |   .   |   ,   |   '   |   /   |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |  Bspc |   r   |  Tab  |    | Enter | Space | Magic |
+                    |  Bspc |   r   |  Tab  |    | Enter | Space |  Esc  |
                     `———————————————————————'    `———————————————————————'
 */
 
@@ -1213,7 +1210,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |   ç   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
-    `———————————————————————————————————————|    |———————————————————————————————————————'rrrrr
+    `———————————————————————————————————————|    |———————————————————————————————————————'
                     |       |       |OOOOOOO|    |       |       |       |
                     `———————————————————————'    `———————————————————————'
 */
