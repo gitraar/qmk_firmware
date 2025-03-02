@@ -85,7 +85,6 @@
 #define UM_LB2 KC_M
 #define UM_LB1 KC_J
 
-// #define UM_LH3 LT(0, KC_BACKSPACE)  // hold is intercepted to output Escape
 #define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
 #define UM_LH1 LT(_EXT, KC_TAB)
@@ -471,42 +470,6 @@ void leader_end_user(void) {
     }
 }
 
-// void leader_end_user(void) {
-//     if (leader_sequence_one_key(KC_T)) {
-//         // Leader, t => Process one segment
-//         tap_code16(G(KC_A));
-//         wait_ms(500);
-//         tap_code16(G(S(KC_C)));
-//         tap_code16(G(S(KC_C)));
-//         wait_ms(500);
-//         tap_code(KC_ENTER);
-//     } else if (leader_sequence_two_keys(KC_T, KC_T)) {
-//         // Leader, t, t => Process ten segments
-//         for (int i = 0; i < 10; i++) {
-//             tap_code16(G(KC_A));
-//             wait_ms(500);
-//             tap_code16(G(S(KC_C)));
-//             tap_code16(G(S(KC_C)));
-//             wait_ms(500);
-//             tap_code(KC_ENTER);
-//             wait_ms(5000);
-//             tap_code(KC_DOWN);
-//         }
-//     } else if (leader_sequence_three_keys(KC_T, KC_T, KC_T)) {
-//         // Leader, t, t, t => Process fifty segments
-//         for (int i = 0; i < 50; i++) {
-//             tap_code16(G(KC_A));
-//             wait_ms(500);
-//             tap_code16(G(S(KC_C)));
-//             tap_code16(G(S(KC_C)));
-//             wait_ms(500);
-//             tap_code(KC_ENTER);
-//             wait_ms(5000);
-//             tap_code(KC_DOWN);
-//         }
-//     }
-// }
-
 /*
 ##################
 ### RGB Matrix ###
@@ -589,7 +552,6 @@ uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     switch (tap_hold_keycode) {
         case MT_QF:
-        // case UM_LH3:
             return 0;  // Bypass Achordion for these keys.
     }
     return 800;  // Otherwise use a timeout of 800 ms.
@@ -613,8 +575,6 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_A ... KC_Z:
             case U_QU:
                 return 'a'; // Letter key.
-            // case KC_DOT: // . is punctuation, Shift . is a symbol (>)
-                // return !shifted ? '.' : '#';
             case KC_1:
             case KC_SLSH:
                 return shifted ? '.' : '#';
@@ -983,12 +943,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Hold intercepts
-        // case UM_LH3:
-        //     if (!record->tap.count && record->event.pressed) {
-        //         tap_code(KC_ESCAPE);
-        //         return false;
-        //     }
-        //     break;
         case MT_QF:
             if (!record->tap.count && record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -1247,16 +1201,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |  MWUp | MLeft | MDown | MRight|       |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |OOOOOOO|  ---  |    |  Play | VolDo | VolUp |  Prev |  Next |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |  Play | VolDo | VolUp |  Prev |  Next |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |       |       |       |    |  MB1  |  MB3  |  MB2  |
+                    |       |       |OOOOOOO|    |  MB1  |  MB3  |  MB2  |
                     `———————————————————————'    `———————————————————————'
 */
 
     [_MOU] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    MS_WHLD, MS_BTN4, MS_UP,   MS_BTN5, XXXXXXX,
         _______, _______, _______, _______, _______,    MS_WHLU, MS_LEFT, MS_DOWN, MS_RGHT, XXXXXXX,
-        _______, _______, _______, XXXXXXX, _______,    KC_MPLY, KC_VOLD, KC_VOLU, KC_MPRV, KC_MNXT,
+        _______, _______, _______, _______, _______,    KC_MPLY, KC_VOLD, KC_VOLU, KC_MPRV, KC_MNXT,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    MS_BTN1, MS_BTN3, MS_BTN2
     ),
 
