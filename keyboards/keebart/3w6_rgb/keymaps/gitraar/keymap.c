@@ -2,7 +2,6 @@
 #include "keycodes.h"
 #include "modifiers.h"
 #include QMK_KEYBOARD_H
-#include "features/achordion.h"
 #include "features/sentence_case.h"
 #include "features/select_word.h"
 
@@ -504,60 +503,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 }
 
 /*
-##########################
-### Achordion Settings ###
-##########################
-*/
-
-void matrix_scan_user(void) {
-    achordion_task();
-}
-
-bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record, uint16_t other_keycode, keyrecord_t* other_record) {
-    // Get matrix positions of tap-hold key and other key.
-    uint8_t tap_hold_row = tap_hold_record->event.key.row;
-    // uint8_t tap_hold_col = tap_hold_record->event.key.col; // Not needed given the way this keyboard maps sides.
-    uint8_t other_row = other_record->event.key.row;
-    // uint8_t other_col = other_record->event.key.col; // Not needed given the way this keyboard maps sides.
-    if (tap_hold_row == 3) return true; // I want the left thumbs to activate a hold even when used with keys on the same side to make using a mouse easier.
-    bool first_key_left = (tap_hold_row >= 0 && tap_hold_row <= 3);
-    bool second_key_left = (other_row >= 0 && other_row <= 3);
-    return first_key_left != second_key_left;
-}
-
-bool achordion_eager_mod(uint8_t mod) {
-    switch (mod) {
-        case MOD_LSFT:
-        case MOD_LALT:
-        case MOD_LGUI:
-            return true;  // Eagerly apply mods.
-        default:
-            return false;
-    }
-}
-
-uint16_t achordion_streak_chord_timeout(uint16_t tap_hold_keycode, uint16_t next_keycode) {
-    if (IS_QK_LAYER_TAP(tap_hold_keycode)) {
-        return 0; // Disable streak detection on layer-tap keys.
-    }
-    // Otherwise, tap_hold_keycode is a mod-tap key.
-    uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
-    if ((mod & MOD_LSFT) != 0) {
-        return 100; // A shorter streak timeout for Shift mod-tap keys.
-    } else {
-        return 240; // A longer timeout otherwise.
-    }
-}
-
-uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
-    switch (tap_hold_keycode) {
-        case MT_QF:
-            return 0;  // Bypass Achordion for these keys.
-    }
-    return 800;  // Otherwise use a timeout of 800 ms.
-}
-
-/*
 ##############################
 ### Sentence Case Settings ###
 ##############################
@@ -740,9 +685,9 @@ bool caps_word_press_user(uint16_t keycode) {
 }
 
 /*
-########################
-### Tapping Settings ###
-########################
+####################################
+### Tapping and Holding Settings ###
+####################################
 */
 
 // Set tapping term per key.
@@ -756,7 +701,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return 175;
         case UM_LM2:
         case UM_LM4:
-            return 150;  // these need to be short so the eager mods apply quickly
+            return 150;
         default:
             return TAPPING_TERM;
     }
@@ -766,12 +711,20 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case UM_LH3:
         case UM_RH2:
-        // case UM_RH3:
             return 120;
         default:
-            return QUICK_TAP_TERM;
+            return QUICK_TAP_TERM;  // This is set to zero since I don't want other holds to have key repetition
     }
 }
+
+// Define which keys are on which side for Chordal Hold
+const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
+    LAYOUT_split_3x5_3(
+        'L', 'L', 'L', 'L', 'L',  'R', 'R', 'R', 'R', 'R',
+        'L', 'L', 'L', 'L', 'L',  'R', 'R', 'R', 'R', 'R',
+        'L', 'L', 'L', 'L', 'L',  'R', 'R', 'R', 'R', 'R',
+                          '*', '*', '*',  'R', 'R', 'R'
+    );
 
 /*
 ##############################
@@ -895,7 +848,6 @@ static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
 */
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-    if (!process_achordion(keycode, record)) { return false; }
     if (!process_sentence_case(keycode, record)) { return false; }
     if (!process_select_word(keycode, record)) { return false; }
     // On every key event, start or extend the deferred execution to call `idle_callback()` after IDLE_TIMEOUT_MS.

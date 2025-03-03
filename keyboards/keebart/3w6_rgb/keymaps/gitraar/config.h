@@ -28,7 +28,8 @@
 
 // Suggested for mod taps to work well
 #define PERMISSIVE_HOLD
-#define TAPPING_TERM 500
+#define CHORDAL_HOLD
+#define TAPPING_TERM 250
 #define TAPPING_TERM_PER_KEY
 #define COMBO_TERM 40
 #define QUICK_TAP_TERM 0
