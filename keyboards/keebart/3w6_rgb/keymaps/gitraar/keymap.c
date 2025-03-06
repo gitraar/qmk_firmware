@@ -699,9 +699,6 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return 200;
         case MT_QF:
             return 175;
-        case UM_LM2:
-        case UM_LM4:
-            return 150;
         default:
             return TAPPING_TERM;
     }

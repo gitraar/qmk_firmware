@@ -34,7 +34,6 @@
 #define COMBO_TERM 40
 #define QUICK_TAP_TERM 0
 #define QUICK_TAP_TERM_PER_KEY
-#define ACHORDION_STREAK
 
 // RGB stuff
 #define RGB_MATRIX_SLEEP
