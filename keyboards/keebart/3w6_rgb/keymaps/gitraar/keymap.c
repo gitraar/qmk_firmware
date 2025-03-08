@@ -187,118 +187,184 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
 // Code for tap dances with advanded keycodes
-void an_taps(tap_dance_state_t *state, void *user_data) {
-    uint8_t mod_state = get_mods();
-    if (state->count == 1) {
-        if (is_caps_word_on()) {
-            clear_mods();
-            clear_weak_mods();
-            tap_code(KC_QUOTE);
-            set_mods(mod_state);
-            tap_code16(S(KC_A));
-            caps_word_on();
-        } else {
-            clear_mods();
-            clear_weak_mods();
-            tap_code(KC_QUOTE);
-            set_mods(mod_state);
-            tap_code(KC_A);
-        }
-    } else if (state->count == 2) {
-        if (is_caps_word_on()) {
-            clear_mods();
-            clear_weak_mods();
-            tap_code16(KC_CIRCUMFLEX);
-            set_mods(mod_state);
-            tap_code16(S(KC_A));
-            caps_word_on();
-        } else {
-            clear_mods();
-            clear_weak_mods();
-            tap_code16(KC_CIRCUMFLEX);
-            set_mods(mod_state);
-            tap_code(KC_A);
-        }
-    } else {
-        reset_tap_dance(state);
+bool after_accented = false;
+bool accented_character_output = false;
+
+void aa_taps(tap_dance_state_t *state, void *user_data) {
+    if (after_accented) {
+        tap_code(KC_A);
+        return;
     }
-    layer_clear();  // I never want two accented characters in a row
+    uint8_t mod_state = get_mods();
+    switch (state->count) {
+        case 1:
+            if (is_caps_word_on()) {
+                clear_mods();
+                clear_weak_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                tap_code16(S(KC_A));
+                caps_word_on();
+            } else {
+                clear_mods();
+                clear_weak_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                tap_code(KC_A);
+            }
+            accented_character_output = true;
+            break;
+        case 2:
+            tap_code(KC_BACKSPACE);
+            if (is_caps_word_on()) {
+                clear_mods();
+                clear_weak_mods();
+                tap_code16(KC_CIRCUMFLEX);
+                set_mods(mod_state);
+                tap_code16(S(KC_A));
+                caps_word_on();
+            } else {
+                clear_mods();
+                clear_weak_mods();
+                tap_code16(KC_CIRCUMFLEX);
+                set_mods(mod_state);
+                tap_code(KC_A);
+            }
+            accented_character_output = true;
+            break;
+    }
+}
+
+void aa_finished(tap_dance_state_t *state, void *user_data) {
+    if (accented_character_output) {
+        after_accented = true;
+        accented_character_output = false;
+    }
+}
+
+void aa_reset(tap_dance_state_t *state, void *user_data) {
+    if (accented_character_output) {
+        after_accented = true;
+        accented_character_output = false;
+    }
 }
 
 void ae_taps(tap_dance_state_t *state, void *user_data) {
-    uint8_t mod_state = get_mods();
-    if (state->count == 1) {
-        if (is_caps_word_on()) {
-            clear_mods();
-            clear_weak_mods();
-            tap_code(KC_QUOTE);
-            set_mods(mod_state);
-            tap_code16(S(KC_E));
-            caps_word_on();
-        } else {
-            clear_mods();
-            clear_weak_mods();
-            tap_code(KC_QUOTE);
-            set_mods(mod_state);
-            tap_code(KC_E);
-        }
-    } else if (state->count == 2) {
-        if (is_caps_word_on()) {
-            clear_mods();
-            clear_weak_mods();
-            tap_code16(KC_CIRCUMFLEX);
-            set_mods(mod_state);
-            tap_code16(S(KC_E));
-            caps_word_on();
-        } else {
-            clear_mods();
-            clear_weak_mods();
-            tap_code16(KC_CIRCUMFLEX);
-            set_mods(mod_state);
-            tap_code(KC_E);
-        }
-    } else {
-        reset_tap_dance(state);
+    if (after_accented) {
+        tap_code(KC_E);
+        return;
     }
-    layer_clear();  // I never want two accented characters in a row
+    uint8_t mod_state = get_mods();
+    switch (state->count) {
+        case 1:
+            if (is_caps_word_on()) {
+                clear_mods();
+                clear_weak_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                tap_code16(S(KC_E));
+                caps_word_on();
+            } else {
+                clear_mods();
+                clear_weak_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                tap_code(KC_E);
+            }
+            accented_character_output = true;
+            break;
+        case 2:
+            tap_code(KC_BACKSPACE);
+            if (is_caps_word_on()) {
+                clear_mods();
+                clear_weak_mods();
+                tap_code16(KC_CIRCUMFLEX);
+                set_mods(mod_state);
+                tap_code16(S(KC_E));
+                caps_word_on();
+            } else {
+                clear_mods();
+                clear_weak_mods();
+                tap_code16(KC_CIRCUMFLEX);
+                set_mods(mod_state);
+                tap_code(KC_E);
+            }
+            accented_character_output = true;
+            break;
+    }
+}
+
+void ae_finished(tap_dance_state_t *state, void *user_data) {
+    if (accented_character_output) {
+        after_accented = true;
+        accented_character_output = false;
+    }
+}
+
+void ae_reset(tap_dance_state_t *state, void *user_data) {
+    if (accented_character_output) {
+        after_accented = true;
+        accented_character_output = false;
+    }
 }
 
 void ao_taps(tap_dance_state_t *state, void *user_data) {
-    uint8_t mod_state = get_mods();
-    if (state->count == 1) {
-        if (is_caps_word_on()) {
-            clear_mods();
-            clear_weak_mods();
-            tap_code(KC_QUOTE);
-            set_mods(mod_state);
-            tap_code16(S(KC_O));
-            caps_word_on();
-        } else {
-            clear_mods();
-            clear_weak_mods();
-            tap_code(KC_QUOTE);
-            set_mods(mod_state);
-            tap_code(KC_O);
-        }
-    } else if (state->count == 2) {
-        if (is_caps_word_on()) {
-            clear_mods();
-            clear_weak_mods();
-            tap_code16(KC_CIRCUMFLEX);
-            set_mods(mod_state);
-            tap_code16(S(KC_O));
-            caps_word_on();
-        } else {
-            clear_mods();
-            clear_weak_mods();
-            tap_code16(KC_CIRCUMFLEX);
-            set_mods(mod_state);
-            tap_code(KC_O);
-        }
-    } else {
-        reset_tap_dance(state);
+    if (after_accented) {
+        tap_code(KC_O);
+        return;
     }
-    layer_clear();  // I never want two accented characters in a row
+    uint8_t mod_state = get_mods();
+    switch (state->count) {
+        case 1:
+            if (is_caps_word_on()) {
+                clear_mods();
+                clear_weak_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                tap_code16(S(KC_O));
+                caps_word_on();
+            } else {
+                clear_mods();
+                clear_weak_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                tap_code(KC_O);
+            }
+            accented_character_output = true;
+            break;
+        case 2:
+            tap_code(KC_BACKSPACE);
+            if (is_caps_word_on()) {
+                clear_mods();
+                clear_weak_mods();
+                tap_code16(KC_CIRCUMFLEX);
+                set_mods(mod_state);
+                tap_code16(S(KC_O));
+                caps_word_on();
+            } else {
+                clear_mods();
+                clear_weak_mods();
+                tap_code16(KC_CIRCUMFLEX);
+                set_mods(mod_state);
+                tap_code(KC_O);
+            }
+            accented_character_output = true;
+            break;
+    }
+}
+
+void ao_finished(tap_dance_state_t *state, void *user_data) {
+    if (accented_character_output) {
+        after_accented = true;
+        accented_character_output = false;
+    }
+}
+
+void ao_reset(tap_dance_state_t *state, void *user_data) {
+    if (accented_character_output) {
+        after_accented = true;
+        accented_character_output = false;
+    }
 }
 
 // Definition for each tap dance using the functions above.
@@ -307,9 +373,9 @@ tap_dance_action_t tap_dance_actions[] = {
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
-    [U_TD_AA] = ACTION_TAP_DANCE_FN(an_taps),
-    [U_TD_AE] = ACTION_TAP_DANCE_FN(ae_taps),
-    [U_TD_AO] = ACTION_TAP_DANCE_FN(ao_taps),
+    [U_TD_AA] = ACTION_TAP_DANCE_FN_ADVANCED(aa_taps, aa_finished, aa_reset),
+    [U_TD_AE] = ACTION_TAP_DANCE_FN_ADVANCED(ae_taps, ae_finished, ae_reset),
+    [U_TD_AO] = ACTION_TAP_DANCE_FN_ADVANCED(ao_taps, ao_finished, ao_reset),
 };
 
 /*
@@ -891,7 +957,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code16(tap_hold->tap);
             }
             break;
-        // Hold intercepts
+        // Intercepts
+        case UM_LH1:
+            if (record->event.pressed) {
+                if (record->tap.count) {
+                    tap_code(KC_TAB);
+                } else {
+                    layer_on(_EXT);
+                }
+            } else {
+                layer_clear();
+                after_accented = false;
+            }
+            return false;
         case MT_QF:
             if (!record->tap.count && record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -997,7 +1075,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         // Accented characters
         case U_AC_I:
             if (record->event.pressed) {
-                if (is_caps_word_on()) {
+                if (after_accented) {
+                    tap_code(KC_I);
+                } else if (is_caps_word_on()) {
                     clear_mods();
                     tap_code(KC_QUOTE);
                     set_mods(mod_state);
