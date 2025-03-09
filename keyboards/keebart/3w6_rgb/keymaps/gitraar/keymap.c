@@ -231,6 +231,7 @@ void aa_taps(tap_dance_state_t *state, void *user_data) {
                 tap_code(KC_A);
             }
             accented_character_output = true;
+            reset_tap_dance(state);
             break;
     }
 }
@@ -290,6 +291,7 @@ void ae_taps(tap_dance_state_t *state, void *user_data) {
                 tap_code(KC_E);
             }
             accented_character_output = true;
+            reset_tap_dance(state);
             break;
     }
 }
@@ -349,6 +351,7 @@ void ao_taps(tap_dance_state_t *state, void *user_data) {
                 tap_code(KC_O);
             }
             accented_character_output = true;
+            reset_tap_dance(state);
             break;
     }
 }
@@ -967,6 +970,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 }
             } else {
                 layer_clear();
+                accented_character_output = false;
                 after_accented = false;
             }
             return false;
@@ -1188,9 +1192,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Alpha Extension
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |       |       |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |  ó|ô  |       |       |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |   ç   |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |  á|â  |  é|ê  |   í   |   ç   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
@@ -1221,7 +1225,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
         _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
         _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
-                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST, UNDO
+                                  XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST,  UNDO
     ),
 
 /* Mouse and Media Keys
