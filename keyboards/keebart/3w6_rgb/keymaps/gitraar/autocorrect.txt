@@ -467,6 +467,7 @@ pcoes         -> p'c~oes
 rcoes         -> r'c~oes
 
 nao           -> n~ao
+ntao          -> nt~ao
 
 # Very common accented Portuguese word
 :ha:          -> h'a

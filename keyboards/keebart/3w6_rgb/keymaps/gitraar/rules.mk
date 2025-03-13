@@ -1,6 +1,4 @@
 SRC += matrix.c
-SRC += features/sentence_case.c
-SRC += features/select_word.c
 
 I2C_DRIVER_REQUIRED = yes
 

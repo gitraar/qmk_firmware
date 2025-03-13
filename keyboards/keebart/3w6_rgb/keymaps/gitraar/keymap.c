@@ -2,8 +2,6 @@
 #include "keycodes.h"
 #include "modifiers.h"
 #include QMK_KEYBOARD_H
-#include "features/sentence_case.h"
-#include "features/select_word.h"
 
 /*
 ###################
@@ -122,7 +120,6 @@ enum custom_keycodes {
     NUM,
     SYM,
     FUN,
-    SELWORD,
     U_QU,  // "Qu"
     U_GR_A, U_TIL_A, U_TIL_O, // accented characters
     U_AC_I, U_AC_U, // accented characters
@@ -142,9 +139,6 @@ enum tap_dances {
     U_TD_AE,
     U_TD_AO,
 };
-
-// Select Word keycode.
-uint16_t SELECT_WORD_KEYCODE = SELWORD;
 
 /*
 ##################
@@ -577,11 +571,6 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 ##############################
 */
 
-void housekeeping_task_user(void) {
-    sentence_case_task();
-    // Other tasks…
-}
-
 char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mods) {
     if ((mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
         const bool shifted = mods & MOD_MASK_SHIFT;
@@ -630,7 +619,7 @@ bool sentence_case_check_ending(const uint16_t* buffer) {
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_B, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_G, KC_O, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_R, KC_T, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_V, KC_DOT,) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_V, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_B, KC_R, KC_O, KC_S, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_C, KC_A, KC_P, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_C, KC_F, KC_DOT) ||
@@ -914,8 +903,6 @@ static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
 */
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-    if (!process_sentence_case(keycode, record)) { return false; }
-    if (!process_select_word(keycode, record)) { return false; }
     // On every key event, start or extend the deferred execution to call `idle_callback()` after IDLE_TIMEOUT_MS.
     static deferred_token idle_token = INVALID_DEFERRED_TOKEN;
     if (!extend_deferred_exec(idle_token, IDLE_TIMEOUT_MS)) {
