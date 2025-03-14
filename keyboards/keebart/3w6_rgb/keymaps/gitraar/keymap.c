@@ -126,7 +126,8 @@ enum custom_keycodes {
     U_CC, // "ç"
     U_QUOTE, U_TILDE, U_CIRC, // accents with space to never act like dead keys
     U_MP, U_PS, // "adaptives"
-    U_RGB_T  // macro for RGB toggle with extra info
+    U_RGB_T,  // macro for RGB toggle with extra info
+    U_RGB_R  // reset RGB to orange
 };
 
 // Tap Dance stuff.
@@ -881,7 +882,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* reme
 
 /*
 ########################
-### One-shot mod-tap ###
+### One-Shot Mod-Tap ###
 ########################
 */
 
@@ -985,6 +986,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     rgb_matrix_enable();
                 }
             }
+            break;
+        case U_RGB_R:
+            rgb_matrix_sethsv(21, 255, 190);
             break;
         case U_QU:
             if (record->event.pressed) {
@@ -1223,7 +1227,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |  Play | VolDo | VolUp |  Prev |  Next |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |       |       |OOOOOOO|    |  MB1  |  MB3  |  MB2  |
+                    |OOOOOOO|       |       |    |  MB1  |  MB3  |  MB2  |
                     `———————————————————————'    `———————————————————————'
 */
 
@@ -1274,9 +1278,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Function
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  F12  |   F7  |   F8  |   F9  | PrScr |    |  ---  |  ---  |  RMUp |  ---  |  ---  |
+    |  F12  |   F7  |   F8  |   F9  | PrScr |    | RMNxt | RMHUp |  RMUp |  ---  |  ---  |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  F11  |   F4  |   F5  |   F6  |       |    |  ---  | RMNxt | RMDown| ACTog | Flash |
+    |  F11  |   F4  |   F5  |   F6  |       |    |RMReset|RMHDown| RMDown| ACTog | Flash |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  F10  |   F1  |   F2  |   F3  | RMTog |    |  ---  |  ---  |  ---  |  ---  |  ---  |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
@@ -1285,8 +1289,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_FUN] = LAYOUT_split_3x5_3(
-        KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     XXXXXXX, XXXXXXX, RM_VALU, XXXXXXX, XXXXXXX,
-        KC_F11, KC_F4, KC_F5,   KC_F6,   XXXXXXX,     XXXXXXX, RM_NEXT, RM_VALD, AC_TOGG, QK_BOOT,
+        KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     RM_NEXT, RM_HUEU, RM_VALU, XXXXXXX, XXXXXXX,
+        KC_F11, KC_F4, KC_F5,   KC_F6,   XXXXXXX,     U_RGB_R, RM_HUED, RM_VALD, AC_TOGG, QK_BOOT,
         KC_F10, KC_F1, KC_F2,   KC_F3,   U_RGB_T,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                QK_LEAD, KC_CAPS, LOCK_SCR,    XXXXXXX, XXXXXXX, XXXXXXX
     ),
