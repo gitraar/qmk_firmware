@@ -1189,7 +1189,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
-                    |       |       |OOOOOOO|    |       |       |       |
+                    |       |       |OOOOOOO|    |       |       |  Del  |
                     `———————————————————————'    `———————————————————————'
 */
 
@@ -1197,7 +1197,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
     _______, _______, _______, _______, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
     _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
-                              XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+                              XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, KC_DELETE
 ),
 
 /* Navigation
@@ -1208,7 +1208,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |SpcLeft|SelWord|SpcRght|       |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |       |       |OOOOOOO|    |Confirm|  RayC |  Undo |
+                    |       |OOOOOOO|       |    |Confirm|  RayC |  Undo |
                     `———————————————————————'    `———————————————————————'
 */
 
