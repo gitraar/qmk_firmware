@@ -37,9 +37,6 @@
 #define _SYM 5
 #define _FUN 6
 
-// Mod taps
-#define MT_QF LT(0, KC_F)
-
 // Tap dances
 #define TD_DOT TD(DOT)
 #define TD_PGUP TD(PGUP)
@@ -64,9 +61,9 @@
                     `———————————————————————'    `———————————————————————'
 */
 
-#define UM_LT5 MT_QF
+#define UM_LT5 LT(0, KC_F)
 #define UM_LT4 KC_P
-#define UM_LT3 KC_D
+#define UM_LT3 LT(_EXT, KC_D)
 #define UM_LT2 HYPR_T(KC_L)
 #define UM_LT1 KC_X
 
@@ -84,7 +81,7 @@
 
 #define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
-#define UM_LH1 LT(_EXT, KC_TAB)
+#define UM_LH1 LT(0, KC_TAB)
 
 #define UM_RT1 QK_ALT_REPEAT_KEY
 #define UM_RT2 HYPR_T(KC_U)
@@ -106,7 +103,7 @@
 
 #define UM_RH1 LT(_SYM, KC_ENTER)
 #define UM_RH2 LT(_NUM, KC_SPACE)
-#define UM_RH3 LT(_FUN, KC_ESCAPE)
+#define UM_RH3 LT(_FUN, KC_DELETE)
 
 // Settings
 #define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
@@ -713,7 +710,8 @@ bool caps_word_press_user(uint16_t keycode) {
         case TD_AE:
         case TD_AO:
         case U_QU:
-        case MT_QF:
+        case UM_LT5:
+        case UM_LT3:
         case U_GR_A:
         case U_TIL_A:
         case U_TIL_O:
@@ -733,7 +731,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_DQUO:
         case KC_GRAVE:
         case KC_BSPC:
-        case LT(0, KC_BACKSPACE):
+        case UM_LH3:
         case KC_DEL:
         case KC_UNDS:
             return true;
@@ -756,7 +754,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TD_AE:
         case TD_AO:
             return 200;
-        case MT_QF:
+        case UM_LT5:
             return 175;
         default:
             return TAPPING_TERM;
@@ -950,19 +948,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         // Intercepts
         case UM_LH1:
+            if (!record->tap.count && record->event.pressed) {
+                tap_code(KC_ESCAPE);
+                return false;
+            }
+            break;
+        case UM_LT3:
             if (record->event.pressed) {
-                if (record->tap.count) {
-                    tap_code(KC_TAB);
-                } else {
+                if (!record->tap.count) {
                     layer_on(_EXT);
+                    return false;
                 }
             } else {
                 layer_clear();
                 accented_character_output = false;
                 after_accented = false;
             }
-            return false;
-        case MT_QF:
+            break;
+        case UM_LT5:
             if (!record->tap.count && record->event.pressed) {
                 if (is_caps_word_on()) {
                     tap_code16(S(KC_Q));
@@ -1170,7 +1173,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |   v   |   w   |   g   |   m   |   j   |    |   ;   |   .   |   ,   |   '   |   /   |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |  Bspc |   r   |  Tab  |    | Enter | Space |  Esc  |
+                    |  Bspc |   r   |  Tab  |    | Enter | Space |  Del  |
                     `———————————————————————'    `———————————————————————'
 */
 
@@ -1183,13 +1186,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Alpha Extension
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |  ó|ô  |       |       |
+    |  ---  |  ---  |OOOOOOO|  ---  |  ---  |    |       |   ú   |  ó|ô  |       |       |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |  á|â  |  é|ê  |   í   |   ç   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
-                    |       |       |OOOOOOO|    |       |       |  Del  |
+                    |       |       |       |    |       |       |       |
                     `———————————————————————'    `———————————————————————'
 */
 
@@ -1197,7 +1200,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
     _______, _______, _______, _______, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
     _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
-                              XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, KC_DELETE
+                              XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
 ),
 
 /* Navigation
