@@ -765,6 +765,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case UM_LH3:
         case UM_RH2:
+        case UM_RH3:
             return 120;
         default:
             return QUICK_TAP_TERM;  // This is set to zero since I don't want other holds to have key repetition
