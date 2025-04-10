@@ -63,7 +63,7 @@
 
 #define UM_LT5 LT(0, KC_F)
 #define UM_LT4 KC_P
-#define UM_LT3 LT(_EXT, KC_D)
+#define UM_LT3 KC_D
 #define UM_LT2 HYPR_T(KC_L)
 #define UM_LT1 KC_X
 
@@ -71,7 +71,7 @@
 #define UM_LM4 LALT_T(KC_N)
 #define UM_LM3 LGUI_T(KC_T)
 #define UM_LM2 LSFT_T(KC_H)
-#define UM_LM1 KC_K
+#define UM_LM1 LT(_EXT, KC_K)
 
 #define UM_LB5 KC_V
 #define UM_LB4 KC_W
@@ -118,11 +118,13 @@ enum custom_keycodes {
     SYM,
     FUN,
     U_QU,  // "Qu"
-    U_GR_A, U_TIL_A, U_TIL_O, // accented characters
-    U_AC_I, U_AC_U, // accented characters
-    U_CC, // "ç"
+    U_GR_A, U_AC_A, U_TILDE_A, U_CIRC_A, // accented characters
+    U_AC_E, U_CIRC_E, // accented characters
+    U_AC_I, // accented characters
+    U_AC_O, U_TILDE_O, U_CIRC_O, // accented characters
+    U_AC_U, // accented characters
     U_QUOTE, U_TILDE, U_CIRC, // accents with space to never act like dead keys
-    U_MP, U_PS, // "adaptives"
+    U_CC, // "ç"
     U_RGB_T,  // macro for RGB toggle with extra info
     U_RGB_R  // reset RGB to orange
 };
@@ -223,6 +225,24 @@ void aa_taps(tap_dance_state_t *state, void *user_data) {
                 tap_code(KC_A);
             }
             accented_character_output = true;
+        //     break;
+        // case 3:
+        //     tap_code(KC_BACKSPACE);
+        //     if (is_caps_word_on()) {
+        //         clear_mods();
+        //         clear_weak_mods();
+        //         tap_code16(KC_TILDE);
+        //         set_mods(mod_state);
+        //         tap_code16(S(KC_A));
+        //         caps_word_on();
+        //     } else {
+        //         clear_mods();
+        //         clear_weak_mods();
+        //         tap_code16(KC_TILDE);
+        //         set_mods(mod_state);
+        //         tap_code(KC_A);
+        //     }
+        //     accented_character_output = true;
             reset_tap_dance(state);
             break;
     }
@@ -343,6 +363,24 @@ void ao_taps(tap_dance_state_t *state, void *user_data) {
                 tap_code(KC_O);
             }
             accented_character_output = true;
+        //     break;
+        // case 3:
+        //     tap_code(KC_BACKSPACE);
+        //     if (is_caps_word_on()) {
+        //         clear_mods();
+        //         clear_weak_mods();
+        //         tap_code16(KC_TILDE);
+        //         set_mods(mod_state);
+        //         tap_code16(S(KC_O));
+        //         caps_word_on();
+        //     } else {
+        //         clear_mods();
+        //         clear_weak_mods();
+        //         tap_code16(KC_TILDE);
+        //         set_mods(mod_state);
+        //         tap_code(KC_O);
+        //     }
+        //     accented_character_output = true;
             reset_tap_dance(state);
             break;
     }
@@ -403,11 +441,7 @@ const uint16_t PROGMEM qu_combo[] = {UM_LB3, UM_LB2, COMBO_END};
 const uint16_t PROGMEM tilde_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {UM_RB2, UM_RB3, COMBO_END};
 
-// Combos for "adaptives"
-const uint16_t PROGMEM mw_mp_combo[] = {UM_LB2, UM_LB4, COMBO_END};
-const uint16_t PROGMEM pf_ps_combo[] = {UM_LT5, UM_LT4, COMBO_END};
-
-// Media combos
+// Right-side horizontal combos on Media layer.
 const uint16_t PROGMEM mute_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
 
 enum combos {
@@ -425,9 +459,7 @@ enum combos {
     QU_COMBO,
     TILDE_COMBO,
     SEMICOLON_COMBO,
-    MW_MP_COMBO,
-    PF_PS_COMBO,
-    MUTE_COMBO
+    MUTE_COMBO,
   };
 
 // Used combos.
@@ -446,8 +478,6 @@ combo_t key_combos[] = {
     [QU_COMBO] = COMBO(qu_combo, U_QU),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
-    [MW_MP_COMBO] = COMBO(mw_mp_combo, U_MP),
-    [PF_PS_COMBO] = COMBO(pf_ps_combo, U_PS),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
 };
 
@@ -484,7 +514,7 @@ const key_override_t *key_overrides[] = {
     &open_fancy_quote,
     &close_fancy_quote,
     &open_fancy_double_quote,
-    &close_fancy_double_quote
+    &close_fancy_double_quote,
 };
 
 /*
@@ -711,15 +741,18 @@ bool caps_word_press_user(uint16_t keycode) {
         case TD_AO:
         case U_QU:
         case UM_LT5:
-        case UM_LT3:
+        case UM_LM1:
         case U_GR_A:
-        case U_TIL_A:
-        case U_TIL_O:
+        case U_AC_A:
+        case U_TILDE_A:
+        case U_CIRC_A:
+        case U_AC_E:
+        case U_CIRC_E:
         case U_AC_I:
+        case U_AC_O:
+        case U_TILDE_O:
+        case U_CIRC_O:
         case U_AC_U:
-        case U_CC:
-        case U_MP:
-        case U_PS:
         case KC_MINS:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
             return true;
@@ -753,7 +786,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case TD_AA:
         case TD_AE:
         case TD_AO:
-            return 200;
+            return 300;
         case UM_LT5:
             return 175;
         default:
@@ -954,7 +987,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
-        case UM_LT3:
+        case UM_LM1:
             if (record->event.pressed) {
                 if (!record->tap.count) {
                     layer_on(_EXT);
@@ -966,6 +999,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 after_accented = false;
             }
             break;
+        // case UM_RM3:
+        //     if (record->tap.count && record->event.pressed) {
+        //         if(mod_state & MOD_BIT(KC_LALT)) {
+        //             clear_mods();
+        //             tap_code(KC_QUOTE);
+        //             set_mods(mod_state);
+        //             del_mods(MOD_MASK_ALT);
+        //             tap_code(KC_E);
+        //             set_mods(mod_state);
+        //             return false;
+        //         }
+        //     }
+        //     break;
         case UM_LT5:
             if (!record->tap.count && record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -1036,76 +1082,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 tap_code(KC_SPACE);
             }
             break;
-        case U_CC:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(A(KC_C)));
-                } else {
-                    tap_code16(A(KC_C));
-                }
-            }
-            break;
-        case U_MP:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(KC_M));
-                    tap_code16(S(KC_P));
-                } else {
-                    tap_code(KC_M);
-                    clear_mods();
-                    tap_code(KC_P);
-                    set_mods(mod_state);
-                }
-            }
-            break;
-        case U_PS:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(KC_P));
-                    tap_code16(S(KC_S));
-                } else {
-                    tap_code(KC_P);
-                    clear_mods();
-                    tap_code(KC_S);
-                    set_mods(mod_state);
-                }
-            }
-            break;
         // Accented characters
-        case U_AC_I:
-            if (record->event.pressed) {
-                if (after_accented) {
-                    tap_code(KC_I);
-                } else if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_I));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_I);
-                }
-            }
-            layer_clear();  // I never want two accented characters in a row
-            return false;
-        case U_AC_U:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_U));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_U);
-                }
-            }
-            layer_clear();  // I never want two accented characters in a row
-            return false;
         case U_GR_A:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
@@ -1122,7 +1099,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             layer_clear();  // I never want two accented characters in a row
             return false;
-        case U_TIL_A:
+        case U_AC_A:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code16(S(KC_A));
+                } else {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code(KC_A);
+                }
+            }
+            layer_clear();  // I never want two accented characters in a row
+            return false;
+        case U_TILDE_A:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
                     clear_mods();
@@ -1138,7 +1131,87 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             layer_clear();  // I never want two accented characters in a row
             return false;
-        case U_TIL_O:
+        case U_CIRC_A:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    clear_mods();
+                    tap_code16(KC_CIRCUMFLEX);
+                    set_mods(mod_state);
+                    tap_code16(S(KC_A));
+                } else {
+                    clear_mods();
+                    tap_code16(KC_CIRCUMFLEX);
+                    set_mods(mod_state);
+                    tap_code(KC_A);
+                }
+            }
+            layer_clear();  // I never want two accented characters in a row
+            return false;
+        case U_AC_E:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code16(S(KC_E));
+                } else {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code(KC_E);
+                }
+            }
+            layer_clear();  // I never want two accented characters in a row
+            return false;
+        case U_CIRC_E:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    clear_mods();
+                    tap_code16(KC_CIRCUMFLEX);
+                    set_mods(mod_state);
+                    tap_code16(S(KC_E));
+                } else {
+                    clear_mods();
+                    tap_code16(KC_CIRCUMFLEX);
+                    set_mods(mod_state);
+                    tap_code(KC_E);
+                }
+            }
+            layer_clear();  // I never want two accented characters in a row
+            return false;
+        case U_AC_I:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code16(S(KC_I));
+                } else {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code(KC_I);
+                }
+            }
+            layer_clear();  // I never want two accented characters in a row
+            return false;
+        case U_AC_O:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code16(S(KC_O));
+                } else {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code(KC_O);
+                }
+            }
+            layer_clear();  // I never want two accented characters in a row
+            return false;
+        case U_TILDE_O:
             if (record->event.pressed) {
                 if (is_caps_word_on()) {
                     clear_mods();
@@ -1150,6 +1223,38 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code16(KC_TILDE);
                     set_mods(mod_state);
                     tap_code(KC_O);
+                }
+            }
+            layer_clear();  // I never want two accented characters in a row
+            return false;
+        case U_CIRC_O:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    clear_mods();
+                    tap_code16(KC_CIRCUMFLEX);
+                    set_mods(mod_state);
+                    tap_code16(S(KC_O));
+                } else {
+                    clear_mods();
+                    tap_code16(KC_CIRCUMFLEX);
+                    set_mods(mod_state);
+                    tap_code(KC_O);
+                }
+            }
+            layer_clear();  // I never want two accented characters in a row
+            return false;
+        case U_AC_U:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code16(S(KC_U));
+                } else {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                    set_mods(mod_state);
+                    tap_code(KC_U);
                 }
             }
             layer_clear();  // I never want two accented characters in a row
@@ -1172,7 +1277,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |   s   |   n   |   t   |   h   |   k   |    |   -   |   a   |   e   |   i   |   c   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |   v   |   w   |   g   |   m   |   j   |    |   ;   |   .   |   ,   |   '   |   /   |
+    |   v   |   w   |   g   |   m   |   j   |    |   :   |   .   |   ,   |   '   |   /   |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
                     |  Bspc |   r   |  Tab  |    | Enter | Space |  Del  |
                     `———————————————————————'    `———————————————————————'
@@ -1185,11 +1290,30 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                 UM_LH3, UM_LH2, UM_LH1,    UM_RH1, UM_RH2, UM_RH3
     ),
 
+// /* Alpha Extension 1
+//     ,———————————————————————————————————————.    ,———————————————————————————————————————.
+//     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |       |       |
+//     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
+//     |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |       |
+//     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
+//     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |       |       |       |       |
+//     `———————————————————————————————————————|    |———————————————————————————————————————'
+//                     |       |       |OOOOOOO|    |       |       |       |
+//                     `———————————————————————'    `———————————————————————'
+// */
+
+// [_EXT] = LAYOUT_split_3x5_3(
+//     _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,   U_AC_O,   U_TILDE_O, XXXXXXX,
+//     _______, _______, _______, _______, _______,    U_GR_A,  U_AC_A,   U_AC_E,   U_AC_I,    U_TILDE_A,
+//     _______, _______, _______, _______, _______,    XXXXXXX, U_CIRC_A, U_CIRC_E, U_CIRC_O,  XXXXXXX,
+//                               XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX,  XXXXXXX
+// ),
+
 /* Alpha Extension
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  ---  |  ---  |OOOOOOO|  ---  |  ---  |    |       |   ú   |  ó|ô  |       |       |
+    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |  ó|ô  |       |       |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |  á|â  |  é|ê  |   í   |   ç   |
+    |  ---  |  ---  |  ---  |  ---  |OOOOOOO|    |   à   |  á|â  |  é|ê  |   í   |   ç   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ã   |   õ   |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
@@ -1198,10 +1322,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
 [_EXT] = LAYOUT_split_3x5_3(
-    _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,  TD_AO,   XXXXXXX, XXXXXXX,
-    _______, _______, _______, _______, _______,    U_GR_A,  TD_AA,   TD_AE,   U_AC_I,  U_CC,
-    _______, _______, _______, _______, _______,    XXXXXXX, U_TIL_A, U_TIL_O, XXXXXXX, XXXXXXX,
-                              XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+    _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,    TD_AO,     XXXXXXX, XXXXXXX,
+    _______, _______, _______, _______, _______,    U_GR_A,  TD_AA,     TD_AE,     U_AC_I,  U_CC,
+    _______, _______, _______, _______, _______,    XXXXXXX, U_TILDE_A, U_TILDE_O, XXXXXXX, XXXXXXX,
+                              XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX,   XXXXXXX
 ),
 
 /* Navigation
@@ -1216,7 +1340,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     `———————————————————————'    `———————————————————————'
 */
 
-    [_NAV] = LAYOUT_split_3x5_3(  // Left shift is not left transparent to prevent the one-shot mod-tap from messing with text selection
+    [_NAV] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
         _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
         _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
@@ -1290,7 +1414,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
                     | Leader|  Caps |  Lock |    |       |       |OOOOOOO|
                     `———————————————————————'    `———————————————————————'
-*/
+    */
 
     [_FUN] = LAYOUT_split_3x5_3(
         KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     RM_NEXT, RM_HUEU, RM_VALU, XXXXXXX, XXXXXXX,
