@@ -34,6 +34,7 @@
 #define COMBO_TERM 70
 #define QUICK_TAP_TERM 0
 #define QUICK_TAP_TERM_PER_KEY
+#define FLOW_TAP_TERM 100
 
 // RGB stuff
 #define RGB_MATRIX_SLEEP
