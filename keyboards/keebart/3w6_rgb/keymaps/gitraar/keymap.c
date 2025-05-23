@@ -44,7 +44,6 @@
 #define TD_END TD(END)
 
 // Key matrix assigments
-
 /*
     ,———————————————————————————————————————.    ,———————————————————————————————————————.
     |  LT5  |  LT4  |  LT3  |  LT2  |  LT1  |    |  RT1  |  RT2  |  RT3  |  RT4  |  RT5  |
@@ -533,8 +532,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_QUOTE:
         case KC_DQUO:
         case KC_GRAVE:
-        case KC_BSPC:
-        case UM_LH3:
+        case KC_BACKSPACE:
         case KC_DEL:
         case KC_UNDS:
             return true;
@@ -577,7 +575,7 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
         'L', 'L', 'L', 'L', 'L',  'R', 'R', 'R', 'R', 'R',
         'L', 'L', 'L', 'L', 'L',  'R', 'R', 'R', 'R', 'R',
         'L', 'L', 'L', 'L', 'L',  'R', 'R', 'R', 'R', 'R',
-                          '*', '*', '*',  'R', 'R', 'R'
+                          'L', '*', '*',  'R', 'R', 'R'
     );
 
 uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_keycode) {
@@ -599,7 +597,7 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
 
 /*
 ##############################
-### Alternate Key Settings ###
+### Alternate-Key Settings ###
 ##############################
 */
 
@@ -1059,15 +1057,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   â   |   ê   |       |       |
     `———————————————————————————————————————|    |———————————————————————————————————————'
-                    |       |       |OOOOOOO|    |       |   ã   |       |
+                    |       |       |       |    |       |   ã   |       |
                     `———————————————————————'    `———————————————————————'
 */
 
 [_EXT] = LAYOUT_split_3x5_3(
-    _______, _______, _______, _______, _______,    XXXXXXX, U_AC_U,    U_AC_O,   U_CIRC_O,  U_TILDE_O,
-    _______, _______, _______, _______, _______,    U_GR_A,  U_AC_A,    U_AC_E,   U_AC_I,    U_CC,
-    _______, _______, _______, _______, _______,    XXXXXXX, U_CIRC_A,  U_CIRC_E, XXXXXXX, XXXXXXX,
-                              XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, U_TILDE_A, XXXXXXX
+    _______, _______, _______, _______, _______,     XXXXXXX, U_AC_U,    U_AC_O,   U_CIRC_O,  U_TILDE_O,
+    _______, _______, _______, _______, _______,     U_GR_A,  U_AC_A,    U_AC_E,   U_AC_I,    U_CC,
+    _______, _______, _______, _______, _______,     XXXXXXX, U_CIRC_A,  U_CIRC_E, XXXXXXX, XXXXXXX,
+                              XXXXXXX, XXXXXXX, XXXXXXX,     XXXXXXX, U_TILDE_A, XXXXXXX
 ),
 
 /* Navigation
