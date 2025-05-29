@@ -305,17 +305,21 @@ void leader_end_user(void) {
         // Leader, t => Process one segment
         tap_code16(G(KC_A));
         wait_ms(500);
-        tap_code16(G(A(KC_C)));
-        wait_ms(1000);
-        tap_code(KC_ENTER);
+        tap_code16(G(S(KC_C)));
+        wait_ms(2500);
+        tap_code(KC_C);
+        wait_ms(500);
+        tap_code16(G(KC_V));
     } else if (leader_sequence_two_keys(KC_T, KC_T)) {
         // Leader, t, t => Process ten segments
         for (int i = 0; i < 10; i++) {
             tap_code16(G(KC_A));
             wait_ms(500);
-            tap_code16(G(A(KC_C)));
-            wait_ms(1000);
-            tap_code(KC_ENTER);
+            tap_code16(G(S(KC_C)));
+            wait_ms(2500);
+            tap_code(KC_C);
+            wait_ms(500);
+            tap_code16(G(KC_V));
             wait_ms(500);
             tap_code(KC_DOWN);
         }
@@ -324,9 +328,11 @@ void leader_end_user(void) {
         for (int i = 0; i < 50; i++) {
             tap_code16(G(KC_A));
             wait_ms(500);
-            tap_code16(G(A(KC_C)));
-            wait_ms(1000);
-            tap_code(KC_ENTER);
+            tap_code16(G(S(KC_C)));
+            wait_ms(2500);
+            tap_code(KC_C);
+            wait_ms(500);
+            tap_code16(G(KC_V));
             wait_ms(500);
             tap_code(KC_DOWN);
         }
