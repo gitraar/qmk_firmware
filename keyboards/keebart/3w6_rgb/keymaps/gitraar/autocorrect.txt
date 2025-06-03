@@ -37,7 +37,6 @@
 #  * You can find data on English word frequencies at
 #    https://www.wordfrequency.info/samples.asp
 
-
 ## 10 most common words.
 # The words "there", "about", "their", "would", "people", "which", "could",
 # "think", "other", and "because" are among the most common words in English
@@ -107,7 +106,6 @@
 # alwyas        -> always
 # throught      -> thought
 
-
 ## Words especially susceptible to skipping or transposing a letter.
 # These entries are for words that are easy enough to spell, but not necessarily
 # easy to press the keys in the right order.
@@ -155,7 +153,6 @@
 # unkown        -> unknown
 # unqiue        -> unique
 # widht         -> width
-
 
 ## Words with tricky spelling.
 # If you are a good speller, you could drop this section.
@@ -236,7 +233,6 @@
 # spectogram    -> spectrogram
 # symetric      -> symmetric
 # tolerence     -> tolerance
-
 
 ## Words particularly for coding.
 # Entries for common code keywords ("const") and terminology ("lookup").
@@ -459,9 +455,6 @@ youve         -> you've
 :whos:        -> who's
 :wont:        -> won't
 
-# Corrections for exceptions to my adaptive keys
-halqu         -> halfp
-
 # My weird shortcuts
 ii:           -> I
 
@@ -495,8 +488,6 @@ tao:          -> t~ao
 tambem        -> tamb'em
 :ha:          -> h'a
 :tres:        -> tr^es
-
-
 
 # Handle instances where my magic key will fail
 # :ov:          -> oh
@@ -655,7 +646,6 @@ tambem        -> tamb'em
 # unhoyageable  -> unvoyageable
 # unhulcanized  -> unvulcanized
 # unhulgar      -> unvulgar
-#
 # circumyent    -> circumvent
 # farmyouse     -> farmhouse
 # advere        -> adhere
@@ -668,7 +658,6 @@ tambem        -> tamb'em
 # secondvand    -> secondhand
 # obhious       -> obvious
 # subhersi      -> subversi
-#
 # :enhai        -> envai
 # :enhe         -> enve
 # :enhid        -> envid
