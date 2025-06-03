@@ -113,7 +113,6 @@ enum custom_keycodes {
     NUM,
     SYM,
     FUN,
-    U_QU,  // "Qu"
     U_GR_A, U_AC_A, U_TILDE_A, U_CIRC_A, // accented characters
     U_AC_E, U_CIRC_E, // accented characters
     U_AC_I, // accented characters
@@ -133,6 +132,30 @@ enum tap_dances {
     END,
     Z,
 };
+
+/*
+####################
+### Magic String ###
+####################
+*/
+
+// An enhanced version of SEND_STRING: if Caps Word is active, the Shift key is held while sending the string.
+#define MAGIC_STRING(str) magic_send_string_P(PSTR(str))
+static void magic_send_string_P(const char* str) {
+    uint8_t saved_mods = 0;
+    // If Caps Word is on, save the mods and hold Shift.
+    if (is_caps_word_on()) {
+        saved_mods = get_mods();
+        register_mods(MOD_BIT_LSHIFT);
+    }
+
+    send_string_P(str);  // Send the string.
+
+    // If Caps Word is on, restore the mods.
+    if (is_caps_word_on()) {
+        set_mods(saved_mods);
+    }
+}
 
 /*
 ##################
@@ -407,7 +430,6 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
         const bool shifted = mods & MOD_MASK_SHIFT;
         switch (keycode) {
             case KC_A ... KC_Z:
-            case U_QU:
                 return 'a'; // Letter key.
             case KC_1:
             case KC_SLSH:
@@ -539,7 +561,6 @@ bool caps_word_press_user(uint16_t keycode) {
     switch (keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case KC_A ... KC_Z:
-        case U_QU:
         case UM_LT5:
         case UM_RB1:
         case U_GR_A:
@@ -643,76 +664,27 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 return S(KC_TAB); // ... and the reverse is Shift + Tab.
             }
             break;
-        case UM_LM5:
-            if (is_caps_word_on()) {
-                SEND_STRING(/*s*/"SION");
-            } else {
-                SEND_STRING(/*s*/"sion");
-            }
-            break;
-        case UM_LM4:
-            if (is_caps_word_on()) {
-                SEND_STRING(/*n*/"ION");
-            } else {
-                SEND_STRING(/*n*/"ion");
-            }
-            break;
-        case UM_LM3:
-            if (is_caps_word_on()) {
-                SEND_STRING(/*t*/"HEIR");
-            } else {
-                SEND_STRING(/*t*/"heir");
-            }
-            break;
-        case UM_LB4:
-            if (is_caps_word_on()) {
-                SEND_STRING(/*w*/"HICH");
-            } else {
-                SEND_STRING(/*w*/"hich");
-            }
-            break;
-        case UM_LB2:
-            if (is_caps_word_on()) {
-                SEND_STRING(/*m*/"ENT");
-            } else {
-                SEND_STRING(/*m*/"ent");
-            }
-            break;
-        case UM_RT5:
-            if (is_caps_word_on()) {
-                SEND_STRING(/*b*/"ECAUSE");
-            } else {
-                SEND_STRING(/*b*/"ecause");
-            }
-            break;
-        case UM_RM2:
-            if (is_caps_word_on()) {
-                SEND_STRING(/*a*/"TION");
-            } else {
-                SEND_STRING(/*a*/"tion");
-            }
-            break;
-        case UM_RM4:
-            if (is_caps_word_on()) {
-                SEND_STRING(/*i*/"TION");
-            } else {
-                SEND_STRING(/*i*/"tion");
-            }
-            break;
+        case UM_LM5: MAGIC_STRING(/*s*/"sion"); break;
+        case UM_LM4: MAGIC_STRING(/*n*/"ion"); break;
+        case UM_LM3: MAGIC_STRING(/*t*/"heir"); break;
+        case UM_LB4: MAGIC_STRING(/*w*/"hich"); break;
+        case UM_LB2: MAGIC_STRING(/*m*/"ent"); break;
+        case UM_RT5: MAGIC_STRING(/*b*/"ecause"); break;
+        case UM_RM2: MAGIC_STRING(/*a*/"tion"); break;
+        case UM_RM4: MAGIC_STRING(/*i*/"tion"); break;
         case UM_RH2:
             if (is_sentence_case_primed()) {
                 SEND_STRING(/* */"And");
                 sentence_case_clear();
             } else {
-                SEND_STRING(/* */"and");
+                MAGIC_STRING(/* */"and");
             }
             break;
-        case U_QU:
+        case UM_LT4:
+            tap_code16(KC_CIRCUMFLEX);
             if (is_caps_word_on()) {
-                tap_code16(KC_CIRCUMFLEX);
                 tap_code16(S(KC_E));
             } else {
-                tap_code16(KC_CIRCUMFLEX);
                 tap_code(KC_E);
             }
             break;
@@ -914,24 +886,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case U_RGB_R:
             rgb_matrix_sethsv(21, 255, 190);
-            break;
-        case U_QU:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(KC_Q));
-                    tap_code16(S(KC_U));
-                } else if (is_sentence_case_primed()) {
-                    tap_code16(S(KC_Q));
-                    sentence_case_clear();
-                    tap_code(KC_U);
-                } else {
-                    tap_code(KC_Q);
-                    clear_mods();
-                    tap_code(KC_U);
-                    set_mods(mod_state);
-                }
-                return false;
-            }
             break;
         case U_QUOTE:
             if (record->event.pressed) {
