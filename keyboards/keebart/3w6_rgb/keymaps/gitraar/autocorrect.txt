@@ -482,6 +482,8 @@ rcoes         -> r'c~oes
 #ntao          -> nt~ao
 #stao          -> st~ao
 atraves:      -> atrav'es
+comecar       -> come'car
+crianca       -> crian'ca
 nao           -> n~ao
 servico       -> servi'co
 tao:          -> t~ao

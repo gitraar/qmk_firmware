@@ -803,12 +803,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     tap_dance_action_t *action;
     if (update_recent_keys(keycode, record)) {
         if (recent[RECENT_SIZE - 2] == KC_M && recent[RECENT_SIZE - 1] == KC_G) {
+            tap_code(KC_BACKSPACE);
             if (is_caps_word_on()) {
-                tap_code(KC_BACKSPACE);
-                tap_code16(S(KC_Q));
-                tap_code16(S(KC_U));
+                MAGIC_STRING("qu");
             } else {
-                tap_code(KC_BACKSPACE);
                 if (caps_needed) {
                     tap_code16(S(KC_Q));
                     sentence_case_clear();
