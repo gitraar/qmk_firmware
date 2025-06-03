@@ -680,7 +680,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 MAGIC_STRING(/* */"and");
             }
             break;
-        case UM_LT4:
+        case UM_LB3:
             tap_code16(KC_CIRCUMFLEX);
             if (is_caps_word_on()) {
                 tap_code16(S(KC_E));
@@ -802,7 +802,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     uint8_t mod_state = get_mods();
     tap_dance_action_t *action;
     if (update_recent_keys(keycode, record)) {
-        if (recent[RECENT_SIZE - 2] == KC_F && recent[RECENT_SIZE - 1] == KC_P) {
+        if (recent[RECENT_SIZE - 2] == KC_M && recent[RECENT_SIZE - 1] == KC_G) {
             if (is_caps_word_on()) {
                 tap_code(KC_BACKSPACE);
                 tap_code16(S(KC_Q));
