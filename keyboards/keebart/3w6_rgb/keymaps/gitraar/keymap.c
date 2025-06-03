@@ -183,9 +183,6 @@ void z_taps(tap_dance_state_t *state, void *user_data) {
             if (is_caps_word_on()) {
                 tap_code16(S(KC_Z));
                 caps_word_on();
-            } else if (is_sentence_case_primed()) {
-                tap_code16(S(KC_Z));
-                sentence_case_clear();
             } else {
                 tap_code(KC_Z);
             }
@@ -214,7 +211,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
     [Z] = ACTION_TAP_DANCE_FN_ADVANCED(z_taps, z_finished, z_reset),
-    // [Z] = ACTION_TAP_DANCE_DOUBLE(KC_Z, KC_COLN),
 };
 
 /*
@@ -231,8 +227,6 @@ const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
 const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
-// const uint16_t PROGMEM qu_combo[] = {UM_LM3, UM_LB3, COMBO_END};
-// const uint16_t PROGMEM z_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Right-side vertical combos.
 const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
@@ -261,8 +255,6 @@ enum combos {
     RPRN_COMBO,
     SUPER_O_COMBO,
     CAPS_WORD_COMBO,
-    // Z_COMBO,
-    // QU_COMBO,
     TILDE_COMBO,
     SEMICOLON_COMBO,
     ESC_COMBO,
@@ -280,8 +272,6 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
-    // [Z_COMBO] = COMBO(z_combo, KC_Z),
-    // [QU_COMBO] = COMBO(qu_combo, U_QU),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [ESC_COMBO] = COMBO(escape_combo, KC_ESCAPE),
@@ -761,9 +751,9 @@ static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
 #include <string.h>
 
 #define TIMEOUT_MS 200  // Timeout in milliseconds.
-#define RECENT_SIZE 3    // Number of keys in `recent` buffer.
+#define RECENT_SIZE 3  // Number of keys in `recent` buffer.
 
-bool caps_needed = 0;
+bool caps_needed = 0;  // Added to make Sentence Case and One-Shot Mod work.
 
 static uint16_t recent[RECENT_SIZE] = {KC_NO};
 static uint16_t deadline = 0;
@@ -860,6 +850,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             return false;
         }
+    } else {
+        caps_needed = 0;
     }
     switch (keycode) {
         // One-shot mod-taps
