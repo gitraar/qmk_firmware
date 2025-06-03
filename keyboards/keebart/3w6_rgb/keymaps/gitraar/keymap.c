@@ -193,20 +193,19 @@ const uint16_t PROGMEM copy_combo[] = {UM_LT3, UM_LM3, COMBO_END};
 const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
-const uint16_t PROGMEM percentage_combo[] = {UM_LM3, UM_LB3, COMBO_END};
-const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
+const uint16_t PROGMEM qu_combo[] = {UM_LM3, UM_LB3, COMBO_END};
+const uint16_t PROGMEM z_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Right-side vertical combos.
 const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
 const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
-const uint16_t PROGMEM tilde_combo[] = {UM_RM2, UM_RB2, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {UM_RM2, UM_RB2, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {UM_RM3, UM_RB3, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
-const uint16_t PROGMEM z_combo[] = {UM_LB4, UM_LB3, COMBO_END};
-const uint16_t PROGMEM qu_combo[] = {UM_LB3, UM_LB2, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM escape_combo[] = {UM_RM1, UM_RM2, COMBO_END};
@@ -220,7 +219,6 @@ enum combos {
     COPY_COMBO,
     PASTE_COMBO,
     CLIP_HIST_COMBO,
-    PERCENTAGE_COMBO,
     AT_COMBO,
     LPRN_COMBO,
     RPRN_COMBO,
@@ -240,7 +238,6 @@ combo_t key_combos[] = {
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [PASTE_COMBO] = COMBO(paste_combo, PASTE),
     [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
-    [PERCENTAGE_COMBO] = COMBO(percentage_combo, KC_PERC),
     [AT_COMBO] = COMBO(at_combo, KC_AT),
     [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
