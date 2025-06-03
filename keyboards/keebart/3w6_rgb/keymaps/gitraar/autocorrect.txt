@@ -459,6 +459,9 @@ youve         -> you've
 :whos:        -> who's
 :wont:        -> won't
 
+# Corrections for exceptions to my adaptive keys
+halqu         -> halfp
+
 # My weird shortcuts
 ii:           -> I
 

@@ -42,6 +42,7 @@
 #define TD_PGDN TD(PGDOWN)
 #define TD_HOME TD(HOME)
 #define TD_END TD(END)
+#define TD_Z TD(Z)
 
 // Key matrix assigments
 /*
@@ -90,7 +91,7 @@
 #define UM_RM4 LALT_T(KC_I)
 #define UM_RM5 RCTL_T(KC_C)
 
-#define UM_RB1 KC_COLN
+#define UM_RB1 TD_Z
 #define UM_RB2 KC_DOT
 #define UM_RB3 KC_COMMA
 #define UM_RB4 U_QUOTE
@@ -130,6 +131,7 @@ enum tap_dances {
     PGDOWN,
     HOME,
     END,
+    Z,
 };
 
 /*
@@ -172,12 +174,47 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
+// Code for advanced tap dances
+
+void z_taps(tap_dance_state_t *state, void *user_data) {
+    uint8_t mod_state = get_mods();
+    switch (state->count) {
+        case 1:
+            if (is_caps_word_on()) {
+                tap_code16(S(KC_Z));
+                caps_word_on();
+            } else if (is_sentence_case_primed()) {
+                tap_code16(S(KC_Z));
+                sentence_case_clear();
+            } else {
+                tap_code(KC_Z);
+            }
+            break;
+        case 2:
+            tap_code(KC_BACKSPACE);
+            clear_mods();
+            clear_weak_mods();
+            tap_code16(KC_COLN);
+            set_mods(mod_state);
+            reset_tap_dance(state);
+            break;
+    }
+}
+
+void z_finished(tap_dance_state_t *state, void *user_data) {
+}
+
+void z_reset(tap_dance_state_t *state, void *user_data) {
+}
+
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
     [PGUP] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
+    [Z] = ACTION_TAP_DANCE_FN_ADVANCED(z_taps, z_finished, z_reset),
+    // [Z] = ACTION_TAP_DANCE_DOUBLE(KC_Z, KC_COLN),
 };
 
 /*
@@ -193,16 +230,16 @@ const uint16_t PROGMEM copy_combo[] = {UM_LT3, UM_LM3, COMBO_END};
 const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
-const uint16_t PROGMEM qu_combo[] = {UM_LM3, UM_LB3, COMBO_END};
-const uint16_t PROGMEM z_combo[] = {UM_LM2, UM_LB2, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
+// const uint16_t PROGMEM qu_combo[] = {UM_LM3, UM_LB3, COMBO_END};
+// const uint16_t PROGMEM z_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Right-side vertical combos.
 const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
 const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
-const uint16_t PROGMEM at_combo[] = {UM_RM2, UM_RB2, COMBO_END};
-const uint16_t PROGMEM tilde_combo[] = {UM_RM3, UM_RB3, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {UM_RM2, UM_RB2, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
@@ -224,8 +261,8 @@ enum combos {
     RPRN_COMBO,
     SUPER_O_COMBO,
     CAPS_WORD_COMBO,
-    Z_COMBO,
-    QU_COMBO,
+    // Z_COMBO,
+    // QU_COMBO,
     TILDE_COMBO,
     SEMICOLON_COMBO,
     ESC_COMBO,
@@ -243,8 +280,8 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
-    [Z_COMBO] = COMBO(z_combo, KC_Z),
-    [QU_COMBO] = COMBO(qu_combo, U_QU),
+    // [Z_COMBO] = COMBO(z_combo, KC_Z),
+    // [QU_COMBO] = COMBO(qu_combo, U_QU),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [ESC_COMBO] = COMBO(escape_combo, KC_ESCAPE),
@@ -514,6 +551,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_A ... KC_Z:
         case U_QU:
         case UM_LT5:
+        case UM_RB1:
         case U_GR_A:
         case U_AC_A:
         case U_TILDE_A:
@@ -555,6 +593,7 @@ bool caps_word_press_user(uint16_t keycode) {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case UM_LT5:
+        case UM_RB1:
             return 175;
         default:
             return TAPPING_TERM;
@@ -714,6 +753,75 @@ static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
 }
 
 /*
+#####################
+### Adaptive Keys ###
+#####################
+*/
+
+#include <string.h>
+
+#define TIMEOUT_MS 200  // Timeout in milliseconds.
+#define RECENT_SIZE 3    // Number of keys in `recent` buffer.
+
+bool caps_needed = 0;
+
+static uint16_t recent[RECENT_SIZE] = {KC_NO};
+static uint16_t deadline = 0;
+
+static void clear_recent_keys(void) {
+    memset(recent, 0, sizeof(recent));  // Set all zeros (KC_NO).
+}
+
+// Handles one event. Returns true if the key was appended to `recent`.
+static bool update_recent_keys(uint16_t keycode, keyrecord_t* record) {
+    if (!record->event.pressed) { return false; }
+
+    if (((get_mods() | get_oneshot_mods()) & ~MOD_MASK_SHIFT) != 0) {
+        clear_recent_keys();  // Avoid interfering with hotkeys.
+        return false;
+    }
+
+    if (((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) | is_sentence_case_primed()){
+        caps_needed = 1;
+    }
+
+    // Handle tap-hold keys.
+    switch (keycode) {
+        case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+        case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+            if (record->tap.count == 0) { return false; }
+            keycode &= 0xff;  // Get tapping keycode.
+    }
+
+    switch (keycode) {
+        case KC_A ... KC_SLASH:  // These keys type letters, digits, symbols.
+            break;
+
+        case KC_LSFT:  // These keys don't type anything on their own.
+        case KC_RSFT:
+        case QK_ONE_SHOT_MOD ... QK_ONE_SHOT_MOD_MAX:
+            return false;
+
+        default:  // Avoid acting otherwise, particularly on navigation keys.
+            clear_recent_keys();
+            return false;
+  }
+
+    // Slide the buffer left by one element.
+    memmove(recent, recent + 1, (RECENT_SIZE - 1) * sizeof(*recent));
+
+    recent[RECENT_SIZE - 1] = keycode;
+    deadline = record->event.time + TIMEOUT_MS;
+    return true;
+}
+
+void housekeeping_task_user(void) {
+    if (recent[RECENT_SIZE - 1] && timer_expired(timer_read(), deadline)) {
+        clear_recent_keys();  // Timed out; clear the buffer.
+    }
+}
+
+/*
 ###########################
 ### Process Record User ###
 ###########################
@@ -731,6 +839,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     }
     uint8_t mod_state = get_mods();
     tap_dance_action_t *action;
+    if (update_recent_keys(keycode, record)) {
+        if (recent[RECENT_SIZE - 2] == KC_F && recent[RECENT_SIZE - 1] == KC_P) {
+            if (is_caps_word_on()) {
+                tap_code(KC_BACKSPACE);
+                tap_code16(S(KC_Q));
+                tap_code16(S(KC_U));
+            } else {
+                tap_code(KC_BACKSPACE);
+                if (caps_needed) {
+                    tap_code16(S(KC_Q));
+                    sentence_case_clear();
+                    caps_needed = 0;
+                } else {
+                    tap_code(KC_Q);
+                }
+                clear_mods();
+                tap_code(KC_U);
+                set_mods(mod_state);
+            }
+            return false;
+        }
+    }
     switch (keycode) {
         // One-shot mod-taps
         case UM_RM2:
