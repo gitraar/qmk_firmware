@@ -42,7 +42,7 @@
 #define TD_PGDN TD(PGDOWN)
 #define TD_HOME TD(HOME)
 #define TD_END TD(END)
-#define TD_Z TD(Z)
+#define TD_SLASH TD(SLASH)
 
 // Key matrix assigments
 /*
@@ -91,11 +91,11 @@
 #define UM_RM4 LALT_T(KC_I)
 #define UM_RM5 RCTL_T(KC_C)
 
-#define UM_RB1 TD_Z
+#define UM_RB1 TD_SLASH
 #define UM_RB2 KC_DOT
 #define UM_RB3 KC_COMMA
 #define UM_RB4 U_QUOTE
-#define UM_RB5 KC_KP_SLASH
+#define UM_RB5 KC_Z
 
 #define UM_RH1 LT(_SYM, KC_ENTER)
 #define UM_RH2 LT(_NUM, KC_SPACE)
@@ -130,7 +130,7 @@ enum tap_dances {
     PGDOWN,
     HOME,
     END,
-    Z,
+    SLASH,
 };
 
 /*
@@ -199,16 +199,11 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 
 // Code for advanced tap dances
 
-void z_taps(tap_dance_state_t *state, void *user_data) {
+void slash_taps(tap_dance_state_t *state, void *user_data) {
     uint8_t mod_state = get_mods();
     switch (state->count) {
         case 1:
-            if (is_caps_word_on()) {
-                tap_code16(S(KC_Z));
-                caps_word_on();
-            } else {
-                tap_code(KC_Z);
-            }
+            tap_code(KC_KP_SLASH);
             break;
         case 2:
             tap_code(KC_BACKSPACE);
@@ -221,10 +216,10 @@ void z_taps(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-void z_finished(tap_dance_state_t *state, void *user_data) {
+void slash_finished(tap_dance_state_t *state, void *user_data) {
 }
 
-void z_reset(tap_dance_state_t *state, void *user_data) {
+void slash_reset(tap_dance_state_t *state, void *user_data) {
 }
 
 // Definition for each tap dance using the functions above.
@@ -233,7 +228,7 @@ tap_dance_action_t tap_dance_actions[] = {
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
-    [Z] = ACTION_TAP_DANCE_FN_ADVANCED(z_taps, z_finished, z_reset),
+    [SLASH] = ACTION_TAP_DANCE_FN_ADVANCED(slash_taps, slash_finished, slash_reset),
 };
 
 /*
@@ -1113,7 +1108,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
     |   s   |   n   |   t   |   h   |   k   |    |   -   |   a   |   e   |   i   |   c   |
     |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |   v   |   w   |   g   |   m   |   j   |    |   z   |   .   |   ,   |   '   |   /   |
+    |   v   |   w   |   g   |   m   |   j   |    |   /   |   .   |   ,   |   '   |   z   |
     `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
                     |  Bspc |   r   |  Tab  |    | Enter | Space |  Del  |
                     `———————————————————————'    `———————————————————————'
