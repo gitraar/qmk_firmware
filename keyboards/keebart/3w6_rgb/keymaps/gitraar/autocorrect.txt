@@ -484,11 +484,16 @@ rcoes         -> r'c~oes
 atraves:      -> atrav'es
 comecar       -> come'car
 crianca       -> crian'ca
+doenca        -> doen'ca
 nao           -> n~ao
+questao       -> quest~ao
+razao         -> raz~ao
 servico       -> servi'co
 tao:          -> t~ao
 tambem        -> tamb'em
 :ha:          -> h'a
+:ja:          -> j'a
+:mae:         -> m~ae
 :tres:        -> tr^es
 
 # Handle instances where my magic key will fail
