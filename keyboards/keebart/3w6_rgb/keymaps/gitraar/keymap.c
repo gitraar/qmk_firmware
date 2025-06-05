@@ -1,6 +1,3 @@
-#include "action.h"
-#include "keycodes.h"
-#include "modifiers.h"
 #include QMK_KEYBOARD_H
 
 /*
@@ -415,9 +412,9 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 }
 
 /*
-##############################
-### Sentence Case Settings ###
-##############################
+#####################
+### Sentence Case ###
+#####################
 */
 
 char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mods) {
@@ -547,9 +544,9 @@ bool sentence_case_check_ending(const uint16_t* buffer) {
 }
 
 /*
-##########################
-### Caps Word Settings ###
-##########################
+#################
+### Caps Word ###
+#################
 */
 
 bool caps_word_press_user(uint16_t keycode) {
@@ -590,9 +587,9 @@ bool caps_word_press_user(uint16_t keycode) {
 }
 
 /*
-####################################
-### Tapping and Holding Settings ###
-####################################
+###########################
+### Tapping and Holding ###
+###########################
 */
 
 // Set tapping term per key.
@@ -644,9 +641,9 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
 }
 
 /*
-##############################
-### Alternate-Key Settings ###
-##############################
+#####################
+### Alternate Key ###
+#####################
 */
 
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
@@ -717,12 +714,12 @@ static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
 
 #include <string.h>
 
-#define TIMEOUT_MS 200  // Timeout in milliseconds.
-#define RECENT_SIZE 3  // Number of keys in `recent` buffer.
+#define AK_TIMEOUT_MS 200  // Timeout in milliseconds.
+#define AK_RECENT_SIZE 3  // Number of keys in `recent` buffer.
 
 bool caps_needed = 0;  // Added to make Sentence Case and One-Shot Mod work.
 
-static uint16_t recent[RECENT_SIZE] = {KC_NO};
+static uint16_t recent[AK_RECENT_SIZE] = {KC_NO};
 static uint16_t deadline = 0;
 
 static void clear_recent_keys(void) {
@@ -765,15 +762,15 @@ static bool update_recent_keys(uint16_t keycode, keyrecord_t* record) {
   }
 
     // Slide the buffer left by one element.
-    memmove(recent, recent + 1, (RECENT_SIZE - 1) * sizeof(*recent));
+    memmove(recent, recent + 1, (AK_RECENT_SIZE - 1) * sizeof(*recent));
 
-    recent[RECENT_SIZE - 1] = keycode;
-    deadline = record->event.time + TIMEOUT_MS;
+    recent[AK_RECENT_SIZE - 1] = keycode;
+    deadline = record->event.time + AK_TIMEOUT_MS;
     return true;
 }
 
 void housekeeping_task_user(void) {
-    if (recent[RECENT_SIZE - 1] && timer_expired(timer_read(), deadline)) {
+    if (recent[AK_RECENT_SIZE - 1] && timer_expired(timer_read(), deadline)) {
         clear_recent_keys();  // Timed out; clear the buffer.
     }
 }
@@ -797,7 +794,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     uint8_t mod_state = get_mods();
     tap_dance_action_t *action;
     if (update_recent_keys(keycode, record)) {
-        if (recent[RECENT_SIZE - 2] == KC_M && recent[RECENT_SIZE - 1] == KC_G) {
+        if (recent[AK_RECENT_SIZE - 2] == KC_M && recent[AK_RECENT_SIZE - 1] == KC_G) {
             tap_code(KC_BACKSPACE);
             if (is_caps_word_on()) {
                 MAGIC_STRING("qu");
