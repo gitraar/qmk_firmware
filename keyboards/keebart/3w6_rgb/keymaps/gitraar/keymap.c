@@ -868,8 +868,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case UM_RM5:
             if (!record->tap.count && record->event.pressed) {
-                if (is_caps_word_on()) {
+                if (is_caps_word_on() | is_sentence_case_primed()) {
                     tap_code16(S(A(KC_C)));
+                    sentence_case_clear();
                 } else {
                     tap_code16(A(KC_C));
                 }
