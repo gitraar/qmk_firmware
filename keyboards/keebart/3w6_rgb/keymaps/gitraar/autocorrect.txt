@@ -465,7 +465,6 @@ ii:           -> I
 # Ways to avoid Portuguese accents
 :ah:          -> `a
 :ahs          -> `as
-ahquele       -> `aquele
 
 # Portuguese words with 'ção' and 'ções'
 acao          -> a'c~ao

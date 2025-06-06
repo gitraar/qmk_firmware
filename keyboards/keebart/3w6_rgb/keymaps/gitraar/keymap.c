@@ -920,17 +920,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         // Accented characters
         case U_GR_A:
             if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_GRAVE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_A));
-                } else {
-                    clear_mods();
-                    tap_code(KC_GRAVE);
-                    set_mods(mod_state);
-                    tap_code(KC_A);
-                }
+                clear_mods();
+                tap_code(KC_GRAVE);
+                set_mods(mod_state);
+                MAGIC_STRING("a");
             }
             return false;
     }
