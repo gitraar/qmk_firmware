@@ -73,7 +73,7 @@
 
 #define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
-#define UM_LH1 KC_TAB
+#define UM_LH1 LT(0,KC_TAB)
 
 #define UM_RT1 QK_ALT_REPEAT_KEY
 #define UM_RT2 HYPR_T(KC_U)
@@ -250,7 +250,7 @@ const uint16_t PROGMEM super_o_combo[] = {UM_LM1, UM_LB1, COMBO_END};
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
-const uint16_t PROGMEM escape_combo[] = {UM_LB2, UM_LB1, COMBO_END};
+const uint16_t PROGMEM circ_combo[] = {UM_LB2, UM_LB1, COMBO_END};
 
 // Right-side vertical combos.
 const uint16_t PROGMEM ac_u_combo[] = {UM_RT2, UM_RM2, COMBO_END};
@@ -282,7 +282,7 @@ enum combos {
     CLIP_HIST_COMBO,
     COPY_COMBO,
     CUT_COMBO,
-    ESC_COMBO,
+    CIRC_COMBO,
     GR_A_COMBO,
     LPRN_COMBO,
     MUTE_COMBO,
@@ -310,7 +310,7 @@ combo_t key_combos[] = {
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
-    [ESC_COMBO] = COMBO(escape_combo, KC_ESCAPE),
+    [CIRC_COMBO] = COMBO(circ_combo, KC_CIRC),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
     [AC_A_COMBO] = COMBO(ac_a_combo, U_AC_A),
     [AC_E_COMBO] = COMBO(ac_e_combo, U_AC_E),
@@ -641,6 +641,7 @@ bool caps_word_press_user(uint16_t keycode) {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case UM_LT5:
+        case UM_LH1:
         case UM_RB1:
             return 175;
         default:
@@ -813,6 +814,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 } else {
                     tap_code(KC_Q);
                 }
+                return false;
+            }
+            break;
+        case UM_LH1:
+            if (!record->tap.count && record->event.pressed) {
+                tap_code(KC_ESCAPE);
                 return false;
             }
             break;
