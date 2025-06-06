@@ -38,7 +38,6 @@
 #define TD_PGDN TD(PGDOWN)
 #define TD_HOME TD(HOME)
 #define TD_END TD(END)
-#define TD_SLASH TD(SLASH)
 
 // Key matrix assigments
 /*
@@ -76,22 +75,23 @@
 #define UM_LH1 LT(0,KC_TAB)
 
 #define UM_RT1 QK_ALT_REPEAT_KEY
-#define UM_RT2 HYPR_T(KC_U)
-#define UM_RT3 KC_O
+#define UM_RT2 LT(0,KC_U)
+#define UM_RT3 LT(0,KC_O)
 #define UM_RT4 KC_Y
 #define UM_RT5 KC_B
 
 #define UM_RM1 KC_MINUS
-#define UM_RM2 RSFT_T(KC_A)
-#define UM_RM3 RGUI_T(KC_E)
-#define UM_RM4 LALT_T(KC_I)
-#define UM_RM5 RCTL_T(KC_C)
+#define UM_RM2 LT(0,KC_A)
+#define UM_RM3 LT(0,KC_E)
+#define UM_RM4 LT(0,KC_I)
+#define UM_RM5 LT(0,KC_C)
 
-#define UM_RB1 TD_SLASH
-#define UM_RB2 KC_DOT
-#define UM_RB3 KC_COMMA
-#define UM_RB4 U_QUOTE
-#define UM_RB5 KC_Z
+#define UM_RB1 LT(0,KC_KP_SLASH)
+
+#define UM_RB2 RSFT_T(KC_DOT)
+#define UM_RB3 RGUI_T(KC_COMMA)
+#define UM_RB4 LALT_T(KC_QUOTE)
+#define UM_RB5 RCTL_T(KC_Z)
 
 #define UM_RH1 LT(_SYM, KC_ENTER)
 #define UM_RH2 LT(_NUM, KC_SPACE)
@@ -108,14 +108,9 @@ enum custom_keycodes {
     NUM,
     SYM,
     FUN,
-    U_AC_E, U_CIRC_E, // accented characters
-    U_AC_I, // accented characters
-    U_AC_O, U_TILDE_O, U_CIRC_O, // accented characters
-    U_AC_U, // accented characters
-    U_CC, // "ç"
-    U_GR_A, U_AC_A, U_TILDE_A, U_CIRC_A, // accented characters
+    U_GR_A, // "à"
     U_QU, // "qu"
-    U_QUOTE, U_TILDE, U_CIRC, // accents with space to never act like dead keys
+    U_TILDE, U_CIRC, // accents with space to never act like dead keys
     U_RGB_R,  // reset RGB to orange
     U_RGB_T,  // macro for RGB toggle with extra info
 };
@@ -126,7 +121,6 @@ enum tap_dances {
     PGDOWN,
     HOME,
     END,
-    SLASH,
 };
 
 /*
@@ -193,38 +187,12 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
-// Code for advanced tap dances where the first tap outputs a character immediately
-
-void slash_taps(tap_dance_state_t *state, void *user_data) {
-    uint8_t mod_state = get_mods();
-    switch (state->count) {
-        case 1:
-            tap_code(KC_KP_SLASH);
-            break;
-        case 2:
-            tap_code(KC_BACKSPACE);
-            clear_mods();
-            clear_weak_mods();
-            tap_code16(KC_COLN);
-            set_mods(mod_state);
-            reset_tap_dance(state);
-            break;
-    }
-}
-
-void slash_finished(tap_dance_state_t *state, void *user_data) {
-}
-
-void slash_reset(tap_dance_state_t *state, void *user_data) {
-}
-
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
     [PGUP] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
-    [SLASH] = ACTION_TAP_DANCE_FN_ADVANCED(slash_taps, slash_finished, slash_reset),
 };
 
 /*
@@ -240,11 +208,8 @@ const uint16_t PROGMEM copy_combo[] = {UM_LT3, UM_LM3, COMBO_END};
 const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
-const uint16_t PROGMEM tilde_combo[] = {UM_LM5, UM_LB5, COMBO_END};
-const uint16_t PROGMEM at_combo[] = {UM_LM4, UM_LB4, COMBO_END};
-const uint16_t PROGMEM lprn_combo[] = {UM_LM3, UM_LB3, COMBO_END};
-const uint16_t PROGMEM rprn_combo[] = {UM_LM2, UM_LB2, COMBO_END};
-const uint16_t PROGMEM super_o_combo[] = {UM_LM1, UM_LB1, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {UM_LM3, UM_LB3, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
@@ -253,32 +218,21 @@ const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
 const uint16_t PROGMEM esc_combo[] = {UM_LB2, UM_LB1, COMBO_END};
 
 // Right-side vertical combos.
-const uint16_t PROGMEM ac_u_combo[] = {UM_RT2, UM_RM2, COMBO_END};
-const uint16_t PROGMEM ac_o_combo[] = {UM_RT3, UM_RM3, COMBO_END};
-const uint16_t PROGMEM til_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
+const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
+const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
+const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
-const uint16_t PROGMEM til_a_combo[] = {UM_RM1, UM_RB1, COMBO_END};
-const uint16_t PROGMEM ac_a_combo[] = {UM_RM2, UM_RB2, COMBO_END};
-const uint16_t PROGMEM ac_e_combo[] = {UM_RM3, UM_RB3, COMBO_END};
-const uint16_t PROGMEM ac_i_combo[] = {UM_RM4, UM_RB4, COMBO_END};
-const uint16_t PROGMEM cedilla_combo[] = {UM_RM5, UM_RB5, COMBO_END};
 
 // Right-side horizontal combos.
-const uint16_t PROGMEM gr_a_combo[] = {UM_RM1, UM_RM2, COMBO_END};
+const uint16_t PROGMEM gr_a_combo[] = {UM_RM2, UM_RB2, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {UM_RB2, UM_RB3, COMBO_END};
 
 // Right-side horizontal combos on Media layer.
 const uint16_t PROGMEM mute_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
 
 enum combos {
-    AC_A_COMBO,
-    AC_E_COMBO,
-    AC_I_COMBO,
-    AC_O_COMBO,
-    AC_U_COMBO,
     AT_COMBO,
     CAPS_WORD_COMBO,
-    CEDILLA_COMBO,
     CLIP_HIST_COMBO,
     COPY_COMBO,
     CUT_COMBO,
@@ -291,22 +245,13 @@ enum combos {
     RPRN_COMBO,
     SEMICOLON_COMBO,
     SUPER_O_COMBO,
-    TAB_COMBO,
-    TIL_A_COMBO,
-    TIL_O_COMBO,
     TILDE_COMBO,
   };
 
 // Used combos.
 combo_t key_combos[] = {
-    [AC_A_COMBO] = COMBO(ac_a_combo, U_AC_A),
-    [AC_E_COMBO] = COMBO(ac_e_combo, U_AC_E),
-    [AC_I_COMBO] = COMBO(ac_i_combo, U_AC_I),
-    [AC_O_COMBO] = COMBO(ac_o_combo, U_AC_O),
-    [AC_U_COMBO] = COMBO(ac_u_combo, U_AC_U),
     [AT_COMBO] = COMBO(at_combo, KC_AT),
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
-    [CEDILLA_COMBO] = COMBO(cedilla_combo, U_CC),
     [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [CUT_COMBO] = COMBO(cut_combo, CUT),
@@ -319,17 +264,12 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
-    [TIL_A_COMBO] = COMBO(til_a_combo, U_TILDE_A),
-    [TIL_O_COMBO] = COMBO(til_o_combo, U_TILDE_O),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
 };
 
 #ifdef COMBO_MUST_PRESS_IN_ORDER_PER_COMBO
 bool get_combo_must_press_in_order(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
-        /* List combos here that you want to only activate if their keys
-         * are pressed in the same order as they are defined in the combo's key
-         * array. */
         case QU_COMBO: // I want 'qu' to trigger on 'mg' but don't want to lose the ability to type 'gm' quickly
             return true;
         default:
@@ -346,11 +286,11 @@ bool get_combo_must_press_in_order(uint16_t combo_index, combo_t *combo) {
 
 // Key overrides.
 const key_override_t super_a = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, A(KC_0), A(KC_9), ~0, MOD_MASK_CAG);
-const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_DOT, KC_EXLM, ~0, MOD_MASK_CAG);
-const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SA, KC_DOT, A(KC_1), ~0, MOD_MASK_CG);
-const key_override_t ellipsis = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_DOT, A(KC_SCLN), ~0, MOD_MASK_CSG);
-const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_COMMA, KC_QUES, ~0, MOD_MASK_CAG);
-const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_SA, KC_COMMA, A(S(KC_SLSH)), ~0, MOD_MASK_CG);
+const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, UM_RB2, KC_EXLM, ~0, MOD_MASK_CAG);
+const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SA, UM_RB2, A(KC_1), ~0, MOD_MASK_CG);
+const key_override_t ellipsis = ko_make_with_layers_and_negmods(MOD_MASK_ALT, UM_RB2, A(KC_SCLN), ~0, MOD_MASK_CSG);
+const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, UM_RB3, KC_QUES, ~0, MOD_MASK_CAG);
+const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_SA, UM_RB3, A(S(KC_SLSH)), ~0, MOD_MASK_CG);
 const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
 const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
 const key_override_t open_fancy_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LPRN, A(KC_RBRC), ~0, MOD_MASK_CAG);
@@ -486,8 +426,7 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
                 return shifted ? '.' : '.'; // Both . and ! are punctuation.
             case KC_SPC:
                 return ' '; // Space key.
-            case KC_QUOT:
-            case U_QUOTE:
+            case KC_QUOTE:
             case KC_DQUO:
                 return '\''; // Quote key.
         }
@@ -600,24 +539,12 @@ bool caps_word_press_user(uint16_t keycode) {
         case UM_LT5:
         case UM_RB1:
         case U_GR_A:
-        case U_AC_A:
-        case U_TILDE_A:
-        case U_CIRC_A:
-        case U_AC_E:
-        case U_CIRC_E:
-        case U_AC_I:
-        case U_AC_O:
-        case U_TILDE_O:
-        case U_CIRC_O:
-        case U_AC_U:
-        case U_CC:
         case KC_MINS:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
             return true;
 
         // Keycodes that continue Caps Word, without shifting.
         case KC_1 ... KC_0:
-        case U_QUOTE:
         case KC_QUOTE:
         case KC_DQUO:
         case KC_GRAVE:
@@ -625,6 +552,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_DEL:
         case KC_UNDS:
         case KC_CIRC:
+        case KC_KP_SLASH:
             return true;
 
         default:
@@ -643,6 +571,12 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case UM_LT5:
         case UM_LH1:
+        case UM_RT2:
+        case UM_RT3:
+        case UM_RM2:
+        case UM_RM3:
+        case UM_RM4:
+        case UM_RM5:
         case UM_RB1:
             return 175;
         default:
@@ -773,7 +707,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     tap_dance_action_t *action;
     switch (keycode) {
         // One-shot mod-taps
-        case UM_RM2:
+        case UM_RB2:
             return oneshot_mod_tap(keycode, record);
         // Advanced tap dances
         case TD_PGUP:
@@ -818,7 +752,102 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case UM_LH1:
             if (!record->tap.count && record->event.pressed) {
-                tap_code16(KC_CIRC);
+                tap_code16(KC_TILD);
+                return false;
+            }
+            break;
+        case UM_RB1:
+            if (!record->tap.count && record->event.pressed) {
+                tap_code16(KC_COLN);
+                return false;
+            }
+            break;
+        case UM_RT2:
+            if (!record->tap.count && record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("u");
+                return false;
+            }
+            break;
+        case UM_RT3:
+            if (!record->tap.count && record->event.pressed) {
+                if (mod_state & MOD_MASK_ALT) {
+                    clear_mods();
+                    tap_code16(KC_CIRC);
+                } else {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                }
+                set_mods(mod_state);
+                del_mods(MOD_MASK_ALT);
+                MAGIC_STRING("o");
+                set_mods(mod_state);
+                return false;
+            }
+            break;
+        case UM_RM2:
+            if (!record->tap.count && record->event.pressed) {
+                if (mod_state & MOD_MASK_ALT) {
+                    clear_mods();
+                    tap_code16(KC_CIRC);
+                } else {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                }
+                set_mods(mod_state);
+                del_mods(MOD_MASK_ALT);
+                MAGIC_STRING("a");
+                set_mods(mod_state);
+                return false;
+            }
+            break;
+        case UM_RM3:
+            if (!record->tap.count && record->event.pressed) {
+                if (mod_state & MOD_MASK_ALT) {
+                    clear_mods();
+                    tap_code16(KC_CIRC);
+                } else {
+                    clear_mods();
+                    tap_code(KC_QUOTE);
+                }
+                set_mods(mod_state);
+                del_mods(MOD_MASK_ALT);
+                MAGIC_STRING("e");
+                set_mods(mod_state);
+                return false;
+            }
+            break;
+        case UM_RM4:
+            if (!record->tap.count && record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("i");
+                return false;
+            }
+            break;
+        case UM_RB4:
+            if (record->tap.count && record->event.pressed) {
+                if (mod_state & MOD_MASK_ALT) {
+                    tap_code(KC_GRAVE);
+                    tap_code(KC_SPACE);
+                    tap_code(KC_BACKSPACE);
+                } else {
+                    tap_code(KC_QUOTE);
+                    tap_code(KC_SPACE);
+                }
+                return false;
+            }
+            break;
+        case UM_RM5:
+            if (!record->tap.count && record->event.pressed) {
+                if (is_caps_word_on()) {
+                    tap_code16(S(A(KC_C)));
+                } else {
+                    tap_code16(A(KC_C));
+                }
                 return false;
             }
             break;
@@ -850,18 +879,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         case U_RGB_R:
             rgb_matrix_sethsv(21, 255, 190);
             break;
-        case U_QUOTE:
-            if (record->event.pressed) {
-                if (mod_state & MOD_MASK_ALT) {
-                    tap_code(KC_GRAVE);
-                    tap_code(KC_SPACE);
-                    tap_code(KC_BACKSPACE);
-                } else {
-                    tap_code(KC_QUOTE);
-                    tap_code(KC_SPACE);
-                }
-            }
-            break;
         case U_TILDE:
             if (record->event.pressed) {
                 tap_code16(KC_TILDE);
@@ -872,15 +889,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             if (record->event.pressed) {
                 tap_code16(KC_CIRC);
                 tap_code(KC_SPACE);
-            }
-            break;
-        case U_CC:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(A(KC_C)));
-                } else {
-                    tap_code16(A(KC_C));
-                }
             }
             break;
         // Accented characters
@@ -896,156 +904,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_GRAVE);
                     set_mods(mod_state);
                     tap_code(KC_A);
-                }
-            }
-            return false;
-        case U_AC_A:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_A));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_A);
-                }
-            }
-            return false;
-        case U_TILDE_A:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code16(KC_TILDE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_A));
-                } else {
-                    clear_mods();
-                    tap_code16(KC_TILDE);
-                    set_mods(mod_state);
-                    tap_code(KC_A);
-                }
-            }
-            return false;
-        case U_CIRC_A:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_A));
-                } else {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code(KC_A);
-                }
-            }
-            return false;
-        case U_AC_E:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_E));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_E);
-                }
-            }
-            return false;
-        case U_CIRC_E:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_E));
-                } else {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code(KC_E);
-                }
-            }
-            return false;
-        case U_AC_I:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_I));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_I);
-                }
-            }
-            return false;
-        case U_AC_O:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_O));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_O);
-                }
-            }
-            return false;
-        case U_TILDE_O:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code16(KC_TILDE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_O));
-                } else {
-                    clear_mods();
-                    tap_code16(KC_TILDE);
-                    set_mods(mod_state);
-                    tap_code(KC_O);
-                }
-            }
-            return false;
-        case U_CIRC_O:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_O));
-                } else {
-                    clear_mods();
-                    tap_code16(KC_CIRCUMFLEX);
-                    set_mods(mod_state);
-                    tap_code(KC_O);
-                }
-            }
-            return false;
-        case U_AC_U:
-            if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code16(S(KC_U));
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                    set_mods(mod_state);
-                    tap_code(KC_U);
                 }
             }
             return false;
