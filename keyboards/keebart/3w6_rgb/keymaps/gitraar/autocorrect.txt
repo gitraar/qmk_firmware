@@ -462,7 +462,11 @@ youve         -> you've
 # My weird shortcuts
 ii:           -> I
 
-# Portuguese words with ção and ções
+# Ways to avoid Portuguese accents
+:ah:          -> `a
+:ahs          -> `as
+
+# Portuguese words with 'ção' and 'ções'
 acao          -> a'c~ao
 ecao          -> e'c~ao
 icao          -> i'c~ao

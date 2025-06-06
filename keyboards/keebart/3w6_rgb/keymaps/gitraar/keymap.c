@@ -27,12 +27,11 @@
 
 // Layers
 #define _BASE 0
-#define _EXT 1
-#define _NAV 2
-#define _MOU 3
-#define _NUM 4
-#define _SYM 5
-#define _FUN 6
+#define _NAV 1
+#define _MOU 2
+#define _NUM 3
+#define _SYM 4
+#define _FUN 5
 
 // Tap dances
 #define TD_PGUP TD(PGUP)
@@ -74,8 +73,7 @@
 
 #define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
-// #define UM_LH1 LT(_EXT, KC_TAB)
-#define UM_LH1 OSL(_EXT)
+#define UM_LH1 KC_TAB
 
 #define UM_RT1 QK_ALT_REPEAT_KEY
 #define UM_RT2 HYPR_T(KC_U)
@@ -105,21 +103,21 @@
 // Custom keycodes
 enum custom_keycodes {
     BASE = SAFE_RANGE,
-    EXT,
     NAV,
     MOU,
     NUM,
     SYM,
     FUN,
-    U_GR_A, U_AC_A, U_TILDE_A, U_CIRC_A, // accented characters
     U_AC_E, U_CIRC_E, // accented characters
     U_AC_I, // accented characters
     U_AC_O, U_TILDE_O, U_CIRC_O, // accented characters
     U_AC_U, // accented characters
-    U_QUOTE, U_TILDE, U_CIRC, // accents with space to never act like dead keys
     U_CC, // "ç"
+    U_GR_A, U_AC_A, U_TILDE_A, U_CIRC_A, // accented characters
+    U_QU, // "qu"
+    U_QUOTE, U_TILDE, U_CIRC, // accents with space to never act like dead keys
+    U_RGB_R,  // reset RGB to orange
     U_RGB_T,  // macro for RGB toggle with extra info
-    U_RGB_R  // reset RGB to orange
 };
 
 // Tap Dance stuff.
@@ -242,41 +240,61 @@ const uint16_t PROGMEM copy_combo[] = {UM_LT3, UM_LM3, COMBO_END};
 const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
-const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
-
-// Right-side vertical combos.
-const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
-const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
-const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
-
-const uint16_t PROGMEM tilde_combo[] = {UM_RM2, UM_RB2, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {UM_LM5, UM_LB5, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {UM_LM4, UM_LB4, COMBO_END};
+const uint16_t PROGMEM lprn_combo[] = {UM_LM3, UM_LB3, COMBO_END};
+const uint16_t PROGMEM rprn_combo[] = {UM_LM2, UM_LB2, COMBO_END};
+const uint16_t PROGMEM super_o_combo[] = {UM_LM1, UM_LB1, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM tab_combo[] = {UM_LM2, UM_LM1, COMBO_END};
-const uint16_t PROGMEM caps_word_combo[] = {UM_LB2, UM_LB1, COMBO_END};
+const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
+
+const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
+const uint16_t PROGMEM escape_combo[] = {UM_LB2, UM_LB1, COMBO_END};
+
+// Right-side vertical combos.
+const uint16_t PROGMEM ac_u_combo[] = {UM_RT2, UM_RM2, COMBO_END};
+const uint16_t PROGMEM ac_o_combo[] = {UM_RT3, UM_RM3, COMBO_END};
+const uint16_t PROGMEM til_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
+
+const uint16_t PROGMEM til_a_combo[] = {UM_RM1, UM_RB1, COMBO_END};
+const uint16_t PROGMEM ac_a_combo[] = {UM_RM2, UM_RB2, COMBO_END};
+const uint16_t PROGMEM ac_e_combo[] = {UM_RM3, UM_RB3, COMBO_END};
+const uint16_t PROGMEM ac_i_combo[] = {UM_RM4, UM_RB4, COMBO_END};
+const uint16_t PROGMEM cedilla_combo[] = {UM_RM5, UM_RB5, COMBO_END};
 
 // Right-side horizontal combos.
-const uint16_t PROGMEM escape_combo[] = {UM_RM1, UM_RM2, COMBO_END};
+const uint16_t PROGMEM gr_a_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {UM_RB2, UM_RB3, COMBO_END};
 
 // Right-side horizontal combos on Media layer.
 const uint16_t PROGMEM mute_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
 
 enum combos {
-    CUT_COMBO,
-    COPY_COMBO,
-    PASTE_COMBO,
-    CLIP_HIST_COMBO,
+    AC_A_COMBO,
+    AC_E_COMBO,
+    AC_I_COMBO,
+    AC_O_COMBO,
+    AC_U_COMBO,
     AT_COMBO,
-    LPRN_COMBO,
-    RPRN_COMBO,
-    SUPER_O_COMBO,
     CAPS_WORD_COMBO,
-    TILDE_COMBO,
-    SEMICOLON_COMBO,
+    CEDILLA_COMBO,
+    CLIP_HIST_COMBO,
+    COPY_COMBO,
+    CUT_COMBO,
     ESC_COMBO,
+    GR_A_COMBO,
+    LPRN_COMBO,
     MUTE_COMBO,
+    PASTE_COMBO,
+    QU_COMBO,
+    RPRN_COMBO,
+    SEMICOLON_COMBO,
+    SUPER_O_COMBO,
     TAB_COMBO,
+    TIL_A_COMBO,
+    TIL_O_COMBO,
+    TILDE_COMBO,
   };
 
 // Used combos.
@@ -294,8 +312,31 @@ combo_t key_combos[] = {
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [ESC_COMBO] = COMBO(escape_combo, KC_ESCAPE),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
-    [TAB_COMBO] = COMBO(tab_combo, KC_TAB),
+    [AC_A_COMBO] = COMBO(ac_a_combo, U_AC_A),
+    [AC_E_COMBO] = COMBO(ac_e_combo, U_AC_E),
+    [AC_I_COMBO] = COMBO(ac_i_combo, U_AC_I),
+    [AC_O_COMBO] = COMBO(ac_o_combo, U_AC_O),
+    [AC_U_COMBO] = COMBO(ac_u_combo, U_AC_U),
+    [GR_A_COMBO] = COMBO(gr_a_combo, U_GR_A),
+    [TIL_A_COMBO] = COMBO(til_a_combo, U_TILDE_A),
+    [TIL_O_COMBO] = COMBO(til_o_combo, U_TILDE_O),
+    [CEDILLA_COMBO] = COMBO(cedilla_combo, U_CC),
+    [QU_COMBO] = COMBO(qu_combo, U_QU),
 };
+
+#ifdef COMBO_MUST_PRESS_IN_ORDER_PER_COMBO
+bool get_combo_must_press_in_order(uint16_t combo_index, combo_t *combo) {
+    switch (combo_index) {
+        /* List combos here that you want to only activate if their keys
+         * are pressed in the same order as they are defined in the combo's key
+         * array. */
+        case QU_COMBO: // I want 'qu' to trigger on 'mg' but don't want to lose the ability to type 'gm' quickly
+            return true;
+        default:
+            return false;
+    }
+}
+#endif
 
 /*
 #####################
@@ -569,6 +610,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case U_TILDE_O:
         case U_CIRC_O:
         case U_AC_U:
+        case U_CC:
         case KC_MINS:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
             return true;
@@ -675,7 +717,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
                 MAGIC_STRING(/* */"and");
             }
             break;
-        case UM_LB3:
+        case U_QU:
             tap_code16(KC_CIRCUMFLEX);
             if (is_caps_word_on()) {
                 tap_code16(S(KC_E));
@@ -710,75 +752,6 @@ static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
 }
 
 /*
-#####################
-### Adaptive Keys ###
-#####################
-*/
-
-#include <string.h>
-
-#define AK_TIMEOUT_MS 200  // Timeout in milliseconds.
-#define AK_RECENT_SIZE 3  // Number of keys in `recent` buffer.
-
-bool caps_needed = 0;  // Added to make Sentence Case and One-Shot Mod work.
-
-static uint16_t recent[AK_RECENT_SIZE] = {KC_NO};
-static uint16_t deadline = 0;
-
-static void clear_recent_keys(void) {
-    memset(recent, 0, sizeof(recent));  // Set all zeros (KC_NO).
-}
-
-// Handles one event. Returns true if the key was appended to `recent`.
-static bool update_recent_keys(uint16_t keycode, keyrecord_t* record) {
-    if (!record->event.pressed) { return false; }
-
-    if (((get_mods() | get_oneshot_mods()) & ~MOD_MASK_SHIFT) != 0) {
-        clear_recent_keys();  // Avoid interfering with hotkeys.
-        return false;
-    }
-
-    if (((get_mods() | get_oneshot_mods()) & MOD_MASK_SHIFT) | is_sentence_case_primed()){
-        caps_needed = 1;
-    }
-
-    // Handle tap-hold keys.
-    switch (keycode) {
-        case QK_MOD_TAP ... QK_MOD_TAP_MAX:
-        case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
-            if (record->tap.count == 0) { return false; }
-            keycode &= 0xff;  // Get tapping keycode.
-    }
-
-    switch (keycode) {
-        case KC_A ... KC_SLASH:  // These keys type letters, digits, symbols.
-            break;
-
-        case KC_LSFT:  // These keys don't type anything on their own.
-        case KC_RSFT:
-        case QK_ONE_SHOT_MOD ... QK_ONE_SHOT_MOD_MAX:
-            return false;
-
-        default:  // Avoid acting otherwise, particularly on navigation keys.
-            clear_recent_keys();
-            return false;
-  }
-
-    // Slide the buffer left by one element.
-    memmove(recent, recent + 1, (AK_RECENT_SIZE - 1) * sizeof(*recent));
-
-    recent[AK_RECENT_SIZE - 1] = keycode;
-    deadline = record->event.time + AK_TIMEOUT_MS;
-    return true;
-}
-
-void housekeeping_task_user(void) {
-    if (recent[AK_RECENT_SIZE - 1] && timer_expired(timer_read(), deadline)) {
-        clear_recent_keys();  // Timed out; clear the buffer.
-    }
-}
-
-/*
 ###########################
 ### Process Record User ###
 ###########################
@@ -796,28 +769,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     }
     uint8_t mod_state = get_mods();
     tap_dance_action_t *action;
-    if (update_recent_keys(keycode, record)) {
-        if (recent[AK_RECENT_SIZE - 2] == KC_M && recent[AK_RECENT_SIZE - 1] == KC_G) {
-            tap_code(KC_BACKSPACE);
-            if (is_caps_word_on()) {
-                MAGIC_STRING("qu");
-            } else {
-                if (caps_needed) {
-                    tap_code16(S(KC_Q));
-                    sentence_case_clear();
-                    caps_needed = 0;
-                } else {
-                    tap_code(KC_Q);
-                }
-                clear_mods();
-                tap_code(KC_U);
-                set_mods(mod_state);
-            }
-            return false;
-        }
-    } else {
-        caps_needed = 0;
-    }
     switch (keycode) {
         // One-shot mod-taps
         case UM_RM2:
@@ -866,6 +817,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Macros
+        case U_QU:
+            if (record->event.pressed) {
+                if (is_caps_word_on()) {
+                    MAGIC_STRING("qu");
+                } else {
+                    tap_code(KC_Q);
+                    clear_mods();
+                    tap_code(KC_U);
+                    set_mods(mod_state);
+                }
+                return false;
+            }
+            break;
         case U_RGB_T:
             if (record->event.pressed) {
                 if (rgb_matrix_is_enabled()) {
@@ -928,7 +892,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_A);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_AC_A:
             if (record->event.pressed) {
@@ -944,7 +907,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_A);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_TILDE_A:
             if (record->event.pressed) {
@@ -960,7 +922,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_A);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_CIRC_A:
             if (record->event.pressed) {
@@ -976,7 +937,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_A);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_AC_E:
             if (record->event.pressed) {
@@ -992,7 +952,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_E);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_CIRC_E:
             if (record->event.pressed) {
@@ -1008,7 +967,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_E);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_AC_I:
             if (record->event.pressed) {
@@ -1024,7 +982,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_I);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_AC_O:
             if (record->event.pressed) {
@@ -1040,7 +997,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_O);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_TILDE_O:
             if (record->event.pressed) {
@@ -1056,7 +1012,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_O);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_CIRC_O:
             if (record->event.pressed) {
@@ -1072,7 +1027,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_O);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
         case U_AC_U:
             if (record->event.pressed) {
@@ -1088,7 +1042,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                     tap_code(KC_U);
                 }
             }
-            layer_clear();  // I never want two accented characters in a row
             return false;
     }
     return true;
@@ -1120,25 +1073,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         UM_LB5, UM_LB4, UM_LB3, UM_LB2, UM_LB1,    UM_RB1, UM_RB2, UM_RB3, UM_RB4, UM_RB5,
                                 UM_LH3, UM_LH2, UM_LH1,    UM_RH1, UM_RH2, UM_RH3
     ),
-
-/* Alpha Extension
-    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |       |   ú   |   ó   |   ô   |   õ   |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |   à   |   á   |   é   |   í   |   ç   |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |       |   â   |   ê   |       |       |
-    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |       |       |OOOOOOO|   |       |   ã   |       |
-                            `———————————————————————'   `———————————————————————'
-*/
-
-[_EXT] = LAYOUT_split_3x5_3(
-    _______, _______, _______, _______, _______,     XXXXXXX, U_AC_U,    U_AC_O,   U_CIRC_O,  U_TILDE_O,
-    _______, _______, _______, _______, _______,     U_GR_A,  U_AC_A,    U_AC_E,   U_AC_I,    U_CC,
-    _______, _______, _______, _______, _______,     XXXXXXX, U_CIRC_A,  U_CIRC_E, XXXXXXX, XXXXXXX,
-                              XXXXXXX, XXXXXXX, XXXXXXX,     XXXXXXX, U_TILDE_A, XXXXXXX
-),
 
 /* Navigation
     ,———————————————————————————————————————.                   ,———————————————————————————————————————.
