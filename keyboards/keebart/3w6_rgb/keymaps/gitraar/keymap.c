@@ -250,7 +250,7 @@ const uint16_t PROGMEM super_o_combo[] = {UM_LM1, UM_LB1, COMBO_END};
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
-const uint16_t PROGMEM circ_combo[] = {UM_LB2, UM_LB1, COMBO_END};
+const uint16_t PROGMEM esc_combo[] = {UM_LB2, UM_LB1, COMBO_END};
 
 // Right-side vertical combos.
 const uint16_t PROGMEM ac_u_combo[] = {UM_RT2, UM_RM2, COMBO_END};
@@ -282,7 +282,7 @@ enum combos {
     CLIP_HIST_COMBO,
     COPY_COMBO,
     CUT_COMBO,
-    CIRC_COMBO,
+    ESC_COMBO,
     GR_A_COMBO,
     LPRN_COMBO,
     MUTE_COMBO,
@@ -299,29 +299,29 @@ enum combos {
 
 // Used combos.
 combo_t key_combos[] = {
-    [CUT_COMBO] = COMBO(cut_combo, CUT),
-    [COPY_COMBO] = COMBO(copy_combo, COPY),
-    [PASTE_COMBO] = COMBO(paste_combo, PASTE),
-    [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
-    [AT_COMBO] = COMBO(at_combo, KC_AT),
-    [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
-    [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
-    [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
-    [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
-    [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
-    [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
-    [CIRC_COMBO] = COMBO(circ_combo, KC_CIRC),
-    [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
     [AC_A_COMBO] = COMBO(ac_a_combo, U_AC_A),
     [AC_E_COMBO] = COMBO(ac_e_combo, U_AC_E),
     [AC_I_COMBO] = COMBO(ac_i_combo, U_AC_I),
     [AC_O_COMBO] = COMBO(ac_o_combo, U_AC_O),
     [AC_U_COMBO] = COMBO(ac_u_combo, U_AC_U),
+    [AT_COMBO] = COMBO(at_combo, KC_AT),
+    [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
+    [CEDILLA_COMBO] = COMBO(cedilla_combo, U_CC),
+    [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
+    [COPY_COMBO] = COMBO(copy_combo, COPY),
+    [CUT_COMBO] = COMBO(cut_combo, CUT),
+    [ESC_COMBO] = COMBO(esc_combo, KC_ESC),
     [GR_A_COMBO] = COMBO(gr_a_combo, U_GR_A),
+    [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
+    [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
+    [PASTE_COMBO] = COMBO(paste_combo, PASTE),
+    [QU_COMBO] = COMBO(qu_combo, U_QU),
+    [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
+    [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
+    [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
     [TIL_A_COMBO] = COMBO(til_a_combo, U_TILDE_A),
     [TIL_O_COMBO] = COMBO(til_o_combo, U_TILDE_O),
-    [CEDILLA_COMBO] = COMBO(cedilla_combo, U_CC),
-    [QU_COMBO] = COMBO(qu_combo, U_QU),
+    [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
 };
 
 #ifdef COMBO_MUST_PRESS_IN_ORDER_PER_COMBO
@@ -624,6 +624,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_BACKSPACE:
         case KC_DEL:
         case KC_UNDS:
+        case KC_CIRC:
             return true;
 
         default:
@@ -806,9 +807,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         // Intercepts
         case UM_LT5:
             if (!record->tap.count && record->event.pressed) {
-                if (is_caps_word_on()) {
-                    tap_code16(S(KC_Q));
-                } else if (is_sentence_case_primed()) {
+                if (is_caps_word_on() | is_sentence_case_primed()) {
                     tap_code16(S(KC_Q));
                     sentence_case_clear();
                 } else {
@@ -819,7 +818,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case UM_LH1:
             if (!record->tap.count && record->event.pressed) {
-                tap_code(KC_ESCAPE);
+                tap_code16(KC_CIRC);
                 return false;
             }
             break;
