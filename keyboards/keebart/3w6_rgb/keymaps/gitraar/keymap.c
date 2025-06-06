@@ -56,14 +56,14 @@
 #define UM_LT5 LT(0, KC_F)
 #define UM_LT4 KC_P
 #define UM_LT3 KC_D
-#define UM_LT2 HYPR_T(KC_L)
+#define UM_LT2 KC_L
 #define UM_LT1 KC_X
 
 #define UM_LM5 LCTL_T(KC_S)
 #define UM_LM4 LALT_T(KC_N)
 #define UM_LM3 LGUI_T(KC_T)
 #define UM_LM2 LSFT_T(KC_H)
-#define UM_LM1 KC_K
+#define UM_LM1 HYPR_T(KC_K)
 
 #define UM_LB5 KC_V
 #define UM_LB4 KC_W
@@ -81,7 +81,7 @@
 #define UM_RT4 KC_Y
 #define UM_RT5 KC_B
 
-#define UM_RM1 KC_MINUS
+#define UM_RM1 HYPR_T(KC_MINUS)
 #define UM_RM2 LT(0,KC_A)
 #define UM_RM3 LT(0,KC_E)
 #define UM_RM4 LT(0,KC_I)
