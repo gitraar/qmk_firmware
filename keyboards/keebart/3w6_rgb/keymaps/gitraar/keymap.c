@@ -73,7 +73,7 @@
 
 #define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
-#define UM_LH1 LT(0,KC_TAB)
+#define UM_LH1 KC_TAB
 
 #define UM_RT1 QK_ALT_REPEAT_KEY
 #define UM_RT2 LT(0,KC_U)
@@ -210,7 +210,7 @@ const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
 const uint16_t PROGMEM tilde_combo[] = {UM_LM3, UM_LB3, COMBO_END};
-const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
+const uint16_t PROGMEM circ_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
@@ -223,6 +223,7 @@ const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
 const uint16_t PROGMEM gr_a_combo[] = {UM_RM2, UM_RB2, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {UM_RM3, UM_RB3, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM esc_combo[] = {UM_RM1, UM_RM2, COMBO_END};
@@ -234,6 +235,7 @@ const uint16_t PROGMEM mute_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
 enum combos {
     AT_COMBO,
     CAPS_WORD_COMBO,
+    CIRC_COMBO,
     CLIP_HIST_COMBO,
     COPY_COMBO,
     CUT_COMBO,
@@ -253,6 +255,7 @@ enum combos {
 combo_t key_combos[] = {
     [AT_COMBO] = COMBO(at_combo, KC_AT),
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
+    [CIRC_COMBO] = COMBO(circ_combo, KC_CIRC),
     [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [CUT_COMBO] = COMBO(cut_combo, CUT),
@@ -265,7 +268,7 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
-    [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
+    [TILDE_COMBO] = COMBO(tilde_combo, KC_TILD),
 };
 
 #ifdef COMBO_MUST_PRESS_IN_ORDER_PER_COMBO
@@ -541,6 +544,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case UM_RB1:
         case U_GR_A:
         case KC_MINS:
+        case UM_RM1:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
             return true;
 
@@ -554,6 +558,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_UNDS:
         case KC_CIRC:
         case KC_KP_SLASH:
+        case KC_TILD:
             return true;
 
         default:
@@ -742,18 +747,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         // Intercepts
         case UM_LT5:
             if (!record->tap.count && record->event.pressed) {
-                if (is_caps_word_on() | is_sentence_case_primed()) {
+                if (is_caps_word_on() || is_sentence_case_primed()) {
                     tap_code16(S(KC_Q));
                     sentence_case_clear();
                 } else {
                     tap_code(KC_Q);
                 }
-                return false;
-            }
-            break;
-        case UM_LH1:
-            if (!record->tap.count && record->event.pressed) {
-                tap_code16(KC_TILD);
                 return false;
             }
             break;
@@ -779,64 +778,43 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case UM_RT3:
             if (!record->tap.count && record->event.pressed) {
-                if (mod_state & MOD_MASK_ALT) {
-                    clear_mods();
-                    tap_code16(KC_CIRC);
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                }
+                clear_mods();
+                tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                del_mods(MOD_MASK_ALT);
                 if (is_sentence_case_primed()) {
                     tap_code16(S(KC_O));
                     sentence_case_clear();
                 } else {
                     MAGIC_STRING("o");
                 }
-                set_mods(mod_state);
                 return false;
             }
             break;
         case UM_RM2:
             if (!record->tap.count && record->event.pressed) {
-                if (mod_state & MOD_MASK_ALT) {
-                    clear_mods();
-                    tap_code16(KC_CIRC);
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                }
+                clear_mods();
+                tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                del_mods(MOD_MASK_ALT);
                 if (is_sentence_case_primed()) {
                     tap_code16(S(KC_A));
                     sentence_case_clear();
                 } else {
                     MAGIC_STRING("a");
                 }
-                set_mods(mod_state);
                 return false;
             }
             break;
         case UM_RM3:
             if (!record->tap.count && record->event.pressed) {
-                if (mod_state & MOD_MASK_ALT) {
-                    clear_mods();
-                    tap_code16(KC_CIRC);
-                } else {
-                    clear_mods();
-                    tap_code(KC_QUOTE);
-                }
+                clear_mods();
+                tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                del_mods(MOD_MASK_ALT);
                 if (is_sentence_case_primed()) {
                     tap_code16(S(KC_E));
                     sentence_case_clear();
                 } else {
                     MAGIC_STRING("e");
                 }
-                set_mods(mod_state);
                 return false;
             }
             break;
