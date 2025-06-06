@@ -215,16 +215,16 @@ const uint16_t PROGMEM at_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
-const uint16_t PROGMEM esc_combo[] = {UM_LB2, UM_LB1, COMBO_END};
 
 // Right-side vertical combos.
 const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
 const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
+const uint16_t PROGMEM gr_a_combo[] = {UM_RM2, UM_RB2, COMBO_END};
 
 // Right-side horizontal combos.
-const uint16_t PROGMEM gr_a_combo[] = {UM_RM2, UM_RB2, COMBO_END};
+const uint16_t PROGMEM esc_combo[] = {UM_RM1, UM_RM2, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {UM_RB2, UM_RB3, COMBO_END};
 
 // Right-side horizontal combos on Media layer.
@@ -767,7 +767,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                MAGIC_STRING("u");
+                if (is_sentence_case_primed()) {
+                    tap_code16(S(KC_U));
+                    sentence_case_clear();
+                } else {
+                    MAGIC_STRING("u");
+                }
                 return false;
             }
             break;
@@ -782,7 +787,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 }
                 set_mods(mod_state);
                 del_mods(MOD_MASK_ALT);
-                MAGIC_STRING("o");
+                if (is_sentence_case_primed()) {
+                    tap_code16(S(KC_O));
+                    sentence_case_clear();
+                } else {
+                    MAGIC_STRING("o");
+                }
                 set_mods(mod_state);
                 return false;
             }
@@ -798,7 +808,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 }
                 set_mods(mod_state);
                 del_mods(MOD_MASK_ALT);
-                MAGIC_STRING("a");
+                if (is_sentence_case_primed()) {
+                    tap_code16(S(KC_A));
+                    sentence_case_clear();
+                } else {
+                    MAGIC_STRING("a");
+                }
                 set_mods(mod_state);
                 return false;
             }
@@ -814,7 +829,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 }
                 set_mods(mod_state);
                 del_mods(MOD_MASK_ALT);
-                MAGIC_STRING("e");
+                if (is_sentence_case_primed()) {
+                    tap_code16(S(KC_E));
+                    sentence_case_clear();
+                } else {
+                    MAGIC_STRING("e");
+                }
                 set_mods(mod_state);
                 return false;
             }
@@ -824,7 +844,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                MAGIC_STRING("i");
+                if (is_sentence_case_primed()) {
+                    tap_code16(S(KC_I));
+                    sentence_case_clear();
+                } else {
+                    MAGIC_STRING("i");
+                }
                 return false;
             }
             break;
