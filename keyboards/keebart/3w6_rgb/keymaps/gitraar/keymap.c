@@ -252,8 +252,8 @@ const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 const uint16_t PROGMEM tilde_combo[] = {UM_RM2, UM_RB2, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
-const uint16_t PROGMEM tab_combo[] = {UM_LB2, UM_LB1, COMBO_END};
+const uint16_t PROGMEM tab_combo[] = {UM_LM2, UM_LM1, COMBO_END};
+const uint16_t PROGMEM caps_word_combo[] = {UM_LB2, UM_LB1, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM escape_combo[] = {UM_RM1, UM_RM2, COMBO_END};
