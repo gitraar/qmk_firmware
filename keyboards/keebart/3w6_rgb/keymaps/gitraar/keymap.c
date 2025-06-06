@@ -43,15 +43,15 @@
 
 // Key matrix assigments
 /*
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  LT5  |  LT4  |  LT3  |  LT2  |  LT1  |    |  RT1  |  RT2  |  RT3  |  RT4  |  RT5  |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  LM5  |  LM4  |  LM3  |  LM2  |  LM1  |    |  RM1  |  RM2  |  RM3  |  RM4  |  RM5  |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  LB5  |  LB4  |  LB3  |  LB2  |  LB1  |    |  RB1  |  RB2  |  RB3  |  RB4  |  RB5  |
-    `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |  LH3  |  LH2  |  LH1  |    |  RH2  |  RH2  |  RH3  |
-                    `———————————————————————'    `———————————————————————'
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |  LT5  |  LT4  |  LT3  |  LT2  |  LT1  |                   |  RT1  |  RT2  |  RT3  |  RT4  |  RT5  |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  LM5  |  LM4  |  LM3  |  LM2  |  LM1  |                   |  RM1  |  RM2  |  RM3  |  RM4  |  RM5  |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  LB5  |  LB4  |  LB3  |  LB2  |  LB1  |                   |  RB1  |  RB2  |  RB3  |  RB4  |  RB5  |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            |  LH3  |  LH2  |  LH1  |   |  RH2  |  RH2  |  RH3  |
+                            `———————————————————————'   `———————————————————————'
 */
 
 #define UM_LT5 LT(0, KC_F)
@@ -74,7 +74,8 @@
 
 #define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
-#define UM_LH1 LT(_EXT, KC_TAB)
+// #define UM_LH1 LT(_EXT, KC_TAB)
+#define UM_LH1 OSL(_EXT)
 
 #define UM_RT1 QK_ALT_REPEAT_KEY
 #define UM_RT2 HYPR_T(KC_U)
@@ -194,7 +195,7 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
-// Code for advanced tap dances
+// Code for advanced tap dances where the first tap outputs a character immediately
 
 void slash_taps(tap_dance_state_t *state, void *user_data) {
     uint8_t mod_state = get_mods();
@@ -252,6 +253,7 @@ const uint16_t PROGMEM tilde_combo[] = {UM_RM2, UM_RB2, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
+const uint16_t PROGMEM tab_combo[] = {UM_LB2, UM_LB1, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM escape_combo[] = {UM_RM1, UM_RM2, COMBO_END};
@@ -274,6 +276,7 @@ enum combos {
     SEMICOLON_COMBO,
     ESC_COMBO,
     MUTE_COMBO,
+    TAB_COMBO,
   };
 
 // Used combos.
@@ -291,6 +294,7 @@ combo_t key_combos[] = {
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [ESC_COMBO] = COMBO(escape_combo, KC_ESCAPE),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
+    [TAB_COMBO] = COMBO(tab_combo, KC_TAB),
 };
 
 /*
@@ -453,30 +457,28 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
 }
 
 bool sentence_case_check_ending(const uint16_t* buffer) {
-    // Don't consider the abbreviations "vs." and "etc." to end the sentence.
-    if (SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_V, KC_S, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_T, KC_C, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_N, KC_O, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_N, KC_G, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_DOT, KC_G,KC_DOT) ||
+    // Don't consider abbreviations like "vs." and "etc." to end the sentence.
+    if (SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_B, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_DOT, KC_C, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_DOT, KC_M, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_B, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_G, KC_O, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_R, KC_T, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_V, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_B, KC_R, KC_O, KC_S, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_C, KC_A, KC_P, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_C, KC_F, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_DOT, KC_C, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_E, KC_Z, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_O, KC_C, KC_S, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_O, KC_M, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_R, KC_A, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_X, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_D, KC_R, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_DOT, KC_G,KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_N, KC_G, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_T, KC_C, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_X, KC_A, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_X, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_X, KC_M, KC_A, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_E, KC_X, KC_M, KC_O, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_F, KC_A, KC_X, KC_DOT) ||
@@ -498,9 +500,11 @@ bool sentence_case_check_ending(const uint16_t* buffer) {
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_L, KC_T, KC_D, KC_A, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_M, KC_A, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_M, KC_A, KC_S, KC_C, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_M, KC_I, KC_S, KC_C, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_M, KC_O, KC_N, KC_S, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_M, KC_S, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_M, KC_T, KC_O, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_N, KC_O, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_N, KC_O, KC_V, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_O, KC_B, KC_G, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_O, KC_P, KC_DOT) ||
@@ -519,15 +523,14 @@ bool sentence_case_check_ending(const uint16_t* buffer) {
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_Q, KC_U, KC_I, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_R, KC_E, KC_F, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_R, KC_E, KC_V, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_R, KC_E, KC_V, KC_D, KC_O, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_DOT, KC_F, KC_DOT, KC_F, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_R, KC_E, KC_V, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_A, KC_B, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_DOT, KC_F, KC_DOT, KC_F, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_E, KC_G, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_E, KC_T, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_E, KC_X, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_R, KC_A, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_R, KC_T, KC_A, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_T, KC_A, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_S, KC_T, KC_O, KC_DOT) ||
@@ -535,9 +538,9 @@ bool sentence_case_check_ending(const uint16_t* buffer) {
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_T, KC_E, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_T, KC_I, KC_M, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_T, KC_L, KC_M, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_V, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_V, KC_D, KC_DOT) ||
-        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_M, KC_I, KC_S, KC_C, KC_DOT)) {
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_V, KC_DOT) ||
+        SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_V, KC_S, KC_DOT)) {
         return false;  // Not a real sentence ending.
     }
     return true;  // Real sentence ending; capitalize next letter.
@@ -1100,15 +1103,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |   f   |   p   |   d   |   l   |   x   |    | Magic |   u   |   o   |   y   |   b   |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |   s   |   n   |   t   |   h   |   k   |    |   -   |   a   |   e   |   i   |   c   |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |   v   |   w   |   g   |   m   |   j   |    |   /   |   .   |   ,   |   '   |   z   |
-    `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |  Bspc |   r   |  Tab  |    | Enter | Space |  Del  |
-                    `———————————————————————'    `———————————————————————'
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |   f   |   p   |   d   |   l   |   x   |                   | Magic |   u   |   o   |   y   |   b   |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |   s   |   n   |   t   |   h   |   k   |                   |   -   |   a   |   e   |   i   |   c   |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |   v   |   w   |   g   |   m   |   j   |                   |   /   |   .   |   ,   |   '   |   z   |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            |  Bspc |   r   |  Tab  |   | Enter | Space |  Del  |
+                            `———————————————————————'   `———————————————————————'
 */
 
     [_BASE] = LAYOUT_split_3x5_3(
@@ -1119,15 +1122,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 /* Alpha Extension
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   ú   |   ó   |   ô   |   õ   |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |   à   |   á   |   é   |   í   |   ç   |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |   â   |   ê   |       |       |
-    `———————————————————————————————————————|    |———————————————————————————————————————'
-                    |       |       |       |    |       |   ã   |       |
-                    `———————————————————————'    `———————————————————————'
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |       |   ú   |   ó   |   ô   |   õ   |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |   à   |   á   |   é   |   í   |   ç   |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |       |   â   |   ê   |       |       |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            |       |       |OOOOOOO|   |       |   ã   |       |
+                            `———————————————————————'   `———————————————————————'
 */
 
 [_EXT] = LAYOUT_split_3x5_3(
@@ -1138,15 +1141,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 /* Navigation
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabUp |  Home |   Up  |  End  |  PgUp |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    | TabDo |  Left |  Down | Right |  PgDo |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |       |SpcLeft|SelWord|SpcRght|       |
-    `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |       |OOOOOOO|       |    |Confirm|  RayC |  Undo |
-                    `———————————————————————'    `———————————————————————'
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   | TabUp |  Home |   Up  |  End  |  PgUp |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   | TabDo |  Left |  Down | Right |  PgDo |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |       |SpcLeft|SelWord|SpcRght|       |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            |       |OOOOOOO|       |   |Confirm|  RayC |  Undo |
+                            `———————————————————————'   `———————————————————————'
 */
 
     [_NAV] = LAYOUT_split_3x5_3(
@@ -1157,15 +1160,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 /* Mouse and Media Keys
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |  MWDn |  MB4  |  MUp  |  MB5  |       |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |  MWUp | MLeft | MDown | MRight|       |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  ---  |  ---  |  ---  |  ---  |  ---  |    |  Play | VolDo | VolUp |  Prev |  Next |
-    `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |OOOOOOO|       |       |    |  MB1  |  MB3  |  MB2  |
-                    `———————————————————————'    `———————————————————————'
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |  MWDn |  MB4  |  MUp  |  MB5  |       |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |  MWUp | MLeft | MDown | MRight|       |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  ---  |  ---  |  ---  |  ---  |  ---  |                   |  Play | VolDo | VolUp |  Prev |  Next |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            |OOOOOOO|       |       |   |  MB1  |  MB3  |  MB2  |
+                            `———————————————————————'   `———————————————————————'
 */
 
     [_MOU] = LAYOUT_split_3x5_3(
@@ -1176,15 +1179,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 /* Numbers
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |   /   |   7   |   8   |   9   |   *   |    |  ---  |  ---  |  ---  |  ---  |  ---  |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |   -   |   4   |   5   |   6   |   +   |    |  ---  |  ---  |  ---  |  ---  |  ---  |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |   %   |   1   |   2   |   3   |   =   |    |  ---  |  ---  |  ---  |  ---  |  ---  |
-    `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |  Bspc |   0   | LLock |    |       |OOOOOOO|       |
-                    `———————————————————————'    `———————————————————————'
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |   /   |   7   |   8   |   9   |   *   |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |   -   |   4   |   5   |   6   |   +   |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |   %   |   1   |   2   |   3   |   =   |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            |  Bspc |   0   | LLock |   |       |OOOOOOO|       |
+                            `———————————————————————'   `———————————————————————'
 */
 
     [_NUM] = LAYOUT_split_3x5_3(
@@ -1195,15 +1198,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 /* Symbols
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |       |   \   |   <   |   >   |      |    |  ---  |  ---  |  ---  |  ---  |  ---  |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |       |   |   |   [   |   ]   |   $   |    |  ---  | Shift |  ---  |  ---  |  ---  |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |       |   ^   |   {   |   }   |   £   |    |  ---  |  ---  |  ---  |  ---  |  ---  |
-    `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    |   &   |   #   |   €   |    |OOOOOOO|       |       |
-                    `———————————————————————'    `———————————————————————'
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |       |   \   |   <   |   >   |      |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |       |   |   |   [   |   ]   |   $   |                   |  ---  | Shift |  ---  |  ---  |  ---  |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |       |   ^   |   {   |   }   |   £   |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            |   &   |   #   |   €   |   |OOOOOOO|       |       |
+                            `———————————————————————'   `———————————————————————'
 */
 
     [_SYM] = LAYOUT_split_3x5_3(
@@ -1214,15 +1217,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 /* Function
-    ,———————————————————————————————————————.    ,———————————————————————————————————————.
-    |  F12  |   F7  |   F8  |   F9  | PrScr |    | RMNxt | RMHUp |  RMUp |  ---  |  ---  |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  F11  |   F4  |   F5  |   F6  |       |    |RMReset|RMHDown| RMDown| ACTog | Flash |
-    |———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————|
-    |  F10  |   F1  |   F2  |   F3  | RMTog |    |  ---  |  ---  |  ---  |  ---  |  ---  |
-    `———————+———————+———————+———————+———————|    |———————+———————+———————+———————+———————'
-                    | Leader|  Caps |  Lock |    |       |       |OOOOOOO|
-                    `———————————————————————'    `———————————————————————'
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |  F12  |   F7  |   F8  |   F9  | PrScr |                   | RMNxt | RMHUp |  RMUp |  ---  |  ---  |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  F11  |   F4  |   F5  |   F6  |       |                   |RMReset|RMHDown| RMDown| ACTog | Flash |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |  F10  |   F1  |   F2  |   F3  | RMTog |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            | Leader|  Caps |  Lock |   |       |       |OOOOOOO|
+                            `———————————————————————'   `———————————————————————'
     */
 
     [_FUN] = LAYOUT_split_3x5_3(
