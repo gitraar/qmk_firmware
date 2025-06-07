@@ -487,26 +487,48 @@ pcoes         -> p'c~oes
 rcoes         -> r'c~oes
 
 # Common Portuguese words
-#ntao          -> nt~ao
-#stao          -> st~ao
 atraves:      -> atrav'es
 comecar       -> come'car
 crianca       -> crian'ca
+daos          -> d~aos
 doenca        -> doen'ca
-lhao          -> lh~ao
+#lhao          -> lh~ao
 lhoes         -> lh~oes
-nao           -> n~ao
+#nao           -> n~ao
 ninguem       -> ningu'em
 orgao         -> 'org~ao
-questao       -> quest~ao
-razao         -> raz~ao
+#questao       -> quest~ao
+#razao         -> raz~ao
 servico       -> servi'co
-tao:          -> t~ao
+#tao:          -> t~ao
 tambem        -> tamb'em
 :ha:          -> h'a
 :ja:          -> j'a
 :mae:         -> m~ae
 :tres:        -> tr^es
+
+# Portuguese words ending in 'ão', avoiding the common word 'ao'
+bao:          -> b~ao
+cao:          -> c~ao
+dao:          -> d~ao
+eao:          -> e~ao
+fao:          -> f~ao
+gao:          -> g~ao
+hao:          -> h~ao
+iao:          -> i~ao
+jao:          -> j~ao
+lao:          -> l~ao
+mao:          -> m~ao
+nao:          -> n~ao
+oao:          -> o~ao
+pao:          -> p~ao
+rao:          -> r~ao
+sao:          -> s~ao
+tao:          -> t~ao
+uao:          -> u~ao
+vao:          -> v~ao
+xao:          -> x~ao
+zao:          -> z~ao
 
 # Handle instances where my magic key will fail
 # :ov:          -> oh

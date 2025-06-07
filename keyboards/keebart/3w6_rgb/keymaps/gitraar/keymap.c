@@ -209,8 +209,7 @@ const uint16_t PROGMEM copy_combo[] = {UM_LT3, UM_LM3, COMBO_END};
 const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 
-const uint16_t PROGMEM tilde_combo[] = {UM_LM3, UM_LB3, COMBO_END};
-const uint16_t PROGMEM circ_combo[] = {UM_LM2, UM_LB2, COMBO_END};
+const uint16_t PROGMEM tilde_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
@@ -235,7 +234,6 @@ const uint16_t PROGMEM mute_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
 enum combos {
     AT_COMBO,
     CAPS_WORD_COMBO,
-    CIRC_COMBO,
     CLIP_HIST_COMBO,
     COPY_COMBO,
     CUT_COMBO,
@@ -255,7 +253,6 @@ enum combos {
 combo_t key_combos[] = {
     [AT_COMBO] = COMBO(at_combo, KC_AT),
     [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
-    [CIRC_COMBO] = COMBO(circ_combo, KC_CIRC),
     [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [CUT_COMBO] = COMBO(cut_combo, CUT),
@@ -268,7 +265,7 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
-    [TILDE_COMBO] = COMBO(tilde_combo, KC_TILD),
+    [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
 };
 
 #ifdef COMBO_MUST_PRESS_IN_ORDER_PER_COMBO
@@ -279,6 +276,16 @@ bool get_combo_must_press_in_order(uint16_t combo_index, combo_t *combo) {
         default:
             return false;
     }
+}
+#endif
+
+#ifdef COMBO_TERM_PER_COMBO
+uint16_t get_combo_term(uint16_t combo_index, combo_t *combo) {
+    switch (combo_index) {
+        case QU_COMBO:
+            return 100;
+    }
+    return COMBO_TERM;
 }
 #endif
 
@@ -419,7 +426,8 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_QUES:
                 return '.';
             case KC_2 ... KC_0: // 2 3 4 5 6 7 8 9 0
-            case KC_AT ... KC_RPRN: // @ # $ % ^ & * ( )
+            case KC_AT ... KC_PERC: // @ # $ % ^ & * ( )
+            case KC_AMPR ... KC_RPRN: // @ # $ % ^ & * ( )
             case KC_MINS ... KC_SCLN: // - = [ ] backslash ;
             case KC_UNDS ... KC_COLN: // _ + { } | :
             case KC_GRV:
@@ -432,6 +440,8 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
                 return ' '; // Space key.
             case KC_QUOTE:
             case KC_DQUO:
+            case KC_TILD:
+            case KC_CIRC:
                 return '\''; // Quote key.
         }
     }
@@ -581,10 +591,11 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case UM_RT3:
         case UM_RM2:
         case UM_RM3:
-        case UM_RM4:
-        case UM_RM5:
         case UM_RB1:
             return 175;
+        case UM_RM4:
+        case UM_RM5:
+            return 200;
         default:
             return TAPPING_TERM;
     }
@@ -618,6 +629,13 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
             case UM_RH3:
             case UM_RH2:
             case UM_RH1:
+            // The following should always be able to type accented characters
+            case UM_RT2:
+            case UM_RT3:
+            case UM_RM2:
+            case UM_RM3:
+            case UM_RM4:
+            case UM_RM5:
                 return 0;  // Short timeout on these keys.
 
             default:
@@ -625,6 +643,22 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
         }
     }
     return 0;  // Disable Flow Tap.
+}
+
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case UM_RT2:
+        case UM_RT3:
+        case UM_RM2:
+        case UM_RM3:
+        case UM_RM4:
+        case UM_RM5:
+            // Do not select the hold action merely because another key is tapped.
+            return false;
+        default:
+            // Immediately select the hold action when another key is tapped.
+            return true;
+    }
 }
 
 /*
@@ -950,8 +984,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_NAV] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
-        _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
-        _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
+        _______, _______, KC_CIRC, KC_TILD, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
+        KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST,  UNDO
     ),
 
