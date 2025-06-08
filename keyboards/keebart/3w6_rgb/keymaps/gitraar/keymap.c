@@ -99,7 +99,7 @@
 #define UM_RH3 LT(_FUN, KC_DELETE)
 
 // Settings
-#define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds.
+#define IDLE_TIMEOUT_MS 600000 // Idle timeout in milliseconds for RGB Matrix.
 
 // Custom keycodes
 enum custom_keycodes {
@@ -111,18 +111,9 @@ enum custom_keycodes {
     FUN,
     U_GR_A, // "à"
     U_QU, // "qu"
-    U_CIRC, // accents with space to never act like dead keys
-    U_RGB_R,  // reset RGB to orange
-    U_RGB_T,  // macro for RGB toggle with extra info
-};
-
-// Tap Dance stuff.
-enum tap_dances {
-    PGUP,
-    PGDOWN,
-    HOME,
-    END,
-    ACCENTS,
+    U_CIRC, // Circumflex with space to not act like a dead key.
+    U_RGB_R, // Reset RGB Matrix to orange.
+    U_RGB_T, // Macro for RGB toggle with extra info.
 };
 
 /*
@@ -131,7 +122,7 @@ enum tap_dances {
 ####################
 */
 
-// An enhanced version of SEND_STRING: if Caps Word is active, the Shift key is held while sending the string.
+// An enhanced version of SEND_STRING. If Caps Word is active, the Shift key is held while sending the string.
 #define MAGIC_STRING(str) magic_send_string_P(PSTR(str))
 static void magic_send_string_P(const char* str) {
     uint8_t saved_mods = 0;
@@ -141,7 +132,7 @@ static void magic_send_string_P(const char* str) {
         register_mods(MOD_BIT_LSHIFT);
     }
 
-    send_string_P(str);  // Send the string.
+    send_string_P(str); // Send the string.
 
     // If Caps Word is on, restore the mods.
     if (is_caps_word_on()) {
@@ -189,8 +180,7 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
-// Code for advanced tap dances
-
+// Code for advanced tap dances.
 void accents_taps(tap_dance_state_t *state, void *user_data) {
     uint8_t mod_state = get_mods();
     switch (state->count) {
@@ -226,6 +216,14 @@ void accents_finished(tap_dance_state_t *state, void *user_data) {
 
 void accents_reset(tap_dance_state_t *state, void *user_data) {
 }
+
+enum tap_dances {
+    PGUP,
+    PGDOWN,
+    HOME,
+    END,
+    ACCENTS,
+};
 
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
@@ -308,6 +306,7 @@ combo_t key_combos[] = {
     [TILDE_COMBO] = COMBO(tilde_combo, KC_TILDE),
 };
 
+// Combo options.
 #ifdef COMBO_MUST_PRESS_IN_ORDER_PER_COMBO
 bool get_combo_must_press_in_order(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
@@ -372,7 +371,6 @@ const key_override_t *key_overrides[] = {
 */
 
 void leader_start_user(void) {
-    // Do something when the leader key is pressed
 }
 
 void leader_end_user(void) {
@@ -424,7 +422,7 @@ bool rgb_disabled_manually = false;
 
 // Function to do things when the keyboard is idle.
 static uint32_t idle_callback(uint32_t trigger_time, void* cb_arg) {
-    // If execution reaches here, the keyboard has gone idle.
+    // If execution gets here, the keyboard has gone idle.
     if (rgb_matrix_is_enabled()) {
         rgb_matrix_disable(); // Disables the RGB Matrix.
     }
@@ -576,9 +574,9 @@ bool sentence_case_check_ending(const uint16_t* buffer) {
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_V, KC_D, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_V, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_V, KC_S, KC_DOT)) {
-        return false;  // Not a real sentence ending.
+        return false; // Not a real sentence ending.
     }
-    return true;  // Real sentence ending; capitalize next letter.
+    return true; // Real sentence ending; capitalize next letter.
 }
 
 /*
@@ -631,7 +629,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case UM_RB1:
             return 175;
         case UM_RB4:
-            return 300; // It's ok to leave plenty of time for the double tap since every tap outputs instantly
+            return 300; // It's ok to leave plenty of time for the double tap since every tap outputs instantly.
         default:
             return TAPPING_TERM;
     }
@@ -644,7 +642,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
         case UM_RH3:
             return 120;
         default:
-            return QUICK_TAP_TERM;  // This is set to zero since I don't want other holds to have key repetition
+            return QUICK_TAP_TERM; // This is set to zero since I don't want other holds to have key repetition.
     }
 }
 
@@ -665,13 +663,13 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
             case UM_RH3:
             case UM_RH2:
             case UM_RH1:
-                return 0;  // Short timeout on these keys.
+                return 0; // Short timeout on these keys.
 
             default:
-                return FLOW_TAP_TERM;  // Longer timeout otherwise.
+                return FLOW_TAP_TERM; // Longer timeout otherwise.
         }
     }
-    return 0;  // Disable Flow Tap.
+    return 0; // Disable Flow Tap.
 }
 
 /*
@@ -681,13 +679,13 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
 */
 
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
-    bool shifted = (mods & MOD_MASK_SHIFT);  // Was Shift held?
+    bool shifted = (mods & MOD_MASK_SHIFT); // Was Shift held?
     switch (keycode) {
         case UM_LH1:
             if (shifted) {        // If the last key was Shift + Tab,
-                return KC_TAB;    // ... the reverse is Tab.
+                return KC_TAB;    // the reverse is Tab.
             } else {              // Otherwise, the last key was Tab,
-                return S(KC_TAB); // ... and the reverse is Shift + Tab.
+                return S(KC_TAB); // and the reverse is Shift + Tab.
             }
             break;
         case UM_LM5: MAGIC_STRING(/*s*/"sion"); break;
@@ -730,14 +728,14 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* reme
 */
 
 static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
-    if (record->tap.count == 0) {  // Key is being held.
+    if (record->tap.count == 0) { // Key is being held.
         if (record->event.pressed) {
             const uint8_t mods = (keycode >> 8) & 0x1f;
             add_oneshot_mods(((mods & 0x10) == 0) ? mods : (mods << 4));
         }
-        return false;  // Skip default handling.
+        return false; // Skip default handling.
     }
-    return true;  // Continue default handling.
+    return true; // Continue default handling.
 }
 
 /*
