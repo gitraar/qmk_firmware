@@ -56,14 +56,14 @@
 #define UM_LT5 LT(0, KC_F)
 #define UM_LT4 KC_P
 #define UM_LT3 KC_D
-#define UM_LT2 KC_L
+#define UM_LT2 HYPR_T(KC_L)
 #define UM_LT1 KC_X
 
 #define UM_LM5 LCTL_T(KC_S)
 #define UM_LM4 LALT_T(KC_N)
 #define UM_LM3 LGUI_T(KC_T)
 #define UM_LM2 LSFT_T(KC_H)
-#define UM_LM1 HYPR_T(KC_K)
+#define UM_LM1 KC_K
 
 #define UM_LB5 KC_V
 #define UM_LB4 KC_W
@@ -76,23 +76,23 @@
 #define UM_LH1 KC_TAB
 
 #define UM_RT1 QK_ALT_REPEAT_KEY
-#define UM_RT2 LT(0,KC_U)
-#define UM_RT3 LT(0,KC_O)
+#define UM_RT2 HYPR_T(KC_U)
+#define UM_RT3 KC_O
 #define UM_RT4 KC_Y
 #define UM_RT5 KC_B
 
-#define UM_RM1 HYPR_T(KC_MINUS)
-#define UM_RM2 LT(0,KC_A)
-#define UM_RM3 LT(0,KC_E)
-#define UM_RM4 LT(0,KC_I)
-#define UM_RM5 LT(0,KC_C)
+#define UM_RM1 KC_MINUS
+#define UM_RM2 RSFT_T(KC_A)
+#define UM_RM3 RGUI_T(KC_E)
+#define UM_RM4 LALT_T(KC_I)
+#define UM_RM5 RCTL_T(KC_C)
 
 #define UM_RB1 LT(0,KC_KP_SLASH)
 
-#define UM_RB2 RSFT_T(KC_DOT)
-#define UM_RB3 RGUI_T(KC_COMMA)
-#define UM_RB4 LALT_T(KC_QUOTE)
-#define UM_RB5 RCTL_T(KC_Z)
+#define UM_RB2 KC_DOT
+#define UM_RB3 KC_COMMA
+#define UM_RB4 TD(ACCENTS)
+#define UM_RB5 KC_Z
 
 #define UM_RH1 LT(_SYM, KC_ENTER)
 #define UM_RH2 LT(_NUM, KC_SPACE)
@@ -122,6 +122,7 @@ enum tap_dances {
     PGDOWN,
     HOME,
     END,
+    ACCENTS,
 };
 
 /*
@@ -188,12 +189,57 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
+// Code for advanced tap dances
+
+void accents_taps(tap_dance_state_t *state, void *user_data) {
+    uint8_t mod_state = get_mods();
+    switch (state->count) {
+        case 1:
+            if (mod_state & MOD_MASK_ALT) {
+                clear_mods();
+                tap_code(KC_GRAVE);
+                tap_code(KC_SPACE);
+                set_mods(mod_state);
+                reset_tap_dance(state);
+            } else if (mod_state & MOD_MASK_SHIFT){
+                clear_mods();
+                tap_code16(KC_DQUO);
+                tap_code(KC_SPACE);
+                set_mods(mod_state);
+                reset_tap_dance(state);
+            } else {
+                tap_code(KC_QUOTE);
+            }
+            break;
+        case 2:
+            tap_code(KC_BACKSPACE);
+            clear_mods();
+            tap_code16(KC_CIRC);
+            set_mods(mod_state);
+            break;
+        case 3:
+            tap_code(KC_BACKSPACE);
+            clear_mods();
+            tap_code16(KC_TILD);
+            set_mods(mod_state);
+            reset_tap_dance(state);
+            break;
+    }
+}
+
+void accents_finished(tap_dance_state_t *state, void *user_data) {
+}
+
+void accents_reset(tap_dance_state_t *state, void *user_data) {
+}
+
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
     [PGUP] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
+    [ACCENTS] = ACTION_TAP_DANCE_FN_ADVANCED(accents_taps, accents_finished, accents_reset),
 };
 
 /*
@@ -265,7 +311,7 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
-    [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
+    [TILDE_COMBO] = COMBO(tilde_combo, KC_TILDE),
 };
 
 #ifdef COMBO_MUST_PRESS_IN_ORDER_PER_COMBO
@@ -442,6 +488,7 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_DQUO:
             case KC_TILD:
             case KC_CIRC:
+            case UM_RB4:
                 return '\''; // Quote key.
         }
     }
@@ -554,7 +601,6 @@ bool caps_word_press_user(uint16_t keycode) {
         case UM_RB1:
         case U_GR_A:
         case KC_MINS:
-        case UM_RM1:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
             return true;
 
@@ -569,6 +615,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_CIRC:
         case KC_KP_SLASH:
         case KC_TILD:
+        case UM_RB4:
             return true;
 
         default:
@@ -587,15 +634,10 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case UM_LT5:
         case UM_LH1:
-        case UM_RT2:
-        case UM_RT3:
-        case UM_RM2:
-        case UM_RM3:
         case UM_RB1:
             return 175;
-        case UM_RM4:
-        case UM_RM5:
-            return 200;
+        case UM_RB4:
+            return 300; // It's ok to leave plenty of time for a triple tap since every tap outputs instantly
         default:
             return TAPPING_TERM;
     }
@@ -629,13 +671,6 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
             case UM_RH3:
             case UM_RH2:
             case UM_RH1:
-            // The following should always be able to type accented characters
-            case UM_RT2:
-            case UM_RT3:
-            case UM_RM2:
-            case UM_RM3:
-            case UM_RM4:
-            case UM_RM5:
                 return 0;  // Short timeout on these keys.
 
             default:
@@ -643,22 +678,6 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
         }
     }
     return 0;  // Disable Flow Tap.
-}
-
-bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case UM_RT2:
-        case UM_RT3:
-        case UM_RM2:
-        case UM_RM3:
-        case UM_RM4:
-        case UM_RM5:
-            // Do not select the hold action merely because another key is tapped.
-            return false;
-        default:
-            // Immediately select the hold action when another key is tapped.
-            return true;
-    }
 }
 
 /*
@@ -747,7 +766,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     tap_dance_action_t *action;
     switch (keycode) {
         // One-shot mod-taps
-        case UM_RB2:
+        case UM_RM2:
             return oneshot_mod_tap(keycode, record);
         // Advanced tap dances
         case TD_PGUP:
@@ -793,100 +812,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         case UM_RB1:
             if (!record->tap.count && record->event.pressed) {
                 tap_code16(KC_COLN);
-                return false;
-            }
-            break;
-        case UM_RT2:
-            if (!record->tap.count && record->event.pressed) {
-                clear_mods();
-                tap_code(KC_QUOTE);
-                set_mods(mod_state);
-                if (is_sentence_case_primed()) {
-                    tap_code16(S(KC_U));
-                    sentence_case_clear();
-                } else {
-                    MAGIC_STRING("u");
-                }
-                return false;
-            }
-            break;
-        case UM_RT3:
-            if (!record->tap.count && record->event.pressed) {
-                clear_mods();
-                tap_code(KC_QUOTE);
-                set_mods(mod_state);
-                if (is_sentence_case_primed()) {
-                    tap_code16(S(KC_O));
-                    sentence_case_clear();
-                } else {
-                    MAGIC_STRING("o");
-                }
-                return false;
-            }
-            break;
-        case UM_RM2:
-            if (!record->tap.count && record->event.pressed) {
-                clear_mods();
-                tap_code(KC_QUOTE);
-                set_mods(mod_state);
-                if (is_sentence_case_primed()) {
-                    tap_code16(S(KC_A));
-                    sentence_case_clear();
-                } else {
-                    MAGIC_STRING("a");
-                }
-                return false;
-            }
-            break;
-        case UM_RM3:
-            if (!record->tap.count && record->event.pressed) {
-                clear_mods();
-                tap_code(KC_QUOTE);
-                set_mods(mod_state);
-                if (is_sentence_case_primed()) {
-                    tap_code16(S(KC_E));
-                    sentence_case_clear();
-                } else {
-                    MAGIC_STRING("e");
-                }
-                return false;
-            }
-            break;
-        case UM_RM4:
-            if (!record->tap.count && record->event.pressed) {
-                clear_mods();
-                tap_code(KC_QUOTE);
-                set_mods(mod_state);
-                if (is_sentence_case_primed()) {
-                    tap_code16(S(KC_I));
-                    sentence_case_clear();
-                } else {
-                    MAGIC_STRING("i");
-                }
-                return false;
-            }
-            break;
-        case UM_RB4:
-            if (record->tap.count && record->event.pressed) {
-                if (mod_state & MOD_MASK_ALT) {
-                    tap_code(KC_GRAVE);
-                    tap_code(KC_SPACE);
-                    tap_code(KC_BACKSPACE);
-                } else {
-                    tap_code(KC_QUOTE);
-                    tap_code(KC_SPACE);
-                }
-                return false;
-            }
-            break;
-        case UM_RM5:
-            if (!record->tap.count && record->event.pressed) {
-                if (is_caps_word_on() | is_sentence_case_primed()) {
-                    tap_code16(S(A(KC_C)));
-                    sentence_case_clear();
-                } else {
-                    tap_code16(A(KC_C));
-                }
                 return false;
             }
             break;
@@ -984,8 +909,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_NAV] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
-        _______, _______, KC_CIRC, KC_TILD, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
-        KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
+        _______, _______, _______, _______, _______,    TAB_DOWN,  KC_LEFT,  KC_DOWN, KC_RIGHT,  TD_PGDN,
+        _______, _______, _______, _______, _______,    XXXXXXX,   SPC_LEFT, SELWORD, SPC_RIGHT, XXXXXXX,
                                   XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST,  UNDO
     ),
 
@@ -1031,9 +956,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,———————————————————————————————————————.                   ,———————————————————————————————————————.
     |       |   \   |   <   |   >   |      |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |       |   |   |   [   |   ]   |   $   |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
+    |       |   |   |   [   |   ]   |   $   |                   |  ---  | Shift |  ---  |  ---  |  ---  |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |       |   ^   |   {   |   }   |   £   |                   |  ---  | Shift |  ---  |  ---  |  ---  |
+    |       |   ^   |   {   |   }   |   £   |                   |  ---  |  ---  |  ---  |  ---  |  ---  |
     `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
                             |   &   |   #   |   €   |   |OOOOOOO|       |       |
                             `———————————————————————'   `———————————————————————'
@@ -1041,8 +966,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_SYM] = LAYOUT_split_3x5_3(
         XXXXXXX, KC_BSLS, KC_LT,   KC_GT,   A(S(KC_K)),    _______, _______, _______, _______, _______,
-        XXXXXXX, KC_PIPE, KC_LBRC, KC_RBRC, KC_DLR,        _______, _______, _______, _______, _______,
-        XXXXXXX, U_CIRC,  KC_LCBR, KC_RCBR, A(KC_3),       _______, KC_LSFT, _______, _______, _______,
+        XXXXXXX, KC_PIPE, KC_LBRC, KC_RBRC, KC_DLR,        _______, KC_LSFT, _______, _______, _______,
+        XXXXXXX, U_CIRC,  KC_LCBR, KC_RCBR, A(KC_3),       _______, _______, _______, _______, _______,
                                   KC_AMPR, KC_HASH, A(KC_AT),      XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
