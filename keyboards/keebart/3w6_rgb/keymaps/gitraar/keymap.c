@@ -111,7 +111,7 @@ enum custom_keycodes {
     FUN,
     U_GR_A, // "à"
     U_QU, // "qu"
-    U_TILDE, U_CIRC, // accents with space to never act like dead keys
+    U_CIRC, // accents with space to never act like dead keys
     U_RGB_R,  // reset RGB to orange
     U_RGB_T,  // macro for RGB toggle with extra info
 };
@@ -215,12 +215,6 @@ void accents_taps(tap_dance_state_t *state, void *user_data) {
             tap_code(KC_BACKSPACE);
             clear_mods();
             tap_code16(KC_CIRC);
-            set_mods(mod_state);
-            break;
-        case 3:
-            tap_code(KC_BACKSPACE);
-            clear_mods();
-            tap_code16(KC_TILD);
             set_mods(mod_state);
             reset_tap_dance(state);
             break;
@@ -472,8 +466,8 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_QUES:
                 return '.';
             case KC_2 ... KC_0: // 2 3 4 5 6 7 8 9 0
-            case KC_AT ... KC_PERC: // @ # $ % ^ & * ( )
-            case KC_AMPR ... KC_RPRN: // @ # $ % ^ & * ( )
+            case KC_AT ... KC_PERC: // @ # $ %
+            case KC_AMPR ... KC_RPRN: // & * ( )
             case KC_MINS ... KC_SCLN: // - = [ ] backslash ;
             case KC_UNDS ... KC_COLN: // _ + { } | :
             case KC_GRV:
@@ -488,7 +482,7 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_DQUO:
             case KC_TILD:
             case KC_CIRC:
-            case UM_RB4:
+            case UM_RB4: // Dead-key tap dance
                 return '\''; // Quote key.
         }
     }
@@ -598,7 +592,6 @@ bool caps_word_press_user(uint16_t keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case KC_A ... KC_Z:
         case UM_LT5:
-        case UM_RB1:
         case U_GR_A:
         case KC_MINS:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
@@ -615,6 +608,7 @@ bool caps_word_press_user(uint16_t keycode) {
         case KC_CIRC:
         case KC_KP_SLASH:
         case KC_TILD:
+        case UM_RB1:
         case UM_RB4:
             return true;
 
@@ -637,7 +631,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case UM_RB1:
             return 175;
         case UM_RB4:
-            return 300; // It's ok to leave plenty of time for a triple tap since every tap outputs instantly
+            return 300; // It's ok to leave plenty of time for the double tap since every tap outputs instantly
         default:
             return TAPPING_TERM;
     }
@@ -842,12 +836,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case U_RGB_R:
             rgb_matrix_sethsv(21, 255, 190);
-            break;
-        case U_TILDE:
-            if (record->event.pressed) {
-                tap_code16(KC_TILDE);
-                tap_code(KC_SPACE);
-            }
             break;
         case U_CIRC:
             if (record->event.pressed) {
