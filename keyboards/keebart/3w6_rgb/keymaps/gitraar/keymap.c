@@ -110,10 +110,16 @@ enum custom_keycodes {
     SYM,
     FUN,
     EXT,
-    U_AC_A, U_CIRC_A, U_TILDE_A, U_GR_A, // 'á', 'â', 'ã', and 'à'
-    U_AC_E, U_CIRC_E, // 'é' and 'ê'
+    U_AC_A, // 'á'
+    U_CIRC_A, // 'â'
+    U_TILDE_A, // 'ã'
+    U_GR_A, // 'à'
+    U_AC_E,// 'é'
+    U_CIRC_E, // 'ê'
     U_AC_I, // 'í'
-    U_AC_O, U_CIRC_O, U_TILDE_O, // 'ó', 'ô', and 'õ'
+    U_AC_O, // 'ó'
+    U_CIRC_O, // 'ô'
+    U_TILDE_O, // 'õ'
     U_AC_U, // 'ú'
     U_TILDE_N, // ''
     U_CIRC, // Circumflex with space to not act like a dead key.
@@ -238,20 +244,20 @@ const uint16_t PROGMEM semicolon_combo[] = {UM_RB2, UM_RB3, COMBO_END};
 const uint16_t PROGMEM mute_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
 
 enum combos {
-    AT_COMBO,
+    AT_COMBO, // '@'
     CAPS_WORD_COMBO,
     CLIP_HIST_COMBO,
     COPY_COMBO,
     CUT_COMBO,
     ESC_COMBO,
-    LPRN_COMBO,
+    LPRN_COMBO, // '('
     MUTE_COMBO,
     PASTE_COMBO,
-    QU_COMBO,
-    RPRN_COMBO,
-    SEMICOLON_COMBO,
-    SUPER_O_COMBO,
-    TILDE_COMBO,
+    QU_COMBO, // 'qu'
+    RPRN_COMBO, // ')'
+    SEMICOLON_COMBO, // ';'
+    SUPER_O_COMBO, // 'º'
+    TILDE_COMBO, // '~'
   };
 
 // Used combos.
@@ -262,7 +268,6 @@ combo_t key_combos[] = {
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [CUT_COMBO] = COMBO(cut_combo, CUT),
     [ESC_COMBO] = COMBO(esc_combo, KC_ESC),
-    // [GR_A_COMBO] = COMBO(gr_a_combo, U_GR_A),
     [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
     [PASTE_COMBO] = COMBO(paste_combo, PASTE),
