@@ -911,7 +911,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         case LSFT_T(U_CIRC_A):
-            if (record->event.pressed) {
+            if (record->tap.count && record->event.pressed) {
                 clear_mods();
                 tap_code16(KC_CIRC);
                 set_mods(mod_state);
