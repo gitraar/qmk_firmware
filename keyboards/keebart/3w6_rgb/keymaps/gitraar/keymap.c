@@ -813,14 +813,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         // Macros
         case U_QU:
             if (record->event.pressed) {
-                if (is_caps_word_on()) {
-                    MAGIC_STRING("qu");
-                } else {
-                    tap_code(KC_Q);
-                    clear_mods();
-                    tap_code(KC_U);
-                    set_mods(mod_state);
-                }
+                MAGIC_STRING("qu");
                 return false;
             }
             break;
