@@ -33,6 +33,7 @@
 #define _NUM 3
 #define _SYM 4
 #define _FUN 5
+#define _EXT 6
 
 // Tap dances
 #define TD_PGUP TD(PGUP)
@@ -88,10 +89,9 @@
 #define UM_RM5 RCTL_T(KC_C)
 
 #define UM_RB1 LT(0,KC_KP_SLASH)
-
 #define UM_RB2 KC_DOT
 #define UM_RB3 KC_COMMA
-#define UM_RB4 TD(ACCENTS)
+#define UM_RB4 OSL(_EXT)
 #define UM_RB5 KC_Z
 
 #define UM_RH1 LT(_SYM, KC_ENTER)
@@ -109,9 +109,16 @@ enum custom_keycodes {
     NUM,
     SYM,
     FUN,
-    U_GR_A, // "à"
-    U_QU, // "qu"
+    EXT,
+    U_AC_A, U_CIRC_A, U_TILDE_A, U_GR_A, // 'á', 'â', 'ã', and 'à'
+    U_AC_E, U_CIRC_E, // 'é' and 'ê'
+    U_AC_I, // 'í'
+    U_AC_O, U_CIRC_O, U_TILDE_O, // 'ó', 'ô', and 'õ'
+    U_AC_U, // 'ú'
     U_CIRC, // Circumflex with space to not act like a dead key.
+    U_TILDE, // Tilde with space to not act like a dead key.
+    U_QUOTE, // Single quote with space to not act like a dead key.
+    U_QU, // "qu"
     U_RGB_R, // Reset RGB Matrix to orange.
     U_RGB_T, // Macro for RGB toggle with extra info.
 };
@@ -180,49 +187,11 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
 
 #define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
 
-// Code for advanced tap dances.
-void accents_taps(tap_dance_state_t *state, void *user_data) {
-    uint8_t mod_state = get_mods();
-    switch (state->count) {
-        case 1:
-            if (mod_state & MOD_MASK_ALT) {
-                clear_mods();
-                tap_code(KC_GRAVE);
-                tap_code(KC_SPACE);
-                set_mods(mod_state);
-                reset_tap_dance(state);
-            } else if (mod_state & MOD_MASK_SHIFT){
-                clear_mods();
-                tap_code16(KC_DQUO);
-                tap_code(KC_SPACE);
-                set_mods(mod_state);
-                reset_tap_dance(state);
-            } else {
-                tap_code(KC_QUOTE);
-            }
-            break;
-        case 2:
-            tap_code(KC_BACKSPACE);
-            clear_mods();
-            tap_code16(KC_CIRC);
-            set_mods(mod_state);
-            reset_tap_dance(state);
-            break;
-    }
-}
-
-void accents_finished(tap_dance_state_t *state, void *user_data) {
-}
-
-void accents_reset(tap_dance_state_t *state, void *user_data) {
-}
-
 enum tap_dances {
     PGUP,
     PGDOWN,
     HOME,
     END,
-    ACCENTS,
 };
 
 // Definition for each tap dance using the functions above.
@@ -231,7 +200,6 @@ tap_dance_action_t tap_dance_actions[] = {
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
     [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
     [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
-    [ACCENTS] = ACTION_TAP_DANCE_FN_ADVANCED(accents_taps, accents_finished, accents_reset),
 };
 
 /*
@@ -259,8 +227,7 @@ const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
 const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
 
-const uint16_t PROGMEM gr_a_combo[] = {UM_RM2, UM_RB2, COMBO_END};
-const uint16_t PROGMEM at_combo[] = {UM_RM3, UM_RB3, COMBO_END};
+const uint16_t PROGMEM at_combo[] = {UM_RM2, UM_RB2, COMBO_END};
 
 // Right-side horizontal combos.
 const uint16_t PROGMEM esc_combo[] = {UM_RM1, UM_RM2, COMBO_END};
@@ -276,7 +243,6 @@ enum combos {
     COPY_COMBO,
     CUT_COMBO,
     ESC_COMBO,
-    GR_A_COMBO,
     LPRN_COMBO,
     MUTE_COMBO,
     PASTE_COMBO,
@@ -295,7 +261,7 @@ combo_t key_combos[] = {
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [CUT_COMBO] = COMBO(cut_combo, CUT),
     [ESC_COMBO] = COMBO(esc_combo, KC_ESC),
-    [GR_A_COMBO] = COMBO(gr_a_combo, U_GR_A),
+    // [GR_A_COMBO] = COMBO(gr_a_combo, U_GR_A),
     [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
     [PASTE_COMBO] = COMBO(paste_combo, PASTE),
@@ -303,7 +269,7 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
-    [TILDE_COMBO] = COMBO(tilde_combo, KC_TILDE),
+    [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
 };
 
 // Combo options.
@@ -478,9 +444,7 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
                 return ' '; // Space key.
             case KC_QUOTE:
             case KC_DQUO:
-            case KC_TILD:
-            case KC_CIRC:
-            case UM_RB4: // Dead-key tap dance
+            case UM_RB4: // OSL for Extended layer
                 return '\''; // Quote key.
         }
     }
@@ -628,8 +592,6 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         case UM_LH1:
         case UM_RB1:
             return 175;
-        case UM_RB4:
-            return 300; // It's ok to leave plenty of time for the double tap since every tap outputs instantly.
         default:
             return TAPPING_TERM;
     }
@@ -739,6 +701,24 @@ static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
 }
 
 /*
+######################
+### One-Shot Layer ###
+######################
+*/
+
+// Workaround to make Sentence Case work with OSL
+bool temp_shift = false;
+
+void oneshot_layer_changed_user(uint8_t layer) {
+  if (!layer) {
+    if (temp_shift) {
+        del_mods(MOD_MASK_SHIFT);
+        temp_shift = false;
+    }
+  }
+}
+
+/*
 ###########################
 ### Process Record User ###
 ###########################
@@ -807,6 +787,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
+        case UM_RB4:
+            if (record->event.pressed) {
+                if (mod_state & MOD_MASK_SHIFT) {
+                    clear_mods();
+                    tap_code16(KC_DQUO);
+                    tap_code(KC_SPACE);
+                    set_mods(mod_state);
+                    return false;
+                } else if (mod_state & MOD_MASK_ALT) {
+                    clear_mods();
+                    tap_code(KC_GRAVE);
+                    tap_code(KC_SPACE);
+                    set_mods(mod_state);
+                    return false;
+                } else {
+                    if (is_sentence_case_primed()) {
+                        sentence_case_clear();
+                        add_mods(MOD_MASK_SHIFT);
+                        temp_shift = true;
+                    }
+                }
+            }
+            break;
         // Macros
         case U_QU:
             if (record->event.pressed) {
@@ -837,19 +840,128 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             break;
         case U_CIRC:
             if (record->event.pressed) {
+                clear_mods();
                 tap_code16(KC_CIRC);
                 tap_code(KC_SPACE);
+                set_mods(mod_state);
+            }
+            break;
+        case U_TILDE:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_TILDE);
+                tap_code(KC_SPACE);
+                set_mods(mod_state);
+            }
+            break;
+        case U_QUOTE:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                tap_code(KC_SPACE);
+                set_mods(mod_state);
             }
             break;
         // Accented characters
+        case RSFT_T(U_AC_A):
+            if (record->tap.count && record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("a");
+                return false;
+            }
+            break;
+        case U_AC_E:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("e");
+                return false;
+            }
+            break;
+        case U_AC_I:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("i");
+                return false;
+            }
+            break;
+        case U_AC_O:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("o");
+                return false;
+            }
+            break;
+        case U_AC_U:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("u");
+                return false;
+            }
+            break;
         case U_GR_A:
             if (record->event.pressed) {
                 clear_mods();
                 tap_code(KC_GRAVE);
                 set_mods(mod_state);
                 MAGIC_STRING("a");
+                return false;
             }
-            return false;
+            break;
+        case LSFT_T(U_CIRC_A):
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_CIRC);
+                set_mods(mod_state);
+                MAGIC_STRING("a");
+                return false;
+            }
+            break;
+        case U_CIRC_E:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_CIRC);
+                set_mods(mod_state);
+                MAGIC_STRING("e");
+                return false;
+            }
+            break;
+        case U_CIRC_O:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_CIRC);
+                set_mods(mod_state);
+                MAGIC_STRING("o");
+                return false;
+            }
+            break;
+        case U_TILDE_A:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_TILD);
+                set_mods(mod_state);
+                MAGIC_STRING("a");
+                return false;
+            }
+            break;
+        case U_TILDE_O:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_TILD);
+                set_mods(mod_state);
+                MAGIC_STRING("o");
+                return false;
+            }
+            break;
     }
     return true;
 }
@@ -974,5 +1086,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_F11, KC_F4, KC_F5,   KC_F6,   XXXXXXX,     U_RGB_R, RM_HUED, RM_VALD, AC_TOGG, QK_BOOT,
         KC_F10, KC_F1, KC_F2,   KC_F3,   U_RGB_T,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                                QK_LEAD, KC_CAPS, LOCK_SCR,    XXXXXXX, XXXXXXX, XXXXXXX
+    ),
+
+/* Extended
+    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+    |       |   õ   |   ô   |   à   |       |                   |       |   ú   |   ó   |       |       |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |       |   ã   |   ê   |   â   |       |                   |       |   á   |   é   |   í   |       |
+    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+    |       |       |       |       |       |                   |       |       |       |       |       |
+    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                            |       |       |       |   |       |       |       |
+                            `———————————————————————'   `———————————————————————'
+*/
+
+    [_EXT] = LAYOUT_split_3x5_3(
+        XXXXXXX, U_TILDE_O, U_CIRC_O, U_GR_A,           XXXXXXX,    XXXXXXX, U_AC_U,         U_AC_O,  XXXXXXX, XXXXXXX,
+        XXXXXXX, U_TILDE_A, U_CIRC_E, LSFT_T(U_CIRC_A), XXXXXXX,    XXXXXXX, RSFT_T(U_AC_A), U_AC_E,  U_AC_I,  XXXXXXX,
+        XXXXXXX, XXXXXXX,   XXXXXXX,  XXXXXXX,          XXXXXXX,    XXXXXXX, XXXXXXX,        XXXXXXX, U_QUOTE, XXXXXXX,
+                                    XXXXXXX,  XXXXXXX,          XXXXXXX,    XXXXXXX, XXXXXXX,        XXXXXXX
     ),
 };
