@@ -115,6 +115,7 @@ enum custom_keycodes {
     U_AC_I, // 'í'
     U_AC_O, U_CIRC_O, U_TILDE_O, // 'ó', 'ô', and 'õ'
     U_AC_U, // 'ú'
+    U_TILDE_N, // ''
     U_CIRC, // Circumflex with space to not act like a dead key.
     U_TILDE, // Tilde with space to not act like a dead key.
     U_QUOTE, // Single quote with space to not act like a dead key.
@@ -955,6 +956,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
+        case U_TILDE_N:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code16(KC_TILD);
+                set_mods(mod_state);
+                MAGIC_STRING("n");
+                return false;
+            }
+            break;
     }
     return true;
 }
@@ -1083,20 +1093,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Extended
     ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |       |   õ   |   ô   |   à   |       |                   |       |   ú   |   ó   |       |       |
+    |       |   õ   |   ô   |   ã   |       |                   |       |   ú   |   ó   |       |       |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |       |   ã   |   ê   |   â   |       |                   |       |   á   |   é   |   í   |       |
+    |       |   ñ   |   ê   |   â   |       |                   |       |   á   |   é   |   í   |       |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
     |       |       |       |       |       |                   |       |       |       |       |       |
     `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |       |       |       |   |       |       |       |
+                            |       |   à   |       |   |       |       |       |
                             `———————————————————————'   `———————————————————————'
 */
 
     [_EXT] = LAYOUT_split_3x5_3(
-        XXXXXXX, U_TILDE_O, U_CIRC_O, U_GR_A,           XXXXXXX,    XXXXXXX, U_AC_U,         U_AC_O,  XXXXXXX, XXXXXXX,
-        XXXXXXX, U_TILDE_A, U_CIRC_E, LSFT_T(U_CIRC_A), XXXXXXX,    XXXXXXX, RSFT_T(U_AC_A), U_AC_E,  U_AC_I,  XXXXXXX,
+        XXXXXXX, U_TILDE_O, U_CIRC_O, U_TILDE_A,        XXXXXXX,    XXXXXXX, U_AC_U,         U_AC_O,  XXXXXXX, XXXXXXX,
+        XXXXXXX, U_TILDE_N, U_CIRC_E, LSFT_T(U_CIRC_A), XXXXXXX,    XXXXXXX, RSFT_T(U_AC_A), U_AC_E,  U_AC_I,  XXXXXXX,
         XXXXXXX, XXXXXXX,   XXXXXXX,  XXXXXXX,          XXXXXXX,    XXXXXXX, XXXXXXX,        XXXXXXX, U_QUOTE, XXXXXXX,
-                                    XXXXXXX,  XXXXXXX,          XXXXXXX,    XXXXXXX, XXXXXXX,        XXXXXXX
+                                    XXXXXXX,  U_GR_A,           XXXXXXX,    XXXXXXX, XXXXXXX,        XXXXXXX
     ),
 };
