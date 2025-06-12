@@ -110,8 +110,6 @@ enum custom_keycodes {
     SYM,
     FUN,
     EXT,
-    U_AC_A, // 'á'
-    U_CIRC_A, // 'â'
     U_TILDE_A, // 'ã'
     U_GR_A, // 'à'
     U_AC_E,// 'é'
@@ -294,7 +292,7 @@ bool get_combo_must_press_in_order(uint16_t combo_index, combo_t *combo) {
 uint16_t get_combo_term(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
         case QU_COMBO:
-            return 100;
+            return 200;
     }
     return COMBO_TERM;
 }
@@ -428,6 +426,15 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
         const bool shifted = mods & MOD_MASK_SHIFT;
         switch (keycode) {
             case KC_A ... KC_Z:
+            case U_AC_E:
+            case U_AC_I:
+            case U_AC_O:
+            case U_AC_U:
+            case U_GR_A:
+            case U_CIRC_E:
+            case U_CIRC_O:
+            case U_TILDE_A:
+            case U_TILDE_O:
                 return 'a'; // Letter key.
             case KC_1:
             case KC_SLSH:
@@ -560,7 +567,6 @@ bool caps_word_press_user(uint16_t keycode) {
         // Keycodes that continue Caps Word, with shift applied.
         case KC_A ... KC_Z:
         case UM_LT5:
-        case U_GR_A:
         case KC_MINS:
             add_weak_mods(MOD_BIT(KC_LSFT)); // Apply shift to next key.
             return true;
@@ -862,7 +868,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             }
             break;
         // Accented characters
-        case RSFT_T(U_AC_A):
+        case RSFT_T(KC_H):
             if (record->tap.count && record->event.pressed) {
                 clear_mods();
                 tap_code(KC_QUOTE);
@@ -916,7 +922,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
-        case LSFT_T(U_CIRC_A):
+        case LSFT_T(KC_A):
             if (record->tap.count && record->event.pressed) {
                 clear_mods();
                 tap_code16(KC_CIRC);
@@ -1109,9 +1115,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 */
 
     [_EXT] = LAYOUT_split_3x5_3(
-        _______, _______,   U_CIRC_O, _______,          _______,    _______, U_AC_U,         U_AC_O,    _______, _______,
-        _______, U_TILDE_N, U_CIRC_E, LSFT_T(U_CIRC_A), _______,    _______, RSFT_T(U_AC_A), U_AC_E,    U_AC_I,  _______,
-        _______, _______,   _______,  _______,          _______,    _______, U_TILDE_A,      U_TILDE_O, U_QUOTE, _______,
-                                    _______,  U_GR_A,           _______,    _______, _______,        _______
+        _______, _______,   U_CIRC_O, _______,      _______,    _______, U_AC_U,       U_AC_O,    _______, _______,
+        _______, U_TILDE_N, U_CIRC_E, LSFT_T(KC_A), _______,    _______, RSFT_T(KC_H), U_AC_E,    U_AC_I,  _______,
+        _______, _______,   _______,  _______,      _______,    _______, U_TILDE_A,    U_TILDE_O, U_QUOTE, _______,
+                                    _______,  U_GR_A,       _______,    _______, _______,      _______
     ),
 };
