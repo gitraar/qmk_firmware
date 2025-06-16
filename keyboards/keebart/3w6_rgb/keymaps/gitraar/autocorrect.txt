@@ -432,6 +432,7 @@ doesnt        -> doesn't
 isnt          -> isn't
 havent        -> haven't
 hadnt         -> hadn't
+hasnt         -> hasn't
 mustnt        -> mustn't
 mustve        -> must've
 shouldnt      -> shouldn't

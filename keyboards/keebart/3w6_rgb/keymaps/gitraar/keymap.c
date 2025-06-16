@@ -119,7 +119,8 @@ enum custom_keycodes {
     U_CIRC_O, // 'ô'
     U_TILDE_O, // 'õ'
     U_AC_U, // 'ú'
-    U_TILDE_N, // ''
+    U_CC, // 'ç'
+    U_TILDE_N, // 'ñ'
     U_CIRC, // Circumflex with space to not act like a dead key.
     U_TILDE, // Tilde with space to not act like a dead key.
     U_QUOTE, // Single quote with space to not act like a dead key.
@@ -949,6 +950,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
+        case U_CC:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("c");
+                return false;
+            }
+            break;
         case U_TILDE_A:
             if (record->event.pressed) {
                 clear_mods();
@@ -1106,7 +1116,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,———————————————————————————————————————.                   ,———————————————————————————————————————.
     |  ___  |  ___  |   ô   |  ___  |  ___  |                   |  ___  |   ú   |   ó   |  ___  |  ___  |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ___  |   ñ   |   ê   |   â   |  ___  |                   |  ___  |   á   |   é   |   í   |  ___  |
+    |  ___  |   ñ   |   ê   |   â   |  ___  |                   |  ___  |   á   |   é   |   í   |   ç   |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
     |  ___  |  ___  |  ___  |  ___  |  ___  |                   |  ___  |   ã   |   õ   |   '   |  ___  |
     `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
@@ -1116,7 +1126,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXT] = LAYOUT_split_3x5_3(
         _______, _______,   U_CIRC_O, _______,      _______,    _______, U_AC_U,       U_AC_O,    _______, _______,
-        _______, U_TILDE_N, U_CIRC_E, LSFT_T(KC_A), _______,    _______, RSFT_T(KC_H), U_AC_E,    U_AC_I,  _______,
+        _______, U_TILDE_N, U_CIRC_E, LSFT_T(KC_A), _______,    _______, RSFT_T(KC_H), U_AC_E,    U_AC_I,  U_CC,
         _______, _______,   _______,  _______,      _______,    _______, U_TILDE_A,    U_TILDE_O, U_QUOTE, _______,
                                     _______,  U_GR_A,       _______,    _______, _______,      _______
     ),
