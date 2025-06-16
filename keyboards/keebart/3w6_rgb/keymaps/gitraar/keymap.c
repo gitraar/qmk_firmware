@@ -648,9 +648,9 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
 }
 
 /*
-#####################
-### Alternate Key ###
-#####################
+##################
+### Arcane Key ###
+##################
 */
 
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
@@ -670,7 +670,8 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
         case UM_LB2: MAGIC_STRING(/*m*/"ent"); break;
         case UM_RT5: MAGIC_STRING(/*b*/"ecause"); break;
         case UM_RM2: MAGIC_STRING(/*a*/"tion"); break;
-        case UM_RM4: MAGIC_STRING(/*i*/"tion"); break;
+        case UM_RM4: MAGIC_STRING(/*i*/"ng"); break;
+        case UM_LB1: MAGIC_STRING(/*j*/"ust"); break;
         case UM_RH2:
             if (is_sentence_case_primed()) {
                 SEND_STRING(/* */"And");
