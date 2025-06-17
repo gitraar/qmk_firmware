@@ -74,9 +74,9 @@
 
 #define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
-#define UM_LH1 KC_TAB
+#define UM_LH1 QK_ALT_REPEAT_KEY
 
-#define UM_RT1 QK_ALT_REPEAT_KEY
+#define UM_RT1 CW_TOGG
 #define UM_RT2 HYPR_T(KC_U)
 #define UM_RT3 KC_O
 #define UM_RT4 KC_Y
@@ -136,8 +136,9 @@ enum custom_keycodes {
 */
 
 // An enhanced version of SEND_STRING. If Caps Word is active, the Shift key is held while sending the string.
-#define MAGIC_STRING(str) magic_send_string_P(PSTR(str))
-static void magic_send_string_P(const char* str) {
+// Additionally, the last key is set such that if the Alternate Repeat Key is pressed next, it reacts to 'repeat_keycode'.
+#define MAGIC_STRING(str, repeat_keycode) magic_send_string_P(PSTR(str), (repeat_keycode))
+static void magic_send_string_P(const char* str, uint16_t repeat_keycode) {
     uint8_t saved_mods = 0;
     // If Caps Word is on, save the mods and hold Shift.
     if (is_caps_word_on()) {
@@ -146,6 +147,7 @@ static void magic_send_string_P(const char* str) {
     }
 
     send_string_P(str); // Send the string.
+    set_last_keycode(repeat_keycode);
 
     // If Caps Word is on, restore the mods.
     if (is_caps_word_on()) {
@@ -224,7 +226,7 @@ const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 const uint16_t PROGMEM tilde_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
+const uint16_t PROGMEM tab_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
 
@@ -244,7 +246,6 @@ const uint16_t PROGMEM mute_combo[] = {KC_VOLD, KC_VOLU, COMBO_END};
 
 enum combos {
     AT_COMBO, // '@'
-    CAPS_WORD_COMBO,
     CLIP_HIST_COMBO,
     COPY_COMBO,
     CUT_COMBO,
@@ -256,13 +257,13 @@ enum combos {
     RPRN_COMBO, // ')'
     SEMICOLON_COMBO, // ';'
     SUPER_O_COMBO, // 'º'
+    TAB_COMBO,
     TILDE_COMBO, // '~'
   };
 
 // Used combos.
 combo_t key_combos[] = {
     [AT_COMBO] = COMBO(at_combo, KC_AT),
-    [CAPS_WORD_COMBO] = COMBO(caps_word_combo, CW_TOGG),
     [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [CUT_COMBO] = COMBO(cut_combo, CUT),
@@ -274,6 +275,7 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
+    [TAB_COMBO] = COMBO(tab_combo, KC_TAB),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
 };
 
@@ -602,7 +604,6 @@ bool caps_word_press_user(uint16_t keycode) {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case UM_LT5:
-        case UM_LH1:
         case UM_RB1:
             return 175;
         default:
@@ -634,7 +635,6 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
     if (is_flow_tap_key(keycode) && is_flow_tap_key(prev_keycode)) {
         switch (keycode) {
             case UM_LH3:
-            case UM_LH1:
             case UM_RH3:
             case UM_RH2:
             case UM_RH1:
@@ -648,38 +648,44 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_
 }
 
 /*
-##################
-### Arcane Key ###
-##################
+#################
+### Magic Key ###
+#################
 */
 
 uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     bool shifted = (mods & MOD_MASK_SHIFT); // Was Shift held?
     switch (keycode) {
-        case UM_LH1:
+        case KC_TAB:
             if (shifted) {        // If the last key was Shift + Tab,
                 return KC_TAB;    // the reverse is Tab.
             } else {              // Otherwise, the last key was Tab,
                 return S(KC_TAB); // and the reverse is Shift + Tab.
             }
-            break;
-        case UM_LM5: MAGIC_STRING(/*s*/"sion"); break;
-        case UM_LM4: MAGIC_STRING(/*n*/"ion"); break;
-        case UM_LM3: MAGIC_STRING(/*t*/"heir"); break;
-        case UM_LB4: MAGIC_STRING(/*w*/"hich"); break;
-        case UM_LB2: MAGIC_STRING(/*m*/"ent"); break;
-        case UM_RT5: MAGIC_STRING(/*b*/"ecause"); break;
-        case UM_RM2: MAGIC_STRING(/*a*/"tion"); break;
-        case UM_RM4: MAGIC_STRING(/*i*/"ng"); break;
-        case UM_LB1: MAGIC_STRING(/*j*/"ust"); break;
+            return KC_NO;
+        case UM_LH3: return A(KC_BACKSPACE); // Alternate-repeating backspace deletes to the beginning of the word.
+        case UM_RH3: return A(KC_DELETE); // Alternate-repeating delete deletes to the end of the word.
+        case KC_AT: MAGIC_STRING(/*@*/"rvs.one", KC_NO); return KC_NO;
+        case UM_LM5: MAGIC_STRING(/*s*/"sion", KC_NO); return KC_NO;
+        case UM_LM4: MAGIC_STRING(/*n*/"ion", KC_NO); return KC_NO;
+        case UM_LM3: MAGIC_STRING(/*t*/"heir", KC_NO); return KC_NO;
+        case UM_LB4: MAGIC_STRING(/*w*/"hich", KC_NO); return KC_NO;
+        case UM_LB2: MAGIC_STRING(/*m*/"ent", KC_NO); return KC_NO;
+        case UM_RT5: MAGIC_STRING(/*b*/"ecause", KC_NO); return KC_NO;
+        case UM_RM2: MAGIC_STRING(/*a*/"tion", KC_NO); return KC_NO;
+        case UM_RM4: MAGIC_STRING(/*i*/"ng", KC_NO); return KC_NO;
+        case UM_LB1: MAGIC_STRING(/*j*/"ust", KC_NO); return KC_NO;
+        case UM_RM3: MAGIC_STRING("e", KC_NO); return KC_NO;
+        case UM_LT5: MAGIC_STRING("f", KC_NO); return KC_NO;
+        case UM_LB5: MAGIC_STRING("z", KC_NO); return KC_NO;
         case UM_RH2:
             if (is_sentence_case_primed()) {
                 SEND_STRING(/* */"And");
                 sentence_case_clear();
             } else {
-                MAGIC_STRING(/* */"and");
+                MAGIC_STRING(/* */"and", KC_NO);
             }
-            break;
+            return KC_NO;
         case U_QU:
             tap_code16(KC_CIRCUMFLEX);
             if (is_caps_word_on()) {
@@ -687,13 +693,13 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
             } else {
                 tap_code(KC_E);
             }
-            break;
+            return KC_NO;
     }
-    return KC_NO;
+    return KC_TRANSPARENT;
 }
 
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* remembered_mods) {
-    if (keycode == UM_RT1) { return false; }
+    if (keycode == UM_LH1) { return false; }
     return true;
 }
 
@@ -827,7 +833,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         // Macros
         case U_QU:
             if (record->event.pressed) {
-                MAGIC_STRING("qu");
+                MAGIC_STRING("qu", KC_NO);
                 return false;
             }
             break;
@@ -875,7 +881,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                MAGIC_STRING("a");
+                MAGIC_STRING("a", KC_NO);
                 return false;
             }
             break;
@@ -884,7 +890,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                MAGIC_STRING("e");
+                MAGIC_STRING("e", KC_NO);
                 return false;
             }
             break;
@@ -893,7 +899,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                MAGIC_STRING("i");
+                MAGIC_STRING("i", KC_NO);
                 return false;
             }
             break;
@@ -902,7 +908,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                MAGIC_STRING("o");
+                MAGIC_STRING("o", KC_NO);
                 return false;
             }
             break;
@@ -911,7 +917,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                MAGIC_STRING("u");
+                MAGIC_STRING("u", KC_NO);
                 return false;
             }
             break;
@@ -920,7 +926,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_GRAVE);
                 set_mods(mod_state);
-                MAGIC_STRING("a");
+                MAGIC_STRING("a", KC_NO);
                 return false;
             }
             break;
@@ -929,7 +935,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code16(KC_CIRC);
                 set_mods(mod_state);
-                MAGIC_STRING("a");
+                MAGIC_STRING("a", KC_NO);
                 return false;
             }
             break;
@@ -938,7 +944,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code16(KC_CIRC);
                 set_mods(mod_state);
-                MAGIC_STRING("e");
+                MAGIC_STRING("e", KC_NO);
                 return false;
             }
             break;
@@ -947,7 +953,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code16(KC_CIRC);
                 set_mods(mod_state);
-                MAGIC_STRING("o");
+                MAGIC_STRING("o", KC_NO);
                 return false;
             }
             break;
@@ -956,7 +962,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code(KC_QUOTE);
                 set_mods(mod_state);
-                MAGIC_STRING("c");
+                MAGIC_STRING("c", KC_NO);
                 return false;
             }
             break;
@@ -965,7 +971,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code16(KC_TILD);
                 set_mods(mod_state);
-                MAGIC_STRING("a");
+                MAGIC_STRING("a", KC_NO);
                 return false;
             }
             break;
@@ -974,7 +980,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code16(KC_TILD);
                 set_mods(mod_state);
-                MAGIC_STRING("o");
+                MAGIC_STRING("o", KC_NO);
                 return false;
             }
             break;
@@ -983,7 +989,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 clear_mods();
                 tap_code16(KC_TILD);
                 set_mods(mod_state);
-                MAGIC_STRING("n");
+                MAGIC_STRING("n", KC_NO);
                 return false;
             }
             break;
@@ -1001,13 +1007,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
     ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |   f   |   p   |   d   |   l   |   x   |                   | Magic |   u   |   o   |   y   |   b   |
+    |   f   |   p   |   d   |   l   |   x   |                   |   CW  |   u   |   o   |   y   |   b   |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
     |   s   |   n   |   t   |   h   |   k   |                   |   -   |   a   |   e   |   i   |   c   |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
     |   v   |   w   |   g   |   m   |   j   |                   |   /   |   .   |   ,   |  EXT  |   z   |
     `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |  Bspc |   r   |  Tab  |   | Enter | Space |  Del  |
+                            |  Bspc |   r   | Magic |   | Enter | Space |  Del  |
                             `———————————————————————'   `———————————————————————'
 */
 
