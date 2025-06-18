@@ -591,8 +591,9 @@ bool caps_word_press_user(uint16_t keycode) {
 // Set tapping term per key.
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case UM_LT5:
-        case UM_RB1:
+        case UM_LT5: // Quick access to 'q'.
+        case UM_RB1: // Quick access to colon.
+        case UM_LM2: // I want Left Shift to act quickly for horizontal mouse scrolling.
             return 175;
         default:
             return TAPPING_TERM;
