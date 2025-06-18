@@ -76,7 +76,7 @@
 #define UM_LH2 LT(_NAV, KC_R)
 #define UM_LH1 QK_ALT_REPEAT_KEY
 
-#define UM_RT1 CW_TOGG
+#define UM_RT1 KC_TAB
 #define UM_RT2 HYPR_T(KC_U)
 #define UM_RT3 KC_O
 #define UM_RT4 KC_Y
@@ -124,7 +124,9 @@ enum custom_keycodes {
     U_CIRC, // Circumflex with space to not act like a dead key.
     U_TILDE, // Tilde with space to not act like a dead key.
     U_QUOTE, // Single quote with space to not act like a dead key.
-    U_QU, // "qu"
+    U_QU, // 'qu'
+    U_AS, // "'s"
+    U_AVE, // "'ve"
     U_RGB_R, // Reset RGB Matrix to orange.
     U_RGB_T, // Macro for RGB toggle with extra info.
 };
@@ -226,7 +228,7 @@ const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
 const uint16_t PROGMEM tilde_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Left-side horizontal combos.
-const uint16_t PROGMEM tab_combo[] = {UM_LM2, UM_LM1, COMBO_END};
+const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
 
 const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
 
@@ -249,6 +251,7 @@ enum combos {
     CLIP_HIST_COMBO,
     COPY_COMBO,
     CUT_COMBO,
+    CW_COMBO,
     ESC_COMBO,
     LPRN_COMBO, // '('
     MUTE_COMBO,
@@ -257,7 +260,6 @@ enum combos {
     RPRN_COMBO, // ')'
     SEMICOLON_COMBO, // ';'
     SUPER_O_COMBO, // 'º'
-    TAB_COMBO,
     TILDE_COMBO, // '~'
   };
 
@@ -267,6 +269,7 @@ combo_t key_combos[] = {
     [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
     [COPY_COMBO] = COMBO(copy_combo, COPY),
     [CUT_COMBO] = COMBO(cut_combo, CUT),
+    [CW_COMBO] = COMBO(caps_word_combo, CW_TOGG),
     [ESC_COMBO] = COMBO(esc_combo, KC_ESC),
     [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
@@ -275,7 +278,6 @@ combo_t key_combos[] = {
     [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
-    [TAB_COMBO] = COMBO(tab_combo, KC_TAB),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
 };
 
@@ -453,9 +455,9 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_GRV:
                 return '#'; // Symbol key.
             case KC_COMMA:
-                return shifted ? '.' : '#'; // Shift-, is punctuation (?), but , is just a symbol.
+                return shifted ? '.' : '#'; // 'Shift-,' is punctuation ('?'), but ',' is just a symbol.
             case KC_DOT:
-                return shifted ? '.' : '.'; // Both . and ! are punctuation.
+                return shifted ? '.' : '.'; // Both '.' and '!' are punctuation.
             case KC_SPC:
                 return ' '; // Space key.
             case KC_QUOTE:
@@ -837,6 +839,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 return false;
             }
             break;
+        case U_AS:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("s", KC_NO);
+                return false;
+            }
+            break;
+        case U_AVE:
+            if (record->event.pressed) {
+                clear_mods();
+                tap_code(KC_QUOTE);
+                set_mods(mod_state);
+                MAGIC_STRING("ve", KC_NO);
+                return false;
+            }
+            break;
         case U_RGB_T:
             if (record->event.pressed) {
                 if (rgb_matrix_is_enabled()) {
@@ -1007,7 +1027,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Base
     ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |   f   |   p   |   d   |   l   |   x   |                   |   CW  |   u   |   o   |   y   |   b   |
+    |   f   |   p   |   d   |   l   |   x   |                   |  Tab  |   u   |   o   |   y   |   b   |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
     |   s   |   n   |   t   |   h   |   k   |                   |   -   |   a   |   e   |   i   |   c   |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
@@ -1123,9 +1143,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ,———————————————————————————————————————.                   ,———————————————————————————————————————.
     |  ___  |  ___  |   ô   |  ___  |  ___  |                   |  ___  |   ú   |   ó   |  ___  |  ___  |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ___  |   ñ   |   ê   |   â   |  ___  |                   |  ___  |   á   |   é   |   í   |   ç   |
+    |  's   |   ñ   |   ê   |   â   |  ___  |                   |  ___  |   á   |   é   |   í   |   ç   |
     |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ___  |  ___  |  ___  |  ___  |  ___  |                   |  ___  |   ã   |   õ   |   '   |  ___  |
+    |  'v   |  ___  |  ___  |  ___  |  ___  |                   |  ___  |   ã   |   õ   |   '   |  ___  |
     `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
                             |  ___  |   à   |  ___  |   |  ___  |  ___  |  ___  |
                             `———————————————————————'   `———————————————————————'
@@ -1133,8 +1153,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_EXT] = LAYOUT_split_3x5_3(
         _______, _______,   U_CIRC_O, _______,      _______,    _______, U_AC_U,       U_AC_O,    _______, _______,
-        _______, U_TILDE_N, U_CIRC_E, LSFT_T(KC_A), _______,    _______, RSFT_T(KC_H), U_AC_E,    U_AC_I,  U_CC,
-        _______, _______,   _______,  _______,      _______,    _______, U_TILDE_A,    U_TILDE_O, U_QUOTE, _______,
+        U_AS,    U_TILDE_N, U_CIRC_E, LSFT_T(KC_A), _______,    _______, RSFT_T(KC_H), U_AC_E,    U_AC_I,  U_CC,
+        U_AVE,   _______,   _______,  _______,      _______,    _______, U_TILDE_A,    U_TILDE_O, U_QUOTE, _______,
                                     _______,  U_GR_A,       _______,    _______, _______,      _______
     ),
 };
