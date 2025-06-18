@@ -72,9 +72,9 @@
 
 #define UM_LH3 LT(_MOU, KC_BACKSPACE)
 #define UM_LH2 LT(_NAV, KC_R)
-#define UM_LH1 QK_ALT_REPEAT_KEY
+#define UM_LH1 KC_TAB
 
-#define UM_RT1 KC_TAB
+#define UM_RT1 QK_ALT_REPEAT_KEY
 #define UM_RT2 HYPR_T(KC_U)
 #define UM_RT3 KC_O
 #define UM_RT4 KC_Y
@@ -688,7 +688,7 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
 }
 
 bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* remembered_mods) {
-    if (keycode == UM_LH1) { return false; }
+    if (keycode == UM_RT1) { return false; }
     return true;
 }
 
