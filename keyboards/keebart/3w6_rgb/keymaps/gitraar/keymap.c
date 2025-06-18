@@ -21,8 +21,6 @@
 #define RAYCAST G(KC_SPC)
 
 // Web Browser commands
-#define BACK G(KC_LEFT_BRACKET)
-#define FORWARD G(KC_RIGHT_BRACKET)
 #define TAB_UP G(S(KC_LEFT_BRACKET))
 #define TAB_DOWN G(S(KC_RIGHT_BRACKET))
 
@@ -110,17 +108,17 @@ enum custom_keycodes {
     SYM,
     FUN,
     EXT,
-    U_TILDE_A, // 'ã'
-    U_GR_A, // 'à'
     U_AC_E,// 'é'
-    U_CIRC_E, // 'ê'
     U_AC_I, // 'í'
     U_AC_O, // 'ó'
-    U_CIRC_O, // 'ô'
-    U_TILDE_O, // 'õ'
     U_AC_U, // 'ú'
-    U_CC, // 'ç'
+    U_CIRC_E, // 'ê'
+    U_CIRC_O, // 'ô'
+    U_GR_A, // 'à'
+    U_TILDE_A, // 'ã'
     U_TILDE_N, // 'ñ'
+    U_TILDE_O, // 'õ'
+    U_CC, // 'ç'
     U_CIRC, // Circumflex with space to not act like a dead key.
     U_TILDE, // Tilde with space to not act like a dead key.
     U_QUOTE, // Single quote with space to not act like a dead key.
@@ -224,19 +222,16 @@ const uint16_t PROGMEM cut_combo[] = {UM_LT4, UM_LM4, COMBO_END};
 const uint16_t PROGMEM copy_combo[] = {UM_LT3, UM_LM3, COMBO_END};
 const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
-
 const uint16_t PROGMEM tilde_combo[] = {UM_LM2, UM_LB2, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
-
 const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
 
 // Right-side vertical combos.
 const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
 const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
-
 const uint16_t PROGMEM at_combo[] = {UM_RM2, UM_RB2, COMBO_END};
 
 // Right-side horizontal combos.
@@ -254,10 +249,10 @@ enum combos {
     CW_COMBO,
     ESC_COMBO,
     LPRN_COMBO, // '('
+    RPRN_COMBO, // ')'
     MUTE_COMBO,
     PASTE_COMBO,
     QU_COMBO, // 'qu'
-    RPRN_COMBO, // ')'
     SEMICOLON_COMBO, // ';'
     SUPER_O_COMBO, // 'º'
     TILDE_COMBO, // '~'
@@ -272,10 +267,10 @@ combo_t key_combos[] = {
     [CW_COMBO] = COMBO(caps_word_combo, CW_TOGG),
     [ESC_COMBO] = COMBO(esc_combo, KC_ESC),
     [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
+    [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
     [PASTE_COMBO] = COMBO(paste_combo, PASTE),
     [QU_COMBO] = COMBO(qu_combo, U_QU),
-    [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
     [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
     [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
@@ -297,7 +292,7 @@ bool get_combo_must_press_in_order(uint16_t combo_index, combo_t *combo) {
 uint16_t get_combo_term(uint16_t combo_index, combo_t *combo) {
     switch (combo_index) {
         case QU_COMBO:
-            return 200;
+            return 300;
     }
     return COMBO_TERM;
 }
@@ -431,15 +426,6 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
         const bool shifted = mods & MOD_MASK_SHIFT;
         switch (keycode) {
             case KC_A ... KC_Z:
-            case U_AC_E:
-            case U_AC_I:
-            case U_AC_O:
-            case U_AC_U:
-            case U_GR_A:
-            case U_CIRC_E:
-            case U_CIRC_O:
-            case U_TILDE_A:
-            case U_TILDE_O:
                 return 'a'; // Letter key.
             case KC_1:
             case KC_SLSH:
