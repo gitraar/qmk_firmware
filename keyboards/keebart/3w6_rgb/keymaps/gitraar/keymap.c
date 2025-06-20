@@ -86,7 +86,7 @@
 #define UM_RM4 LALT_T(KC_I)
 #define UM_RM5 RCTL_T(KC_C)
 
-#define UM_RB1 LT(0,KC_KP_SLASH)
+#define UM_RB1 LT(0, KC_KP_SLASH)
 #define UM_RB2 KC_DOT
 #define UM_RB3 KC_COMMA
 #define UM_RB4 OSL(_EXT)
@@ -108,25 +108,25 @@ enum custom_keycodes {
     SYM,
     FUN,
     EXT,
-    U_AC_E,// 'é'
-    U_AC_I, // 'í'
-    U_AC_O, // 'ó'
-    U_AC_U, // 'ú'
-    U_CIRC_E, // 'ê'
-    U_CIRC_O, // 'ô'
-    U_GR_A, // 'à'
+    U_AC_E,    // 'é'
+    U_AC_I,    // 'í'
+    U_AC_O,    // 'ó'
+    U_AC_U,    // 'ú'
+    U_CIRC_E,  // 'ê'
+    U_CIRC_O,  // 'ô'
+    U_GR_A,    // 'à'
     U_TILDE_A, // 'ã'
     U_TILDE_N, // 'ñ'
     U_TILDE_O, // 'õ'
-    U_CC, // 'ç'
-    U_CIRC, // Circumflex with space to not act like a dead key.
-    U_TILDE, // Tilde with space to not act like a dead key.
-    U_QUOTE, // Single quote with space to not act like a dead key.
-    U_QU, // 'qu'
-    U_AS, // "'s"
-    U_AVE, // "'ve"
-    U_RGB_R, // Reset RGB Matrix to orange.
-    U_RGB_T, // Macro for RGB toggle with extra info.
+    U_CC,      // 'ç'
+    U_CIRC,    // Circumflex with space to not act like a dead key.
+    U_TILDE,   // Tilde with space to not act like a dead key.
+    U_QUOTE,   // Single quote with space to not act like a dead key.
+    U_QU,      // 'qu'
+    U_AS,      // "'s"
+    U_AVE,     // "'ve"
+    U_RGB_R,   // Reset RGB Matrix to orange.
+    U_RGB_T,   // Macro for RGB toggle with extra info.
 };
 
 /*
@@ -138,7 +138,7 @@ enum custom_keycodes {
 // An enhanced version of SEND_STRING. If Caps Word is active, the Shift key is held while sending the string.
 // Additionally, the last key is set such that if the Alternate Repeat Key is pressed next, it reacts to 'repeat_keycode'.
 #define MAGIC_STRING(str, repeat_keycode) magic_send_string_P(PSTR(str), (repeat_keycode))
-static void magic_send_string_P(const char* str, uint16_t repeat_keycode) {
+static void magic_send_string_P(const char *str, uint16_t repeat_keycode) {
     uint8_t saved_mods = 0;
     // If Caps Word is on, save the mods and hold Shift.
     if (is_caps_word_on()) {
@@ -172,9 +172,9 @@ void tap_dance_tap_hold_finished(tap_dance_state_t *state, void *user_data) {
     tap_dance_tap_hold_t *tap_hold = (tap_dance_tap_hold_t *)user_data;
     if (state->pressed) {
         if (state->count == 1
-        #ifndef PERMISSIVE_HOLD
-        && !state->interrupted
-        #endif
+#ifndef PERMISSIVE_HOLD
+            && !state->interrupted
+#endif
         ) {
             register_code16(tap_hold->hold);
             tap_hold->held = tap_hold->hold;
@@ -193,7 +193,11 @@ void tap_dance_tap_hold_reset(tap_dance_state_t *state, void *user_data) {
     }
 }
 
-#define ACTION_TAP_DANCE_TAP_HOLD(tap, hold) { .fn = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}), }
+#define ACTION_TAP_DANCE_TAP_HOLD(tap, hold)                                        \
+    {                                                                               \
+        .fn        = {NULL, tap_dance_tap_hold_finished, tap_dance_tap_hold_reset}, \
+        .user_data = (void *)&((tap_dance_tap_hold_t){tap, hold, 0}),               \
+    }
 
 enum tap_dances {
     PGUP,
@@ -204,10 +208,10 @@ enum tap_dances {
 
 // Definition for each tap dance using the functions above.
 tap_dance_action_t tap_dance_actions[] = {
-    [PGUP] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
+    [PGUP]   = ACTION_TAP_DANCE_TAP_HOLD(KC_PGUP, G(KC_UP)),
     [PGDOWN] = ACTION_TAP_DANCE_TAP_HOLD(KC_PGDN, G(KC_DOWN)),
-    [HOME] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
-    [END] = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
+    [HOME]   = ACTION_TAP_DANCE_TAP_HOLD(A(KC_LEFT), KC_HOME),
+    [END]    = ACTION_TAP_DANCE_TAP_HOLD(A(KC_RIGHT), KC_END),
 };
 
 /*
@@ -218,24 +222,24 @@ tap_dance_action_t tap_dance_actions[] = {
 
 // Combo definitions.
 // Left-side vertical combos.
-const uint16_t PROGMEM cut_combo[] = {UM_LT4, UM_LM4, COMBO_END};
-const uint16_t PROGMEM copy_combo[] = {UM_LT3, UM_LM3, COMBO_END};
-const uint16_t PROGMEM paste_combo[] = {UM_LT2, UM_LM2, COMBO_END};
+const uint16_t PROGMEM cut_combo[]       = {UM_LT4, UM_LM4, COMBO_END};
+const uint16_t PROGMEM copy_combo[]      = {UM_LT3, UM_LM3, COMBO_END};
+const uint16_t PROGMEM paste_combo[]     = {UM_LT2, UM_LM2, COMBO_END};
 const uint16_t PROGMEM clip_hist_combo[] = {UM_LT1, UM_LM1, COMBO_END};
-const uint16_t PROGMEM tilde_combo[] = {UM_LM2, UM_LB2, COMBO_END};
+const uint16_t PROGMEM tilde_combo[]     = {UM_LM2, UM_LB2, COMBO_END};
 
 // Left-side horizontal combos.
 const uint16_t PROGMEM caps_word_combo[] = {UM_LM2, UM_LM1, COMBO_END};
-const uint16_t PROGMEM qu_combo[] = {UM_LB2, UM_LB3, COMBO_END};
+const uint16_t PROGMEM qu_combo[]        = {UM_LB2, UM_LB3, COMBO_END};
 
 // Right-side vertical combos.
-const uint16_t PROGMEM lprn_combo[] = {UM_RT2, UM_RM2, COMBO_END};
-const uint16_t PROGMEM rprn_combo[] = {UM_RT3, UM_RM3, COMBO_END};
+const uint16_t PROGMEM lprn_combo[]    = {UM_RT2, UM_RM2, COMBO_END};
+const uint16_t PROGMEM rprn_combo[]    = {UM_RT3, UM_RM3, COMBO_END};
 const uint16_t PROGMEM super_o_combo[] = {UM_RT4, UM_RM4, COMBO_END};
-const uint16_t PROGMEM at_combo[] = {UM_RM2, UM_RB2, COMBO_END};
+const uint16_t PROGMEM at_combo[]      = {UM_RM2, UM_RB2, COMBO_END};
 
 // Right-side horizontal combos.
-const uint16_t PROGMEM esc_combo[] = {UM_RM1, UM_RM2, COMBO_END};
+const uint16_t PROGMEM esc_combo[]       = {UM_RM1, UM_RM2, COMBO_END};
 const uint16_t PROGMEM semicolon_combo[] = {UM_RB2, UM_RB3, COMBO_END};
 
 // Right-side horizontal combos on Media layer.
@@ -252,28 +256,28 @@ enum combos {
     RPRN_COMBO, // ')'
     MUTE_COMBO,
     PASTE_COMBO,
-    QU_COMBO, // 'qu'
+    QU_COMBO,        // 'qu'
     SEMICOLON_COMBO, // ';'
-    SUPER_O_COMBO, // 'º'
-    TILDE_COMBO, // '~'
-  };
+    SUPER_O_COMBO,   // 'º'
+    TILDE_COMBO,     // '~'
+};
 
 // Used combos.
 combo_t key_combos[] = {
-    [AT_COMBO] = COMBO(at_combo, KC_AT),
+    [AT_COMBO]        = COMBO(at_combo, KC_AT),
     [CLIP_HIST_COMBO] = COMBO(clip_hist_combo, CLIP_HIST),
-    [COPY_COMBO] = COMBO(copy_combo, COPY),
-    [CUT_COMBO] = COMBO(cut_combo, CUT),
-    [CW_COMBO] = COMBO(caps_word_combo, CW_TOGG),
-    [ESC_COMBO] = COMBO(esc_combo, KC_ESC),
-    [LPRN_COMBO] = COMBO(lprn_combo, KC_LPRN),
-    [RPRN_COMBO] = COMBO(rprn_combo, KC_RPRN),
-    [MUTE_COMBO] = COMBO(mute_combo, KC_MUTE),
-    [PASTE_COMBO] = COMBO(paste_combo, PASTE),
-    [QU_COMBO] = COMBO(qu_combo, U_QU),
+    [COPY_COMBO]      = COMBO(copy_combo, COPY),
+    [CUT_COMBO]       = COMBO(cut_combo, CUT),
+    [CW_COMBO]        = COMBO(caps_word_combo, CW_TOGG),
+    [ESC_COMBO]       = COMBO(esc_combo, KC_ESC),
+    [LPRN_COMBO]      = COMBO(lprn_combo, KC_LPRN),
+    [RPRN_COMBO]      = COMBO(rprn_combo, KC_RPRN),
+    [MUTE_COMBO]      = COMBO(mute_combo, KC_MUTE),
+    [PASTE_COMBO]     = COMBO(paste_combo, PASTE),
+    [QU_COMBO]        = COMBO(qu_combo, U_QU),
     [SEMICOLON_COMBO] = COMBO(semicolon_combo, KC_SEMICOLON),
-    [SUPER_O_COMBO] = COMBO(super_o_combo, A(KC_0)),
-    [TILDE_COMBO] = COMBO(tilde_combo, U_TILDE),
+    [SUPER_O_COMBO]   = COMBO(super_o_combo, A(KC_0)),
+    [TILDE_COMBO]     = COMBO(tilde_combo, U_TILDE),
 };
 
 // Combo options.
@@ -305,17 +309,17 @@ uint16_t get_combo_term(uint16_t combo_index, combo_t *combo) {
 */
 
 // Key overrides.
-const key_override_t super_a = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, A(KC_0), A(KC_9), ~0, MOD_MASK_CAG);
-const key_override_t exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, UM_RB2, KC_EXLM, ~0, MOD_MASK_CAG);
-const key_override_t inv_exclamation = ko_make_with_layers_and_negmods(MOD_MASK_SA, UM_RB2, A(KC_1), ~0, MOD_MASK_CG);
-const key_override_t ellipsis = ko_make_with_layers_and_negmods(MOD_MASK_ALT, UM_RB2, A(KC_SCLN), ~0, MOD_MASK_CSG);
-const key_override_t question = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, UM_RB3, KC_QUES, ~0, MOD_MASK_CAG);
-const key_override_t inv_question = ko_make_with_layers_and_negmods(MOD_MASK_SA, UM_RB3, A(S(KC_SLSH)), ~0, MOD_MASK_CG);
-const key_override_t gte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
-const key_override_t lte = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
-const key_override_t open_fancy_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LPRN, A(KC_RBRC), ~0, MOD_MASK_CAG);
-const key_override_t close_fancy_quote = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_RPRN, A(S(KC_RBRC)), ~0, MOD_MASK_CAG);
-const key_override_t open_fancy_double_quote = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_LPRN, A(KC_LBRC), ~0, MOD_MASK_CSG);
+const key_override_t super_a                  = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, A(KC_0), A(KC_9), ~0, MOD_MASK_CAG);
+const key_override_t exclamation              = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, UM_RB2, KC_EXLM, ~0, MOD_MASK_CAG);
+const key_override_t inv_exclamation          = ko_make_with_layers_and_negmods(MOD_MASK_SA, UM_RB2, A(KC_1), ~0, MOD_MASK_CG);
+const key_override_t ellipsis                 = ko_make_with_layers_and_negmods(MOD_MASK_ALT, UM_RB2, A(KC_SCLN), ~0, MOD_MASK_CSG);
+const key_override_t question                 = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, UM_RB3, KC_QUES, ~0, MOD_MASK_CAG);
+const key_override_t inv_question             = ko_make_with_layers_and_negmods(MOD_MASK_SA, UM_RB3, A(S(KC_SLSH)), ~0, MOD_MASK_CG);
+const key_override_t gte                      = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_GT, A(KC_DOT), ~0, MOD_MASK_CAG);
+const key_override_t lte                      = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LT, A(KC_COMMA), ~0, MOD_MASK_CAG);
+const key_override_t open_fancy_quote         = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_LPRN, A(KC_RBRC), ~0, MOD_MASK_CAG);
+const key_override_t close_fancy_quote        = ko_make_with_layers_and_negmods(MOD_MASK_SHIFT, KC_RPRN, A(S(KC_RBRC)), ~0, MOD_MASK_CAG);
+const key_override_t open_fancy_double_quote  = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_LPRN, A(KC_LBRC), ~0, MOD_MASK_CSG);
 const key_override_t close_fancy_double_quote = ko_make_with_layers_and_negmods(MOD_MASK_ALT, KC_RPRN, A(S(KC_LBRC)), ~0, MOD_MASK_CSG);
 
 // This globally defines all key overrides to be used.
@@ -340,8 +344,7 @@ const key_override_t *key_overrides[] = {
 ##################
 */
 
-void leader_start_user(void) {
-}
+void leader_start_user(void) {}
 
 void leader_end_user(void) {
     if (leader_sequence_one_key(KC_T)) {
@@ -391,7 +394,7 @@ void leader_end_user(void) {
 bool rgb_disabled_manually = false;
 
 // Function to do things when the keyboard is idle.
-static uint32_t idle_callback(uint32_t trigger_time, void* cb_arg) {
+static uint32_t idle_callback(uint32_t trigger_time, void *cb_arg) {
     // If execution gets here, the keyboard has gone idle.
     if (rgb_matrix_is_enabled()) {
         rgb_matrix_disable(); // Disables the RGB Matrix.
@@ -406,7 +409,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         for (uint8_t row = 0; row < MATRIX_ROWS; ++row) {
             for (uint8_t col = 0; col < MATRIX_COLS; ++col) {
                 uint8_t index = g_led_config.matrix_co[row][col];
-                if (index >= led_min && index < led_max && index != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col,row}) <= KC_TRANSPARENT) { // Keys from lower layers are ignored.
+                if (index >= led_min && index < led_max && index != NO_LED && keymap_key_to_keycode(layer, (keypos_t){col, row}) <= KC_TRANSPARENT) { // Keys from lower layers are ignored.
                     rgb_matrix_set_color(index, RGB_BLACK); // Setting RGB to black is the same as disabling it.
                 }
             }
@@ -421,7 +424,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 #####################
 */
 
-char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mods) {
+char sentence_case_press_user(uint16_t keycode, keyrecord_t *record, uint8_t mods) {
     if ((mods & ~(MOD_MASK_SHIFT | MOD_BIT(KC_RALT))) == 0) {
         const bool shifted = mods & MOD_MASK_SHIFT;
         switch (keycode) {
@@ -433,8 +436,8 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
             case KC_EXLM:
             case KC_QUES:
                 return '.';
-            case KC_2 ... KC_0: // 2 3 4 5 6 7 8 9 0
-            case KC_AT ... KC_PERC: // @ # $ %
+            case KC_2 ... KC_0:       // 2 3 4 5 6 7 8 9 0
+            case KC_AT ... KC_PERC:   // @ # $ %
             case KC_AMPR ... KC_RPRN: // & * ( )
             case KC_MINS ... KC_SCLN: // - = [ ] backslash ;
             case KC_UNDS ... KC_COLN: // _ + { } | :
@@ -457,7 +460,7 @@ char sentence_case_press_user(uint16_t keycode, keyrecord_t* record, uint8_t mod
     return '\0';
 }
 
-bool sentence_case_check_ending(const uint16_t* buffer) {
+bool sentence_case_check_ending(const uint16_t *buffer) {
     // Don't consider abbreviations like "vs." and "etc." to end the sentence.
     if (SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_B, KC_R, KC_DOT) ||
         SENTENCE_CASE_JUST_TYPED(KC_SPC, KC_A, KC_DOT, KC_C, KC_DOT) ||
@@ -620,7 +623,7 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM =
                           'L', '*', 'L',  'R', 'R', 'R'
     );
 
-uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record, uint16_t prev_keycode) {
+uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {
     if (is_flow_tap_key(keycode) && is_flow_tap_key(prev_keycode)) {
         switch (keycode) {
             case UM_LH3:
@@ -669,10 +672,10 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
         case UM_LB5: MAGIC_STRING("z", KC_NO); return KC_NO;
         case UM_RH2:
             if (is_sentence_case_primed()) {
-                SEND_STRING(/* */"And");
+                SEND_STRING(/* */ "And");
                 sentence_case_clear();
             } else {
-                MAGIC_STRING(/* */"and", KC_NO);
+                MAGIC_STRING(/* */ "and", KC_NO);
             }
             return KC_NO;
         case U_QU:
@@ -687,8 +690,10 @@ uint16_t get_alt_repeat_key_keycode_user(uint16_t keycode, uint8_t mods) {
     return KC_TRANSPARENT;
 }
 
-bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* remembered_mods) {
-    if (keycode == UM_RT1) { return false; }
+bool remember_last_key_user(uint16_t keycode, keyrecord_t *record, uint8_t *remembered_mods) {
+    if (keycode == UM_RT1) {
+        return false;
+    }
     return true;
 }
 
@@ -698,7 +703,7 @@ bool remember_last_key_user(uint16_t keycode, keyrecord_t* record, uint8_t* reme
 ########################
 */
 
-static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
+static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t *record) {
     if (record->tap.count == 0) { // Key is being held.
         if (record->event.pressed) {
             const uint8_t mods = (keycode >> 8) & 0x1f;
@@ -719,12 +724,12 @@ static bool oneshot_mod_tap(uint16_t keycode, keyrecord_t* record) {
 bool temp_shift = false;
 
 void oneshot_layer_changed_user(uint8_t layer) {
-  if (!layer) {
-    if (temp_shift) {
-        del_mods(MOD_MASK_SHIFT);
-        temp_shift = false;
+    if (!layer) {
+        if (temp_shift) {
+            del_mods(MOD_MASK_SHIFT);
+            temp_shift = false;
+        }
     }
-  }
 }
 
 /*
@@ -733,7 +738,7 @@ void oneshot_layer_changed_user(uint8_t layer) {
 ###########################
 */
 
-bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // On every key event, start or extend the deferred execution to call `idle_callback()` after IDLE_TIMEOUT_MS.
     static deferred_token idle_token = INVALID_DEFERRED_TOKEN;
     if (!extend_deferred_exec(idle_token, IDLE_TIMEOUT_MS)) {
@@ -1011,18 +1016,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
-/* Base
-    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |   f   |   p   |   d   |   l   |   x   |                   |  Tab  |   u   |   o   |   y   |   b   |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |   s   |   n   |   t   |   h   |   k   |                   |   -   |   a   |   e   |   i   |   c   |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |   v   |   w   |   g   |   m   |   j   |                   |   /   |   .   |   ,   |  EXT  |   z   |
-    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |  Bspc |   r   | Magic |   | Enter | Space |  Del  |
-                            `———————————————————————'   `———————————————————————'
-*/
+    /* Base
+        ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+        |   f   |   p   |   d   |   l   |   x   |                   |  Tab  |   u   |   o   |   y   |   b   |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |   s   |   n   |   t   |   h   |   k   |                   |   -   |   a   |   e   |   i   |   c   |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |   v   |   w   |   g   |   m   |   j   |                   |   /   |   .   |   ,   |  EXT  |   z   |
+        `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                                |  Bspc |   r   | Magic |   | Enter | Space |  Del  |
+                                `———————————————————————'   `———————————————————————'
+    */
 
     [_BASE] = LAYOUT_split_3x5_3(
         UM_LT5, UM_LT4, UM_LT3, UM_LT2, UM_LT1,    UM_RT1, UM_RT2, UM_RT3, UM_RT4, UM_RT5,
@@ -1031,17 +1035,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                 UM_LH3, UM_LH2, UM_LH1,    UM_RH1, UM_RH2, UM_RH3
     ),
 
-/* Navigation
-    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |  ___  |  ___  |  ___  |  ___  |  ___  |                   | TabUp |  Home |   Up  |  End  |  PgUp |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ___  |  ___  |  ___  |  ___  |  ___  |                   | TabDo |  Left |  Down | Right |  PgDo |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ___  |  ___  |  ___  |  ___  |  ___  |                   |       |SpcLeft|SelWord|SpcRght|       |
-    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |       |  OOO  |       |   |Confirm|  RayC |  Undo |
-                            `———————————————————————'   `———————————————————————'
-*/
+    /* Navigation
+        ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+        |  ___  |  ___  |  ___  |  ___  |  ___  |                   | TabUp |  Home |   Up  |  End  |  PgUp |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |  ___  |  ___  |  ___  |  ___  |  ___  |                   | TabDo |  Left |  Down | Right |  PgDo |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |  ___  |  ___  |  ___  |  ___  |  ___  |                   |       |SpcLeft|SelWord|SpcRght|       |
+        `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                                |       |  OOO  |       |   |Confirm|  RayC |  Undo |
+                                `———————————————————————'   `———————————————————————'
+    */
 
     [_NAV] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    TAB_UP,    TD_HOME,  KC_UP,   TD_END,    TD_PGUP,
@@ -1050,17 +1054,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   XXXXXXX, XXXXXXX, XXXXXXX,    G(KC_ENT), RAYCAST,  UNDO
     ),
 
-/* Mouse and Media Keys
-    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |  ___  |  ___  |  ___  |  ___  |  ___  |                   |  MWDn |  MB4  |  MUp  |  MB5  |       |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ___  |  ___  |  ___  |  ___  |  ___  |                   |  MWUp | MLeft | MDown | MRight|       |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  ___  |  ___  |  ___  |  ___  |  ___  |                   |  Play | VolDo | VolUp |  Prev |  Next |
-    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |  OOO  |       |       |   |  MB1  |  MB3  |  MB2  |
-                            `———————————————————————'   `———————————————————————'
-*/
+    /* Mouse and Media Keys
+        ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+        |  ___  |  ___  |  ___  |  ___  |  ___  |                   |  MWDn |  MB4  |  MUp  |  MB5  |       |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |  ___  |  ___  |  ___  |  ___  |  ___  |                   |  MWUp | MLeft | MDown | MRight|       |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |  ___  |  ___  |  ___  |  ___  |  ___  |                   |  Play | VolDo | VolUp |  Prev |  Next |
+        `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                                |  OOO  |       |       |   |  MB1  |  MB3  |  MB2  |
+                                `———————————————————————'   `———————————————————————'
+    */
 
     [_MOU] = LAYOUT_split_3x5_3(
         _______, _______, _______, _______, _______,    MS_WHLD, MS_BTN4, MS_UP,   MS_BTN5, XXXXXXX,
@@ -1069,17 +1073,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   XXXXXXX, XXXXXXX, XXXXXXX,    MS_BTN1, MS_BTN3, MS_BTN2
     ),
 
-/* Numbers
-    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |   /   |   7   |   8   |   9   |   *   |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |   -   |   4   |   5   |   6   |   +   |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |   %   |   1   |   2   |   3   |   =   |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
-    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |  Bspc |   0   | LLock |   |       |  OOO  |       |
-                            `———————————————————————'   `———————————————————————'
-*/
+    /* Numbers
+        ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+        |   /   |   7   |   8   |   9   |   *   |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |   -   |   4   |   5   |   6   |   +   |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |   %   |   1   |   2   |   3   |   =   |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
+        `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                                |  Bspc |   0   | LLock |   |       |  OOO  |       |
+                                `———————————————————————'   `———————————————————————'
+    */
 
     [_NUM] = LAYOUT_split_3x5_3(
         KC_PSLS, KC_7, KC_8,    KC_9,  KC_PAST,    _______, _______, _______, _______, _______,
@@ -1088,17 +1092,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                KC_BSPC, KC_P0, QK_LLCK,    XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
-/* Symbols
-    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |       |   \   |   <   |   >   |      |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |       |   |   |   [   |   ]   |   $   |                   |  ___  | Shift |  ___  |  ___  |  ___  |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |       |   ^   |   {   |   }   |   £   |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
-    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |   &   |   #   |   €   |   |  OOO  |       |       |
-                            `———————————————————————'   `———————————————————————'
-*/
+    /* Symbols
+        ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+        |       |   \   |   <   |   >   |      |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |       |   |   |   [   |   ]   |   $   |                   |  ___  | Shift |  ___  |  ___  |  ___  |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |       |   ^   |   {   |   }   |   £   |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
+        `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                                |   &   |   #   |   €   |   |  OOO  |       |       |
+                                `———————————————————————'   `———————————————————————'
+    */
 
     [_SYM] = LAYOUT_split_3x5_3(
         XXXXXXX, KC_BSLS, KC_LT,   KC_GT,   A(S(KC_K)),    _______, _______, _______, _______, _______,
@@ -1107,17 +1111,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   KC_AMPR, KC_HASH, A(KC_AT),      XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
-/* Function
-    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |  F12  |   F7  |   F8  |   F9  | PrScr |                   | RMNxt | RMHUp |  RMUp |  ___  |  ___  |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  F11  |   F4  |   F5  |   F6  |       |                   |RMReset|RMHDown| RMDown| ACTog | Flash |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  F10  |   F1  |   F2  |   F3  | RMTog |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
-    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            | Leader|  Caps |  Lock |   |       |       |  OOO  |
-                            `———————————————————————'   `———————————————————————'
-    */
+    /* Function
+        ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+        |  F12  |   F7  |   F8  |   F9  | PrScr |                   | RMNxt | RMHUp |  RMUp |  ___  |  ___  |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |  F11  |   F4  |   F5  |   F6  |       |                   |RMReset|RMHDown| RMDown| ACTog | Flash |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |  F10  |   F1  |   F2  |   F3  | RMTog |                   |  ___  |  ___  |  ___  |  ___  |  ___  |
+        `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                                | Leader|  Caps |  Lock |   |       |       |  OOO  |
+                                `———————————————————————'   `———————————————————————'
+        */
 
     [_FUN] = LAYOUT_split_3x5_3(
         KC_F12, KC_F7, KC_F8,   KC_F9,   PRT_SCR,     RM_NEXT, RM_HUEU, RM_VALU, XXXXXXX, XXXXXXX,
@@ -1126,17 +1130,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                QK_LEAD, KC_CAPS, LOCK_SCR,    XXXXXXX, XXXXXXX, XXXXXXX
     ),
 
-/* Extended
-    ,———————————————————————————————————————.                   ,———————————————————————————————————————.
-    |  ___  |  ___  |   ô   |  ___  |  ___  |                   |  ___  |   ú   |   ó   |  ___  |  ___  |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  's   |   ñ   |   ê   |   â   |  ___  |                   |  ___  |   á   |   é   |   í   |   ç   |
-    |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
-    |  'v   |  ___  |  ___  |  ___  |  ___  |                   |  ___  |   ã   |   õ   |   '   |  ___  |
-    `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
-                            |  ___  |   à   |  ___  |   |  ___  |  ___  |  ___  |
-                            `———————————————————————'   `———————————————————————'
-*/
+    /* Extended
+        ,———————————————————————————————————————.                   ,———————————————————————————————————————.
+        |  ___  |  ___  |   ô   |  ___  |  ___  |                   |  ___  |   ú   |   ó   |  ___  |  ___  |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |  's   |   ñ   |   ê   |   â   |  ___  |                   |  ___  |   á   |   é   |   í   |   ç   |
+        |———————+———————+———————+———————+———————|                   |———————+———————+———————+———————+———————|
+        |  'v   |  ___  |  ___  |  ___  |  ___  |                   |  ___  |   ã   |   õ   |   '   |  ___  |
+        `———————————————————————+———————+———————+———————.   ,———————+———————+———————+———————————————————————'
+                                |  ___  |   à   |  ___  |   |  ___  |  ___  |  ___  |
+                                `———————————————————————'   `———————————————————————'
+    */
 
     [_EXT] = LAYOUT_split_3x5_3(
         _______, _______,   U_CIRC_O, _______,      _______,    _______, U_AC_U,       U_AC_O,    _______, _______,
