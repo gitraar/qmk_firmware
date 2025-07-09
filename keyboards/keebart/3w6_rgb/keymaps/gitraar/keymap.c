@@ -367,6 +367,7 @@ void leader_end_user(void) {
             wait_ms(500);
             tap_code16(G(KC_V));
             wait_ms(500);
+            tap_code(KC_DOWN);
             // tap_code16(A(KC_DOWN));
             // wait_ms(500);
             // tap_code16(G(S(KC_S)));
@@ -383,6 +384,7 @@ void leader_end_user(void) {
             wait_ms(500);
             tap_code16(G(KC_V));
             wait_ms(500);
+            tap_code(KC_DOWN);
             // tap_code16(A(KC_DOWN));
             // wait_ms(500);
             // tap_code16(G(S(KC_S)));
