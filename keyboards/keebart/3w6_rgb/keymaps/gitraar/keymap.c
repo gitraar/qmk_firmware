@@ -367,7 +367,10 @@ void leader_end_user(void) {
             wait_ms(500);
             tap_code16(G(KC_V));
             wait_ms(500);
-            tap_code(KC_DOWN);
+            // tap_code16(A(KC_DOWN));
+            // wait_ms(500);
+            // tap_code16(G(S(KC_S)));
+            // wait_ms(500);
         }
     } else if (leader_sequence_three_keys(KC_T, KC_T, KC_T)) {
         // Leader, t, t, t => Process fifty segments
@@ -380,7 +383,10 @@ void leader_end_user(void) {
             wait_ms(500);
             tap_code16(G(KC_V));
             wait_ms(500);
-            tap_code(KC_DOWN);
+            // tap_code16(A(KC_DOWN));
+            // wait_ms(500);
+            // tap_code16(G(S(KC_S)));
+            // wait_ms(500);
         }
     }
 }
